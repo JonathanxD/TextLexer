@@ -16,37 +16,25 @@
  *     You should have received a copy of the GNU Affero General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package github.therealbuggy.textlexer.lexer.token;
+package io.github.jonathanxd.iutils.collection;
 
-import github.therealbuggy.textlexer.lexer.token.builder.TokenBuilder;
-import github.therealbuggy.textlexer.lexer.token.processor.ProcessorData;
+import java.util.List;
+
+import io.github.jonathanxd.iutils.iterator.BackableIterator;
+import io.github.jonathanxd.iutils.iterator.SafeBackableIterator;
 
 /**
  * Created by jonathan on 08/02/16.
  */
-public class SequenceTokenType<T> extends UnifiedTokenType<T> {
+public class ListUtils {
 
-    @Override
-    public T dataToValue() {
-        return null;
+    public static <E> SafeBackableIterator<E> toSafeBackableIterator(List<E> list) {
+        return new ListSafeBackableIterator<>(list);
     }
 
-    @Override
-    public boolean matches(char character) {
-        return false;
+    public static <E> BackableIterator<E> toBackableIterator(List<E> list) {
+        return toSafeBackableIterator(list);
     }
 
-    public boolean matches(String sequence) {
-        return false;
-    }
 
-    @Override
-    public boolean matches(ProcessorData processorData) {
-
-        TokenBuilder tokenBuilder = processorData.getBuilderList().current();
-        if(tokenBuilder.getTokenType() == this) {
-
-        }
-        return false;
-    }
 }

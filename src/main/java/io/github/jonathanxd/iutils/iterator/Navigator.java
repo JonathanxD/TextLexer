@@ -16,37 +16,16 @@
  *     You should have received a copy of the GNU Affero General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package github.therealbuggy.textlexer.lexer.token;
+package io.github.jonathanxd.iutils.iterator;
 
-import github.therealbuggy.textlexer.lexer.token.builder.TokenBuilder;
-import github.therealbuggy.textlexer.lexer.token.processor.ProcessorData;
+import java.util.function.Predicate;
 
-/**
- * Created by jonathan on 08/02/16.
- */
-public class SequenceTokenType<T> extends UnifiedTokenType<T> {
+public interface Navigator<T> {
+	boolean has(int index);
 
-    @Override
-    public T dataToValue() {
-        return null;
-    }
-
-    @Override
-    public boolean matches(char character) {
-        return false;
-    }
-
-    public boolean matches(String sequence) {
-        return false;
-    }
-
-    @Override
-    public boolean matches(ProcessorData processorData) {
-
-        TokenBuilder tokenBuilder = processorData.getBuilderList().current();
-        if(tokenBuilder.getTokenType() == this) {
-
-        }
-        return false;
-    }
+	T navigateTo(int index);
+	T currentValue();
+	void goNextWhen(Predicate<T> predicate);
+	
+	int currentIndex();
 }

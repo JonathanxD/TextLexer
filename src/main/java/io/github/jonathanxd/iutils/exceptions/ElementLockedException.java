@@ -16,37 +16,17 @@
  *     You should have received a copy of the GNU Affero General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package github.therealbuggy.textlexer.lexer.token;
+package io.github.jonathanxd.iutils.exceptions;
 
-import github.therealbuggy.textlexer.lexer.token.builder.TokenBuilder;
-import github.therealbuggy.textlexer.lexer.token.processor.ProcessorData;
+public class ElementLockedException extends RuntimeException {
 
-/**
- * Created by jonathan on 08/02/16.
- */
-public class SequenceTokenType<T> extends UnifiedTokenType<T> {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 5221049240522818041L;
+	
+	public ElementLockedException(Object element) {
+		super("Operation not supported for locked element: "+element.toString());
+	}
 
-    @Override
-    public T dataToValue() {
-        return null;
-    }
-
-    @Override
-    public boolean matches(char character) {
-        return false;
-    }
-
-    public boolean matches(String sequence) {
-        return false;
-    }
-
-    @Override
-    public boolean matches(ProcessorData processorData) {
-
-        TokenBuilder tokenBuilder = processorData.getBuilderList().current();
-        if(tokenBuilder.getTokenType() == this) {
-
-        }
-        return false;
-    }
 }
