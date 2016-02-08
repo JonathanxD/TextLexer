@@ -22,5 +22,7 @@ import java.util.Iterator;
 
 public interface BackableIterator<E> extends Iterator<E>{
 	boolean hasBack();
-	E back();	
+	E back();
+	int getIndex();
+
 }

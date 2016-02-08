@@ -18,6 +18,7 @@
  */
 package github.therealbuggy.textlexer.lexer.token.processor;
 
+import java.util.List;
 import java.util.function.Predicate;
 
 import github.therealbuggy.textlexer.lexer.token.IToken;
@@ -33,7 +34,7 @@ public interface ITokensProcessor {
 
     <T> void addToken(Class<IToken<T>> token, Predicate<Character> matcher);
 
-    void process(char input);
+    void process(char input, List<Character> allChars, int index);
 
     ITokenList getTokenList();
 

@@ -36,6 +36,9 @@ import github.therealbuggy.textlexer.lexer.token.history.analise.AnaliseTokenLis
 import github.therealbuggy.textlexer.lexer.token.processor.ProcessorData.ProcessorDataBuilder;
 import github.therealbuggy.textlexer.lexer.token.type.FixedTokenType;
 import github.therealbuggy.textlexer.lexer.token.type.ITokenType;
+import io.github.jonathanxd.iutils.collection.ListUtils;
+import io.github.jonathanxd.iutils.iterator.IteratorUtil;
+import io.github.jonathanxd.iutils.iterator.SafeBackableIterator;
 
 /**
  * Created by jonathan on 30/01/16.
@@ -103,15 +106,21 @@ public class TokensProcessor implements ITokensProcessor {
     }
 
     @Override
-    public void process(char input) {
+    public void process(char input, List<Character> allChars, int index) {
         boolean anyMatch = false;
         Iterator<ITokenType<?>> tokenTypeIterator = tokenTypes.iterator();
+
+
         while (tokenTypeIterator.hasNext()) {
             ITokenType<?> type = tokenTypeIterator.next();
             lastTokenType = type;
 
+            SafeBackableIterator<Character> backableIterator = ListUtils.toSafeBackableIterator(allChars);
+
             ProcessorDataBuilder processorDataBuilder = createProcessorBuilder()
-                    .setCharacter(input);
+                    .setCharacter(input)
+                    .setCharacterIterator(backableIterator)
+                    .setIndex(index);
 
             ProcessorData processorData = processorDataBuilder.build();
 

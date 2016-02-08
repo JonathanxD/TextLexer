@@ -18,11 +18,15 @@
  */
 package github.therealbuggy.textlexer.lexer;
 
+import java.util.Collections;
+import java.util.List;
+
 import github.therealbuggy.textlexer.lexer.token.IToken;
 import github.therealbuggy.textlexer.lexer.token.history.ITokenList;
 import github.therealbuggy.textlexer.lexer.token.history.analise.AnaliseTokenList;
 import github.therealbuggy.textlexer.lexer.token.processor.ITokensProcessor;
 import github.therealbuggy.textlexer.scanner.IScanner;
+import io.github.jonathanxd.iutils.collection.ListUtils;
 
 /**
  * Created by jonathan on 30/01/16.
@@ -31,15 +35,17 @@ public class LexerImpl implements ILexer {
 
     @Override
     public ITokenList process(IScanner scanner, ITokensProcessor tokenTypeList) {
+
+        List<Character> characters = Collections.unmodifiableList(ListUtils.from(scanner.getChars()));
+
         while (scanner.hasNextChar()) {
             char current = scanner.nextChar();
-            tokenTypeList.process(current);
+            tokenTypeList.process(current, characters, scanner.getCurrentIndex());
         }
         tokenTypeList.closeOpenBuilders();
 
         ITokenList tokenList = tokenTypeList.getTokenList();
         analise(tokenList);
-
 
         return tokenList;
     }

@@ -18,6 +18,7 @@
  */
 package io.github.jonathanxd.iutils.collection;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Predicate;
 
@@ -47,8 +48,13 @@ public class ListSafeBackableIterator<E> implements SafeBackableIterator<E> {
     }
 
     @Override
+    public int getIndex() {
+        return index;
+    }
+
+    @Override
     public Navigator<E> safeNavigate() {
-        return null;
+        return new ListSafeNavigator<>(this.list);
     }
 
     @Override
@@ -78,8 +84,12 @@ public class ListSafeBackableIterator<E> implements SafeBackableIterator<E> {
 
         @Override
         public E navigateTo(int index) {
-            currentIndex = index;
-            return currentValue = list.get(index);
+            if (index < 0) {
+                currentIndex = 0;
+            } else {
+                currentIndex = index;
+            }
+            return currentValue = list.get(currentIndex);
         }
 
         @Override
@@ -92,12 +102,25 @@ public class ListSafeBackableIterator<E> implements SafeBackableIterator<E> {
             do {
                 ++currentIndex;
             }
-            while(has(currentIndex) && predicate.test(navigateTo(currentIndex)));
+            while (has(currentIndex) && predicate.test(navigateTo(currentIndex)));
         }
 
         @Override
         public int currentIndex() {
             return currentIndex;
+        }
+
+        @Override
+        public List<E> collect(int to) {
+            List<E> list = new ArrayList<>();
+            to = to + currentIndex;
+            do {
+                list.add(navigateTo(currentIndex));
+                ++currentIndex;
+            }
+            while (has(currentIndex) && currentIndex < to);
+
+            return list;
         }
     }
 

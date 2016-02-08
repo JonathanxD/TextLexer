@@ -18,6 +18,7 @@
  */
 package io.github.jonathanxd.iutils.iterator;
 
+import java.util.List;
 import java.util.function.Predicate;
 
 public interface Navigator<T> {
@@ -28,4 +29,6 @@ public interface Navigator<T> {
 	void goNextWhen(Predicate<T> predicate);
 	
 	int currentIndex();
+
+	List<T> collect(int to);
 }

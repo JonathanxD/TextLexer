@@ -18,34 +18,64 @@
  */
 package github.therealbuggy.textlexer.lexer.token;
 
+import java.util.List;
+
 import github.therealbuggy.textlexer.lexer.token.builder.TokenBuilder;
 import github.therealbuggy.textlexer.lexer.token.processor.ProcessorData;
+import io.github.jonathanxd.iutils.iterator.Navigator;
+import io.github.jonathanxd.iutils.iterator.SafeBackableIterator;
 
 /**
  * Created by jonathan on 08/02/16.
  */
-public class SequenceTokenType<T> extends UnifiedTokenType<T> {
+public abstract class SequenceTokenType<T> extends UnifiedTokenType<T> {
 
-    @Override
-    public T dataToValue() {
-        return null;
-    }
+    private int processNext = -1;
 
     @Override
     public boolean matches(char character) {
-        return false;
+        throw new UnsupportedOperationException();
     }
 
-    public boolean matches(String sequence) {
-        return false;
-    }
+    public abstract boolean matches(String sequence);
+
+    public abstract int[] matchSizes();
 
     @Override
     public boolean matches(ProcessorData processorData) {
+        SafeBackableIterator<Character> iterator = processorData.getCharacterIterator();
 
-        TokenBuilder tokenBuilder = processorData.getBuilderList().current();
-        if(tokenBuilder.getTokenType() == this) {
+        Navigator<Character> navigator = iterator.safeNavigate();
 
+
+        if (processorData.getBuilderList().hasCurrent()) {
+
+            TokenBuilder tokenBuilder = processorData.getBuilderList().current();
+
+            if (processNext > -1
+                    && tokenBuilder.getTokenType() == this) {
+                --processNext;
+                if (processNext == 0) {
+                    processNext = -1;
+                }
+                return true;
+            }
+        }
+
+        for (int x = 0; x < matchSizes().length; ++x) {
+
+            navigator.navigateTo(processorData.getIndex());
+
+            int matchSize = matchSizes()[x];
+
+            List<Character> characters = navigator.collect(matchSize);
+            StringBuilder builder = new StringBuilder();
+            characters.forEach(builder::append);
+
+            if (matches(builder.toString())) {
+                processNext = builder.length() - 1;
+                return true;
+            }
         }
         return false;
     }
