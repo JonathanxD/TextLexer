@@ -1,0 +1,80 @@
+plugins {
+    id 'com.github.hierynomus.license' version '0.11.0'
+}
+
+group 'github.therealbuggy.textlexer'
+version '1.0'
+
+
+apply plugin: 'java'
+apply plugin: 'license'
+apply plugin: 'maven'
+
+defaultTasks 'licenseFormat', 'build', 'jar', 'uploadArchives'
+
+sourceCompatibility = 1.8
+
+sourceSets {
+    main {
+        java {
+            srcDirs 'src/main/java'
+        }        
+        resources {
+            srcDirs 'src/main/resources'
+        }
+    }
+}
+
+jar {
+    from "LICENSE"
+
+    manifest {
+        attributes 'Implementation-Title': 'TextLexer',
+                'Implementation-Version': version
+    }
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+}
+
+test {
+    systemProperties 'property': 'value'
+}
+
+uploadArchives {
+    repositories {
+        flatDir {
+            dirs 'repos'
+        }
+    }
+}
+
+license {
+    ext.name = 'TextLexer'
+    ext.organization = 'TheRealBuggy/JonathanxD (https://github.com/JonathanxD/)'
+    ext.description = 'Lexical Analyzer API for Java!'
+    ext.url = 'https://github.com/JonathanxD/TextLexer'
+    ext.year = Calendar.getInstance().get(Calendar.YEAR)
+    ext.email = 'jonathan.scripter@programmer.net'
+
+    exclude "**/*.info"
+    exclude "**/*.md"
+    exclude "res/**"
+    exclude "src/main/resources/**"
+    exclude "src/test/resources/**"
+    
+    header file('LICENSE_HEADER')
+    
+    sourceSets = project.sourceSets
+    
+    ignoreFailures false
+    strictCheck true
+    
+    mapping {
+        java = 'SLASHSTAR_STYLE'
+    }
+}
