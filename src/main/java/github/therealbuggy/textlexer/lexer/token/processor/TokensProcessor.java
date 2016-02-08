@@ -19,8 +19,8 @@
 package github.therealbuggy.textlexer.lexer.token.processor;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
@@ -37,7 +37,6 @@ import github.therealbuggy.textlexer.lexer.token.processor.ProcessorData.Process
 import github.therealbuggy.textlexer.lexer.token.type.FixedTokenType;
 import github.therealbuggy.textlexer.lexer.token.type.ITokenType;
 import io.github.jonathanxd.iutils.collection.ListUtils;
-import io.github.jonathanxd.iutils.iterator.IteratorUtil;
 import io.github.jonathanxd.iutils.iterator.SafeBackableIterator;
 
 /**
@@ -62,8 +61,28 @@ public class TokensProcessor implements ITokensProcessor {
     }
 
     private void updateList() {
-        Collections.sort(tokenTypes, Comparator.comparing(ITokenType::order));
-        Collections.sort(tokenTypes, (o1, o2) -> Integer.compare(o1.order(), o2.order()));
+        //Collections.sort(tokenTypes, Comparator.comparing(ITokenType::order));
+        //Collections.sort(tokenTypes, (o1, o2) -> Integer.compare(o1.order(), o2.order()));
+        Collections.sort(tokenTypes, (o1, o2) -> {
+
+            Collection<Class<? extends ITokenType>> tokenClasses;
+            Class<?> otherCheck;
+            int sideCheck;
+            
+            if (o1.orderAfterClasses() != null) {
+                tokenClasses = o1.orderAfterClasses();
+                if(tokenClasses.contains(o2.getClass())) {
+                    return 1;
+                }
+
+            } else if (o2.orderAfterClasses() != null) {
+                tokenClasses = o2.orderAfterClasses();
+                if(tokenClasses.contains(o1.getClass())) {
+                    return -1;
+                }
+            }
+            return Integer.compare(o1.order(), o2.order());
+        });
     }
 
     private <T> boolean containsToken(Class<IToken<T>> tokenClass) {
