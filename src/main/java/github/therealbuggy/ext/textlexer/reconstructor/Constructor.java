@@ -22,23 +22,23 @@ import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
 
-import github.therealbuggy.ext.textlexer.reconstructor.data.IDataReconstructor;
+import github.therealbuggy.ext.textlexer.reconstructor.data.IDataConstructor;
 import github.therealbuggy.textlexer.lexer.token.IToken;
 import github.therealbuggy.textlexer.lexer.token.history.ITokenList;
 
 /**
  * Created by jonathan on 08/02/16.
  */
-public class Reconstructor {
+public class Constructor {
 
     private final List<IToken<?>> tokenList;
-    private final Set<IDataReconstructor> dataReconstructors = new TreeSet<>();
+    private final Set<IDataConstructor> dataReconstructors = new TreeSet<>();
 
-    public Reconstructor(ITokenList tokenList) {
+    public Constructor(ITokenList tokenList) {
         this.tokenList = tokenList.allToList();
     }
 
-    public void addReconstructor(IDataReconstructor dataReconstructor) {
+    public void addConstructor(IDataConstructor dataReconstructor) {
         dataReconstructors.add(dataReconstructor);
     }
 
@@ -49,7 +49,7 @@ public class Reconstructor {
             IToken<?> token = tokenList.get(x);
             String data = "";
 
-            for (IDataReconstructor dataReconstructor : dataReconstructors) {
+            for (IDataConstructor dataReconstructor : dataReconstructors) {
                 if (dataReconstructor.canTranslate(token)) {
 
                     data = dataReconstructor.getTokenData(token, data, tokenList, x);

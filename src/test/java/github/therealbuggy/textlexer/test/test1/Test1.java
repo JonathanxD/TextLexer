@@ -20,8 +20,7 @@ package github.therealbuggy.textlexer.test.test1;
 
 import java.util.Optional;
 
-import github.therealbuggy.ext.textlexer.reconstructor.Reconstructor;
-import github.therealbuggy.ext.textlexer.reconstructor.data.BaseReconstructor;
+import github.therealbuggy.ext.textlexer.reconstructor.Constructor;
 import github.therealbuggy.textlexer.TextLexer;
 import github.therealbuggy.textlexer.lexer.token.IToken;
 import github.therealbuggy.textlexer.lexer.token.history.ITokenList;
@@ -58,10 +57,10 @@ public class Test1 {
 
         // Construct data again
 
-        Reconstructor reconstructor = new Reconstructor(textLexer.getTokens());
-        reconstructor.addReconstructor(IToken::getData);
-        // Or reconstructor.addReconstructor(new BaseReconstructor());
-        char[] chars = reconstructor.toCharArray();
+        Constructor constructor = new Constructor(textLexer.getTokens());
+        constructor.addConstructor(IToken::getData);
+        // Or constructor.addConstructor(new BaseConstructor());
+        char[] chars = constructor.toCharArray();
         String str = new String(chars);
 
         System.out.println("Data: "+str);

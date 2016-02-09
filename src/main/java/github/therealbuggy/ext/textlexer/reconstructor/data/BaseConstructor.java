@@ -23,7 +23,7 @@ import github.therealbuggy.textlexer.lexer.token.IToken;
 /**
  * Created by jonathan on 08/02/16.
  */
-public class BaseReconstructor implements IDataReconstructor {
+public class BaseConstructor implements IDataConstructor {
 
     @Override
     public String getTokenData(IToken<?> token) {

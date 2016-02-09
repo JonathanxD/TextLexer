@@ -26,7 +26,7 @@ import github.therealbuggy.textlexer.lexer.token.IToken;
  * Created by jonathan on 08/02/16.
  */
 @FunctionalInterface
-public interface IDataReconstructor extends Comparable<IDataReconstructor> {
+public interface IDataConstructor extends Comparable<IDataConstructor> {
 
     String getTokenData(IToken<?> token);
 
@@ -44,7 +44,7 @@ public interface IDataReconstructor extends Comparable<IDataReconstructor> {
     }
 
     @Override
-    default int compareTo(IDataReconstructor o) {
+    default int compareTo(IDataConstructor o) {
         int compare;
         if ((compare = Integer.compare(this.priority(), o.priority())) == 0) {
             return 1;
