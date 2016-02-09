@@ -19,8 +19,10 @@
 package github.therealbuggy.textlexer.lexer.token.history;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
+import java.util.function.Predicate;
 
 import github.therealbuggy.textlexer.lexer.token.IToken;
 
@@ -36,4 +38,34 @@ public class TokenListUtil {
         return iTokenList.iterator();
     }
 
+
+    @SafeVarargs
+    public static ITokenList ignore(ITokenList tokenList, Class<? extends IToken<?>>... tokensClasses) {
+        List<Class<?>> tokenClassList = Arrays.asList(tokensClasses);
+        return retain(tokenList, token -> !tokenClassList.contains(token.getClass()));
+
+    }
+
+    public static ITokenList ignore(ITokenList tokenList, Predicate<IToken<?>> tokenIgnorePredicate) {
+        return retain(tokenList, token -> !tokenIgnorePredicate.test(token));
+
+    }
+
+    @SafeVarargs
+    public static ITokenList retain(ITokenList tokenList, Class<? extends IToken<?>>... tokensClasses) {
+        List<Class<?>> tokenClassList = Arrays.asList(tokensClasses);
+        return retain(tokenList, token -> tokenClassList.contains(token.getClass()));
+
+    }
+
+    public static ITokenList retain(ITokenList tokenList, Predicate<IToken<?>> retainPredicate) {
+        ITokenList filteredTokenList = new TokenListImpl();
+
+        filteredTokenList.forEach(itoken -> {
+            if (!retainPredicate.test(itoken)) {
+                filteredTokenList.add(itoken);
+            }
+        });
+        return filteredTokenList;
+    }
 }

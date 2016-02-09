@@ -29,7 +29,7 @@ public class TokenBuilder {
 
     private final ITokenType<?> tokenType;
 
-    private StringBuilder dataBuilder = new StringBuilder();
+    private final StringBuilder dataBuilder = new StringBuilder();
     private boolean build = false;
 
     public TokenBuilder(ITokenType<?> tokenType) {

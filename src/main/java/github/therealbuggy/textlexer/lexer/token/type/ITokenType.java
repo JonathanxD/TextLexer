@@ -18,18 +18,29 @@
  */
 package github.therealbuggy.textlexer.lexer.token.type;
 
+import java.util.Collection;
+
 import github.therealbuggy.textlexer.lexer.token.IToken;
 import github.therealbuggy.textlexer.lexer.token.builder.TokenBuilder;
 import github.therealbuggy.textlexer.lexer.token.history.ITokenList;
+import github.therealbuggy.textlexer.lexer.token.processor.OrderComparator;
 import github.therealbuggy.textlexer.lexer.token.processor.ProcessorData;
 import github.therealbuggy.textlexer.lexer.token.structure.analise.StructureRule;
+import io.github.jonathanxd.iutils.annotation.ProcessedBy;
 
 /**
  * Created by jonathan on 30/01/16.
  */
 public interface ITokenType<T> {
 
+    @Deprecated
     TokenBuilder process(ITokenList tokenList, TokenBuilder current, char character);
+
+    default TokenBuilder process(ProcessorData processorData) {
+        return process(processorData.getTokenList(),
+                processorData.getBuilderList().hasCurrent() ? processorData.getBuilderList().current() : null,
+                processorData.getCharacter());
+    }
 
     boolean matches(char character);
 
@@ -43,17 +54,46 @@ public interface ITokenType<T> {
         return createToken(processorData.getData());
     }
 
+    @ProcessedBy({OrderComparator.class})
     default int order() {
-        return 5;
+        Collection<? extends ITokenType> tokenTypes;
+        if ((tokenTypes = orderAfter()) == null || tokenTypes.isEmpty())
+            return 5;
+
+        int priority = 0;
+
+        for (ITokenType<?> tokenType : tokenTypes) {
+            if (tokenType.order() > priority) {
+                priority = tokenType.order() + 1;
+            }
+        }
+
+        return priority;
     }
 
-    default int maxSize() { return -1; }
-    default int minSize() { return 0; }
+    @ProcessedBy({ITokenType.class})
+    default Collection<? extends ITokenType> orderAfter() {
+        return null;
+    }
+
+    @ProcessedBy({OrderComparator.class})
+    default Collection<Class<? extends ITokenType>> orderAfterClasses() {
+        return null;
+    }
+
+    default int maxSize() {
+        return -1;
+    }
+
+    default int minSize() {
+        return 0;
+    }
 
     /**
      * Similar to {@link StructureRule#after()}. But, check the structure in build-runtime
+     *
      * @return Need to return a class of token need to be present after this token
-     * @deprecated Structure Analise update #1 may have broken build-runtime structure analise
+     * @deprecated Structure Analise update #1 may have broken build-runtime structure analyse
      */
     @Deprecated
     default Class<? extends IToken> after() { // DEPOIS

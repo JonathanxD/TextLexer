@@ -19,6 +19,7 @@
 package github.therealbuggy.textlexer.lexer.token.history.analise;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
@@ -61,8 +62,37 @@ public class AnaliseTokenList {
         return Optional.empty();
     }
 
-
     public static IToken<?> doubleSideFind(ITokenList tokenList) {
+        List<IToken<?>> tokens = tokenList.toList();
+
+        for (int x = 0; x < tokens.size(); ++x) {
+
+
+            IToken<?> token = tokens.get(x);
+            if (token.getStructureRule() != null) {
+                StructureRule structureRule = token.getStructureRule();
+                Class<? extends IToken> tokenStart = structureRule.after();
+                Class<? extends IToken> tokenEnd = structureRule.before();
+                if (tokenStart != null) {
+                    IToken<?> start = TokenAnalysis.find(tokens, x, SearchDirection.LEFT, tokenStart, tokenStart);
+                    if (start == null) {
+                        throw new RuntimeException("Invalid format!", new AnaliseException("Structure problem"));
+                    }
+                }
+                if (tokenEnd != null) {
+                    IToken<?> end = TokenAnalysis.find(tokens, x, SearchDirection.RIGHT, tokenEnd, tokenEnd);
+                    if (end == null) {
+                        throw new RuntimeException("Invalid format!", new AnaliseException("Structure problem"));
+                    }
+                }
+            }
+
+        }
+        return null;
+    }
+
+    @Deprecated
+    public static IToken<?> doubleSideFindDep(ITokenList tokenList) {
 
         int openTokens = 0;
         int closedTokens = 0;
@@ -70,7 +100,6 @@ public class AnaliseTokenList {
         Set<IToken<?>> openTokensList = new HashSet<>();
         Set<IToken<?>> closeTokensList = new HashSet<>();
 
-        int lastFound = 0;
         // ANALISANDO DE TRAS PARA FRENTE
         for (int x = 0; x < tokenList.size(); ++x) {
 

@@ -18,12 +18,13 @@
  */
 package github.therealbuggy.textlexer.lexer.token.processor;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
+import java.lang.reflect.Method;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
+import java.util.Set;
+import java.util.TreeSet;
 import java.util.function.Predicate;
 
 import github.therealbuggy.textlexer.Debug;
@@ -45,47 +46,20 @@ import io.github.jonathanxd.iutils.iterator.SafeBackableIterator;
 public class TokensProcessor implements ITokensProcessor {
 
 
-    List<ITokenType<?>> tokenTypes = new ArrayList<>();
-    BuilderList builderList = new BuilderList();
-    ITokenList tokenList = new TokenListImpl();
+    final Set<ITokenType<?>> tokenTypes = new TreeSet<>(new OrderComparator());
+    final BuilderList builderList = new BuilderList();
+    final ITokenList tokenList = new TokenListImpl();
     ITokenType<?> lastTokenType = null;
 
     @Override
     public void addTokenType(ITokenType<?> token) {
         if (contains(token))
             return;
-
         tokenTypes.add(token);
-
-        updateList();
-    }
-
-    private void updateList() {
-        //Collections.sort(tokenTypes, Comparator.comparing(ITokenType::order));
-        //Collections.sort(tokenTypes, (o1, o2) -> Integer.compare(o1.order(), o2.order()));
-        Collections.sort(tokenTypes, (o1, o2) -> {
-
-            Collection<Class<? extends ITokenType>> tokenClasses;
-            Class<?> otherCheck;
-            int sideCheck;
-            
-            if (o1.orderAfterClasses() != null) {
-                tokenClasses = o1.orderAfterClasses();
-                if(tokenClasses.contains(o2.getClass())) {
-                    return 1;
-                }
-
-            } else if (o2.orderAfterClasses() != null) {
-                tokenClasses = o2.orderAfterClasses();
-                if(tokenClasses.contains(o1.getClass())) {
-                    return -1;
-                }
-            }
-            return Integer.compare(o1.order(), o2.order());
-        });
     }
 
     private <T> boolean containsToken(Class<IToken<T>> tokenClass) {
+
         for (ITokenType<?> tokenType : tokenTypes) {
 
             if (tokenType instanceof FixedTokenType) {
@@ -121,7 +95,6 @@ public class TokensProcessor implements ITokensProcessor {
         ITokenType<T> fixedTokenType = new FixedTokenType<>(token, matcher);
         addTokenType(fixedTokenType);
 
-        updateList();
     }
 
     @Override
@@ -185,7 +158,7 @@ public class TokensProcessor implements ITokensProcessor {
                     builderList.add(builder, type);
                 }
 
-                TokenBuilder anotherBuilder = type.process(tokenList, builder, input);
+                TokenBuilder anotherBuilder = type.process(processorData);
                 if (anotherBuilder != builder) {
                     // END WITHOUT TYPE CHECKING
                     endCurrent();
@@ -231,7 +204,15 @@ public class TokensProcessor implements ITokensProcessor {
             if (!builderList.isCurrent(type) || force) {
                 ProcessorData processorData = createProcessorBuilder().build();
 
-                IToken<?> token = builderList.endCurrent().build(processorData);
+                TokenBuilder currentBuilder = builderList.endCurrent();
+
+                IToken<?> token = Objects.requireNonNull(
+                        currentBuilder.build(processorData),
+                        "IToken<?> createToken(ProcessorData) cannot be null! Use hide() method to hide the Token! ITokenType: "+currentBuilder.getTokenType()
+                                +" at "
+                                +Debug.getClassString(currentBuilder.getTokenType().getClass(), getTokenTypeCreateMethod()));
+
+
                 if (token != null) {
 
                     if (type != null && token.getData().length() < type.minSize()) {
@@ -244,6 +225,10 @@ public class TokensProcessor implements ITokensProcessor {
                 }
             }
         }
+    }
+
+    private Method getTokenTypeCreateMethod() {
+        return Debug.getMethod(ITokenType.class, "createToken", new Class<?>[]{ProcessorData.class});
     }
 
     @Override

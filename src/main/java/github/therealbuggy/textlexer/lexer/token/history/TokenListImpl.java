@@ -19,9 +19,11 @@
 package github.therealbuggy.textlexer.lexer.token.history;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 
 import github.therealbuggy.textlexer.lexer.token.IToken;
 
@@ -30,36 +32,40 @@ import github.therealbuggy.textlexer.lexer.token.IToken;
  */
 public class TokenListImpl implements ITokenList {
 
-    List<IToken> tokenList = new ArrayList<>();
+    final List<IToken<?>> tokenList = new ArrayList<>();
+    final List<IToken> visibleTokens = new ArrayList<>();
 
     @Override
     public void add(IToken token) {
         tokenList.add(token);
+        if(!token.hide()) {
+            visibleTokens.add(token);
+        }
     }
 
     @Override
     public IToken fetch(int inverseIndex) {
-        int index = (tokenList.size() - 1) - inverseIndex;
+        int index = (visibleTokens.size() - 1) - inverseIndex;
         if (index < 0) {
             throw new IndexOutOfBoundsException(String.format("Size: %d. Inverse Index: (-)%d. Index: %d", tokenList.size(), inverseIndex, index));
         }
 
-        return tokenList.get(index);
+        return visibleTokens.get(index);
     }
 
     @Override
     public int size() {
-        return tokenList.size();
+        return visibleTokens.size();
     }
 
     @Override
     public String toString() {
-        return tokenList.toString();
+        return visibleTokens.toString();
     }
 
     @Override
     public IToken fetchLast() {
-        return tokenList.get(tokenList.size() - 1);
+        return visibleTokens.get(visibleTokens.size() - 1);
     }
 
     @Override
@@ -79,7 +85,7 @@ public class TokenListImpl implements ITokenList {
         };
 
         if(loopDirection == LoopDirection.FIRST_TO_LAST) {
-            for (int x = tokenList.size() - 1; x > -1; --x) {
+            for (int x = size() - 1; x > -1; --x) {
                 IToken<?> token = fetch(x);
 
                 State state = tokenConsumer.apply(token);
@@ -93,7 +99,7 @@ public class TokenListImpl implements ITokenList {
                 }
             }
         }else if(loopDirection == LoopDirection.LAST_TO_FIRST) {
-            for (int x = 0; x < tokenList.size(); ++x) {
+            for (int x = 0; x < size(); ++x) {
                 IToken<?> token = fetch(x);
 
                 State state = tokenConsumer.apply(token);
@@ -109,6 +115,11 @@ public class TokenListImpl implements ITokenList {
         }
 
         return null;
+    }
+
+    @Override
+    public List<IToken<?>> allToList() {
+        return Collections.unmodifiableList(tokenList);
     }
 
     private enum State {

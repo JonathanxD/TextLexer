@@ -16,32 +16,39 @@
  *     You should have received a copy of the GNU Affero General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package github.therealbuggy.textlexer.lexer.token.structure.analise;
+package github.therealbuggy.ext.textlexer.reconstructor.data;
+
+import java.util.List;
 
 import github.therealbuggy.textlexer.lexer.token.IToken;
-import io.github.jonathanxd.iutils.annotation.ProcessedBy;
 
 /**
- * Created by jonathan on 07/02/16.
+ * Created by jonathan on 08/02/16.
  */
-@ProcessedBy({StructureAnalyzer.class, SimpleAnalyzer.class})
-public interface StructureRule {
+@FunctionalInterface
+public interface IDataReconstructor extends Comparable<IDataReconstructor> {
 
-    default Class<? extends IToken> after() {
-        return null;
+    String getTokenData(IToken<?> token);
+
+    default String getTokenData(IToken<?> token, String currentData, List<IToken<?>> tokenList, int index) {
+        return getTokenData(token);
     }
 
-    default Class<? extends IToken> before() {
-        return null;
+    default boolean canTranslate(IToken<?> token) {
+        return true;
     }
 
-    default int dataLength() {
-        return -1;
+
+    default int priority() {
+        return 5;
     }
 
-    default boolean valueRule() {
-        return getToken().dataToValue() != null;
+    @Override
+    default int compareTo(IDataReconstructor o) {
+        int compare;
+        if ((compare = Integer.compare(this.priority(), o.priority())) == 0) {
+            return 1;
+        }
+        return compare;
     }
-
-    IToken<?> getToken();
 }

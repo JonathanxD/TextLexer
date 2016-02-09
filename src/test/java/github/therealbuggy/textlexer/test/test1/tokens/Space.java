@@ -16,32 +16,34 @@
  *     You should have received a copy of the GNU Affero General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package github.therealbuggy.textlexer.lexer.token.structure.analise;
+package github.therealbuggy.textlexer.test.test1.tokens;
 
 import github.therealbuggy.textlexer.lexer.token.IToken;
-import io.github.jonathanxd.iutils.annotation.ProcessedBy;
+import github.therealbuggy.textlexer.lexer.token.UnifiedTokenType;
 
 /**
  * Created by jonathan on 07/02/16.
  */
-@ProcessedBy({StructureAnalyzer.class, SimpleAnalyzer.class})
-public interface StructureRule {
+public class Space extends UnifiedTokenType<String> {
 
-    default Class<? extends IToken> after() {
-        return null;
+
+    @Override
+    public String dataToValue() {
+        return getData();
     }
 
-    default Class<? extends IToken> before() {
-        return null;
+    @Override
+    public boolean matches(char c) {
+        return c == ' ';
     }
 
-    default int dataLength() {
-        return -1;
+    @Override
+    public int order() {
+        return Integer.MAX_VALUE;
     }
 
-    default boolean valueRule() {
-        return getToken().dataToValue() != null;
+    @Override
+    public boolean hide() {
+        return true;
     }
-
-    IToken<?> getToken();
 }

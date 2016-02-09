@@ -16,32 +16,17 @@
  *     You should have received a copy of the GNU Affero General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package github.therealbuggy.textlexer.lexer.token.structure.analise;
+package github.therealbuggy.ext.textlexer.reconstructor.data;
 
 import github.therealbuggy.textlexer.lexer.token.IToken;
-import io.github.jonathanxd.iutils.annotation.ProcessedBy;
 
 /**
- * Created by jonathan on 07/02/16.
+ * Created by jonathan on 08/02/16.
  */
-@ProcessedBy({StructureAnalyzer.class, SimpleAnalyzer.class})
-public interface StructureRule {
+public class BaseReconstructor implements IDataReconstructor {
 
-    default Class<? extends IToken> after() {
-        return null;
+    @Override
+    public String getTokenData(IToken<?> token) {
+        return token.getData();
     }
-
-    default Class<? extends IToken> before() {
-        return null;
-    }
-
-    default int dataLength() {
-        return -1;
-    }
-
-    default boolean valueRule() {
-        return getToken().dataToValue() != null;
-    }
-
-    IToken<?> getToken();
 }

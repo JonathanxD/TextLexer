@@ -18,6 +18,10 @@
  */
 package github.therealbuggy.textlexer;
 
+import java.lang.reflect.Method;
+
+import github.therealbuggy.textlexer.lexer.token.type.ITokenType;
+
 /**
  * Created by jonathan on 07/02/16.
  */
@@ -47,5 +51,26 @@ public class Debug {
                 +".java"
                 +":0"
                 +")";
+    }
+
+    public static String getClassString(Class<?> clazz, Method m) {
+        if(m == null)
+            return getClassString(clazz);
+        return clazz.getCanonicalName()
+                + "."
+                + m.getName()
+                +"("
+                +clazz.getSimpleName()
+                +".java"
+                +":0"
+                +")";
+    }
+
+    public static Method getMethod(Class<?> clazz, String method, Class<?>[] parameters) {
+        try {
+            return clazz.getDeclaredMethod(method, parameters);
+        } catch (NoSuchMethodException e) {
+            return null;
+        }
     }
 }

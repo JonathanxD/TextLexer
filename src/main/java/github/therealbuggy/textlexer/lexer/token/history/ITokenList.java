@@ -18,7 +18,14 @@
  */
 package github.therealbuggy.textlexer.lexer.token.history;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
+import java.util.Optional;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Consumer;
+import java.util.function.Predicate;
 
 import github.therealbuggy.textlexer.lexer.token.IToken;
 
@@ -37,9 +44,88 @@ public interface ITokenList {
 
     IToken find(Class<? extends IToken> tokenClass, Class<? extends IToken> stopAt, LoopDirection loopDirection);
 
+    @SuppressWarnings("unchecked")
+    default <T, R extends IToken<T>> Optional<R> first(Class<? extends IToken<T>> tokenClass) {
+        return this.<T, R>all(tokenClass).stream().findFirst();
+    }
+
+    @SuppressWarnings("unchecked")
+    default <T, R extends IToken<T>> Optional<R> last(Class<? extends IToken<T>> tokenClass) {
+        AtomicReference<R> findToken = new AtomicReference<>();
+
+        forEach(token -> {
+            if (token.getClass() == tokenClass) {
+                findToken.set((R) token);
+            }
+        }, LoopDirection.LAST_TO_FIRST, token -> findToken.get() == null);
+
+        return Optional.ofNullable(findToken.get());
+    }
+
+    @SuppressWarnings("unchecked")
+    default <T, R extends IToken<T>> Collection<R> all(Class<? extends IToken<T>> tokenClass) {
+        Collection<R> tokens = new ArrayList<>();
+
+        forEach(token -> {
+            if (token.getClass() == tokenClass) {
+                tokens.add((R) token);
+            }
+        }, LoopDirection.LAST_TO_FIRST);
+
+        return tokens;
+    }
+
+    @SuppressWarnings("unchecked")
+    default <T, R extends IToken<T>> Collection<R> allAssignable(Class<? extends IToken<T>> tokenClass) {
+        Collection<R> tokens = new ArrayList<>();
+
+        forEach(token -> {
+            if (tokenClass.isAssignableFrom(token.getClass())) {
+                tokens.add((R) token);
+            }
+        }, LoopDirection.LAST_TO_FIRST);
+
+        return tokens;
+    }
+
     default void forEach(Consumer<IToken<?>> tokenConsumer) {
-        for(int x = size()-1; x > -1; --x) {
-            tokenConsumer.accept(fetch(x));
+        forEach(tokenConsumer, LoopDirection.FIRST_TO_LAST, token -> true);
+    }
+
+    default void forEach(Consumer<IToken<?>> tokenConsumer, LoopDirection loopDirection) {
+        forEach(tokenConsumer, loopDirection, token -> true);
+    }
+
+    default void forEach(Consumer<IToken<?>> tokenConsumer, Predicate<IToken<?>> while_) {
+        forEach(tokenConsumer, LoopDirection.FIRST_TO_LAST, while_);
+    }
+
+    default void forEach(Consumer<IToken<?>> tokenConsumer, LoopDirection loopDirection, Predicate<IToken<?>> while_) {
+
+        if (loopDirection == LoopDirection.FIRST_TO_LAST) {
+            for (int x = size() - 1; x > -1; --x) {
+                IToken<?> token = fetch(x);
+
+                if (while_.test(token)) {
+                    tokenConsumer.accept(token);
+                }
+            }
+        } else if (loopDirection == LoopDirection.LAST_TO_FIRST) {
+            for (int x = 0; x < size(); ++x) {
+                IToken<?> token = fetch(x);
+
+                if (while_.test(token)) {
+                    tokenConsumer.accept(token);
+                }
+            }
         }
     }
+
+    default List<IToken<?>> toList() {
+        List<IToken<?>> list = new ArrayList<>();
+        forEach(list::add);
+        return list;
+    }
+
+    List<IToken<?>> allToList();
 }

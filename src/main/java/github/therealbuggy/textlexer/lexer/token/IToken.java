@@ -18,7 +18,12 @@
  */
 package github.therealbuggy.textlexer.lexer.token;
 
+import github.therealbuggy.textlexer.lexer.LexerImpl;
+import github.therealbuggy.textlexer.lexer.token.history.ITokenList;
+import github.therealbuggy.textlexer.lexer.token.history.TokenListImpl;
+import github.therealbuggy.textlexer.lexer.token.history.analise.AnaliseTokenList;
 import github.therealbuggy.textlexer.lexer.token.structure.analise.StructureRule;
+import io.github.jonathanxd.iutils.annotation.ProcessedBy;
 
 /**
  * Created by jonathan on 30/01/16.
@@ -33,6 +38,12 @@ public interface IToken<T> {
 
     String getSimpleName();
 
+    @ProcessedBy({ITokenList.class, TokenListImpl.class})
+    default boolean hide() {
+        return false;
+    }
+
+    @ProcessedBy({AnaliseTokenList.class, LexerImpl.class})
     default StructureRule getStructureRule() {
         return null;
     }

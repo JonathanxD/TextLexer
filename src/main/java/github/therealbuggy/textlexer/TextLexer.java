@@ -22,14 +22,17 @@ import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Field;
 import java.nio.file.Files;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Set;
 import java.util.function.Predicate;
 
 import github.therealbuggy.textlexer.lexer.LexerImpl;
 import github.therealbuggy.textlexer.lexer.token.IToken;
 import github.therealbuggy.textlexer.lexer.token.history.ITokenList;
 import github.therealbuggy.textlexer.lexer.token.processor.TokensProcessor;
+import github.therealbuggy.textlexer.lexer.token.structure.analise.StructureAnalyzer;
 import github.therealbuggy.textlexer.lexer.token.type.ITokenType;
 import github.therealbuggy.textlexer.scanner.CharScanner;
 import github.therealbuggy.textlexer.scanner.IScanner;
@@ -37,12 +40,28 @@ import github.therealbuggy.textlexer.scanner.IScanner;
 /**
  * Created by jonathan on 06/02/16.
  */
-public class TextLexer {
+public final class TextLexer {
 
     private final TokensProcessor tokensProcessor = new TokensProcessor();
+    private final List<StructureAnalyzer> analyzers = new ArrayList<>();
 
     public TextLexer addTokenType(ITokenType<?> tokenType) {
         tokensProcessor.addTokenType(tokenType);
+        return this;
+    }
+
+    @SafeVarargs
+    public final TextLexer addTokenTypes(ITokenType<?>... tokenTypes) {
+        for (ITokenType<?> aTokenType : tokenTypes)
+            addTokenType(aTokenType);
+        return this;
+    }
+
+    @SafeVarargs
+    public final TextLexer addTokenTypes(Class<? extends ITokenType>... tokenTypesClass) throws InstantiationException, IllegalAccessException {
+        for (Class<? extends ITokenType> aTokenTypeClass : tokenTypesClass) {
+            addTokenType(aTokenTypeClass.newInstance());
+        }
         return this;
     }
 
@@ -52,14 +71,14 @@ public class TextLexer {
     }
 
     public TextLexer processFile(File file) {
-        LexerImpl lexer = new LexerImpl();
+        LexerImpl lexer = new LexerImpl(analyzers);
         lexer.process(new FileScanner(file), tokensProcessor);
 
         return this;
     }
 
     public TextLexer processString(String string) {
-        LexerImpl lexer = new LexerImpl();
+        LexerImpl lexer = new LexerImpl(analyzers);
         lexer.process(new CharScanner(string.toCharArray()), tokensProcessor);
         return this;
     }
@@ -72,6 +91,10 @@ public class TextLexer {
         return new Util(this);
     }
 
+    public void addStructureAnalyzer(StructureAnalyzer analyzer) {
+        analyzers.add(analyzer);
+    }
+
     public static class Util {
         private final TextLexer lexer;
 
@@ -80,11 +103,11 @@ public class TextLexer {
         }
 
         @SuppressWarnings("unchecked")
-        public List<ITokenType<?>> getOrderedTokenList() throws Exception {
+        public Set<ITokenType<?>> getOrderedTokenSet() throws Exception {
             Field field = TokensProcessor.class.getDeclaredField("tokenTypes");
             field.setAccessible(true);
-            List<ITokenType<?>> list = (List<ITokenType<?>>) field.get(lexer.tokensProcessor);
-            return Collections.unmodifiableList(list);
+            Set<ITokenType<?>> list = (Set<ITokenType<?>>) field.get(lexer.tokensProcessor);
+            return Collections.unmodifiableSet(list);
         }
     }
 

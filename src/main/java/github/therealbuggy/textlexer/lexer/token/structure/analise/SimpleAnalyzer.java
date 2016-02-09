@@ -19,29 +19,20 @@
 package github.therealbuggy.textlexer.lexer.token.structure.analise;
 
 import github.therealbuggy.textlexer.lexer.token.IToken;
-import io.github.jonathanxd.iutils.annotation.ProcessedBy;
+import github.therealbuggy.textlexer.lexer.token.history.ITokenList;
+import github.therealbuggy.textlexer.lexer.token.history.analise.AnaliseTokenList;
 
 /**
- * Created by jonathan on 07/02/16.
+ * Created by jonathan on 08/02/16.
  */
-@ProcessedBy({StructureAnalyzer.class, SimpleAnalyzer.class})
-public interface StructureRule {
-
-    default Class<? extends IToken> after() {
-        return null;
+public class SimpleAnalyzer implements StructureAnalyzer {
+    @Override
+    public State analyse(ITokenList tokenList) {
+        IToken<?> token = AnaliseTokenList.doubleSideFindDep(tokenList);
+        if (token != null) {
+            throw new RuntimeException("Error during token structure analyse phase!",
+                    new RuntimeException("Token '" + token + "' must be between '" + token.getStructureRule().after() + "' and '" + token.getStructureRule().before() + "'"));
+        }
+        return State.OK;
     }
-
-    default Class<? extends IToken> before() {
-        return null;
-    }
-
-    default int dataLength() {
-        return -1;
-    }
-
-    default boolean valueRule() {
-        return getToken().dataToValue() != null;
-    }
-
-    IToken<?> getToken();
 }

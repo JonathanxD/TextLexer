@@ -28,5 +28,5 @@ import github.therealbuggy.textlexer.scanner.IScanner;
 public interface ILexer {
 
     ITokenList process(IScanner scanner, ITokensProcessor tokenTypeList);
-    void analise(ITokenList tokenList);
+    void analyse(ITokenList tokenList);
 }

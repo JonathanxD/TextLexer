@@ -21,10 +21,9 @@ package github.therealbuggy.textlexer.lexer;
 import java.util.Collections;
 import java.util.List;
 
-import github.therealbuggy.textlexer.lexer.token.IToken;
 import github.therealbuggy.textlexer.lexer.token.history.ITokenList;
-import github.therealbuggy.textlexer.lexer.token.history.analise.AnaliseTokenList;
 import github.therealbuggy.textlexer.lexer.token.processor.ITokensProcessor;
+import github.therealbuggy.textlexer.lexer.token.structure.analise.StructureAnalyzer;
 import github.therealbuggy.textlexer.scanner.IScanner;
 import io.github.jonathanxd.iutils.collection.ListUtils;
 
@@ -32,6 +31,13 @@ import io.github.jonathanxd.iutils.collection.ListUtils;
  * Created by jonathan on 30/01/16.
  */
 public class LexerImpl implements ILexer {
+
+    private final List<StructureAnalyzer> structureAnalyzers;
+
+    public LexerImpl(List<StructureAnalyzer> structureAnalyzers) {
+        this.structureAnalyzers = structureAnalyzers;
+    }
+
 
     @Override
     public ITokenList process(IScanner scanner, ITokensProcessor tokenTypeList) {
@@ -45,18 +51,14 @@ public class LexerImpl implements ILexer {
         tokenTypeList.closeOpenBuilders();
 
         ITokenList tokenList = tokenTypeList.getTokenList();
-        analise(tokenList);
+        analyse(tokenList);
 
         return tokenList;
     }
 
-    public void analise(ITokenList tokenList) {
-
-        IToken<?> token = AnaliseTokenList.doubleSideFind(tokenList);
-        if (token != null) {
-            throw new RuntimeException("Error during token structure analise phase!",
-                    new RuntimeException("Token '" + token + "' must be between '" + token.getStructureRule().after() + "' and '" + token.getStructureRule().before() + "'"));
-        }
-
+    public void analyse(ITokenList tokenList) {
+        if(structureAnalyzers != null && !structureAnalyzers.isEmpty())
+            for(StructureAnalyzer analyzer : structureAnalyzers)
+                analyzer.analyse(tokenList);
     }
 }
