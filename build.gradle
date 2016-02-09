@@ -10,8 +10,10 @@ apply plugin: 'java'
 apply plugin: 'license'
 apply plugin: 'maven'
 apply plugin: 'signing'
+//Sonatype upload
+//apply from: 'upload.gradle'
 
-defaultTasks 'licenseFormat', 'build', 'jar'
+defaultTasks 'licenseFormat', 'build', 'test', 'jar'
 
 sourceCompatibility = 1.8
 
@@ -22,6 +24,14 @@ sourceSets {
         }        
         resources {
             srcDirs 'src/main/resources'
+        }
+    }
+    test {
+        java {
+            srcDirs = ['src/test/java']
+        }
+        resources {
+            srcDirs = ['src/test/resources']
         }
     }
 }
@@ -55,12 +65,16 @@ signing {
     sign configurations.archives
 }
 
+dependencies {
+    testCompile group: 'junit', name:'junit', version: '4.11'
+}
+
 repositories {
     mavenCentral()
 }
 
 test {
-    systemProperties 'property': 'value'
+    useJUnit()
 }
 
 license {

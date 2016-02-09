@@ -32,11 +32,16 @@ import com.github.jonathanxd.textlexer.test.test1.tokens.ExpressionClose;
 import com.github.jonathanxd.textlexer.test.test1.tokens.IfToken;
 import com.github.jonathanxd.textlexer.test.test1.tokens.Space;
 
+import org.junit.Assert;
+import org.junit.Test;
+
 /**
  * Created by jonathan on 08/02/16.
  */
 public class Test1 {
-    public static void main(String[] args) throws Exception {
+
+    @Test
+    public void LexerTest() throws Exception {
         TextLexer textLexer = new TextLexer();
         textLexer.addTokenTypes(ExpressionOpen.class, ExpressionClose.class, IfToken.class, Space.class, Variable.class);
         textLexer.addStructureAnalyzer(new SimpleAnalyzer());
@@ -51,10 +56,13 @@ public class Test1 {
         // Change variable to y
         Optional<Variable> variableOpt = tokenList.first(Variable.class);
 
+        Assert.assertEquals("Cannot find Variable", variableOpt.isPresent(), true);
         if(variableOpt.isPresent()) {
             Variable variable = variableOpt.get();
             variable.setData("y");
         }
+
+
 
         // Construct data again
 
@@ -65,6 +73,8 @@ public class Test1 {
         String str = new String(chars);
 
         System.out.println("Data: "+str);
+
+        Assert.assertEquals("Invalid data construction or token data modification", str, "if (y)");
 
     }
 
