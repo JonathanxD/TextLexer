@@ -2,7 +2,7 @@ plugins {
     id 'com.github.hierynomus.license' version '0.11.0'
 }
 
-group 'github.therealbuggy.textlexer'
+group 'com.github.jonathanxd.textlexer'
 version '1.0'
 
 
