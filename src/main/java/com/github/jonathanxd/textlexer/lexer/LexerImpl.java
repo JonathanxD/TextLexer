@@ -18,14 +18,14 @@
  */
 package com.github.jonathanxd.textlexer.lexer;
 
-import java.util.Collections;
-import java.util.List;
-
+import com.github.jonathanxd.iutils.collection.ListUtils;
 import com.github.jonathanxd.textlexer.lexer.token.history.ITokenList;
 import com.github.jonathanxd.textlexer.lexer.token.processor.ITokensProcessor;
 import com.github.jonathanxd.textlexer.lexer.token.structure.analise.StructureAnalyzer;
 import com.github.jonathanxd.textlexer.scanner.IScanner;
-import com.github.jonathanxd.iutils.collection.ListUtils;
+
+import java.util.Collections;
+import java.util.List;
 
 /**
  * Created by jonathan on 30/01/16.
@@ -57,8 +57,8 @@ public class LexerImpl implements ILexer {
     }
 
     public void analyse(ITokenList tokenList) {
-        if(structureAnalyzers != null && !structureAnalyzers.isEmpty())
-            for(StructureAnalyzer analyzer : structureAnalyzers)
+        if (structureAnalyzers != null && !structureAnalyzers.isEmpty())
+            for (StructureAnalyzer analyzer : structureAnalyzers)
                 analyzer.analyse(tokenList);
     }
 }

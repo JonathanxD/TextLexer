@@ -18,8 +18,8 @@
  */
 package com.github.jonathanxd.textlexer.lexer.token.structure.analise;
 
-import com.github.jonathanxd.textlexer.lexer.token.IToken;
 import com.github.jonathanxd.iutils.annotation.ProcessedBy;
+import com.github.jonathanxd.textlexer.lexer.token.IToken;
 
 /**
  * Created by jonathan on 07/02/16.

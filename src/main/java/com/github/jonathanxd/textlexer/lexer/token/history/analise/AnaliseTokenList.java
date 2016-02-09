@@ -18,16 +18,15 @@
  */
 package com.github.jonathanxd.textlexer.lexer.token.history.analise;
 
+import com.github.jonathanxd.textlexer.lexer.token.IToken;
+import com.github.jonathanxd.textlexer.lexer.token.history.ITokenList;
+import com.github.jonathanxd.textlexer.lexer.token.history.analise.exception.AnaliseException;
 import com.github.jonathanxd.textlexer.lexer.token.structure.analise.StructureRule;
 
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
-
-import com.github.jonathanxd.textlexer.lexer.token.IToken;
-import com.github.jonathanxd.textlexer.lexer.token.history.ITokenList;
-import com.github.jonathanxd.textlexer.lexer.token.history.analise.exception.AnaliseException;
 
 /**
  * Created by jonathan on 07/02/16.
@@ -147,9 +146,6 @@ public class AnaliseTokenList {
         if (openTokens != closedTokens) {
             throw new RuntimeException("Invalid format! openTokens[" + openTokensList.size() + "] != closedTokens[" + closeTokensList.size() + "]. Multi Check: open[" + openTokens + "],close[" + closedTokens + "]", new AnaliseException("Structure problem", openTokensList, closeTokensList));
         }
-        /*if (openTokens != 0
-                || closedTokens != 0){
-        }*/
         return null;
     }
 }

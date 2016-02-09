@@ -18,10 +18,10 @@
  */
 package com.github.jonathanxd.textlexer.lexer.token.builder;
 
+import com.github.jonathanxd.textlexer.lexer.token.type.ITokenType;
+
 import java.util.Deque;
 import java.util.LinkedList;
-
-import com.github.jonathanxd.textlexer.lexer.token.type.ITokenType;
 
 /**
  * Created by jonathan on 06/02/16.

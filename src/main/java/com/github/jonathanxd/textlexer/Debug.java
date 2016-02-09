@@ -37,31 +37,31 @@ public class Debug {
 
 
     public static void printErr(String err) {
-        if(DEBUG)
+        if (DEBUG)
             System.err.println(err);
     }
 
     public static String getClassString(Class<?> clazz) {
         return clazz.getCanonicalName()
-                +"<>"
-                +"("
-                +clazz.getSimpleName()
-                +".java"
-                +":0"
-                +")";
+                + "<>"
+                + "("
+                + clazz.getSimpleName()
+                + ".java"
+                + ":0"
+                + ")";
     }
 
     public static String getClassString(Class<?> clazz, Method m) {
-        if(m == null)
+        if (m == null)
             return getClassString(clazz);
         return clazz.getCanonicalName()
                 + "."
                 + m.getName()
-                +"("
-                +clazz.getSimpleName()
-                +".java"
-                +":0"
-                +")";
+                + "("
+                + clazz.getSimpleName()
+                + ".java"
+                + ":0"
+                + ")";
     }
 
     public static Method getMethod(Class<?> clazz, String method, Class<?>[] parameters) {

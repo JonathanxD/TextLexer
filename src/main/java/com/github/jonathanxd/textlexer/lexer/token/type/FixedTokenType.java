@@ -20,12 +20,11 @@ package com.github.jonathanxd.textlexer.lexer.token.type;
 
 import com.github.jonathanxd.textlexer.lexer.token.IToken;
 import com.github.jonathanxd.textlexer.lexer.token.builder.TokenBuilder;
+import com.github.jonathanxd.textlexer.lexer.token.history.ITokenList;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.function.Predicate;
-
-import com.github.jonathanxd.textlexer.lexer.token.history.ITokenList;
 
 /**
  * Created by jonathan on 06/02/16.

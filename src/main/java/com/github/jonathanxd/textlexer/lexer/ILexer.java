@@ -28,5 +28,6 @@ import com.github.jonathanxd.textlexer.scanner.IScanner;
 public interface ILexer {
 
     ITokenList process(IScanner scanner, ITokensProcessor tokenTypeList);
+
     void analyse(ITokenList tokenList);
 }

@@ -18,9 +18,9 @@
  */
 package com.github.jonathanxd.textlexer.lexer.token.processor;
 
+import com.github.jonathanxd.iutils.iterator.SafeBackableIterator;
 import com.github.jonathanxd.textlexer.lexer.token.builder.BuilderList;
 import com.github.jonathanxd.textlexer.lexer.token.history.ITokenList;
-import com.github.jonathanxd.iutils.iterator.SafeBackableIterator;
 
 /**
  * Created by jonathan on 07/02/16.
@@ -48,6 +48,10 @@ public class ProcessorData {
 
     public ProcessorData(ITokenList tokenList, BuilderList builderList, String data, SafeBackableIterator<Character> characterIterator, int index) {
         this(tokenList, builderList, null, data, index, characterIterator);
+    }
+
+    public static ProcessorDataBuilder builder() {
+        return new ProcessorDataBuilder();
     }
 
     public ITokenList getTokenList() {
@@ -93,11 +97,6 @@ public class ProcessorData {
     public boolean characterIteratorPresent() {
         return characterIterator != null;
     }
-
-    public static ProcessorDataBuilder builder() {
-        return new ProcessorDataBuilder();
-    }
-
 
     public static class ProcessorDataBuilder {
         private String data;

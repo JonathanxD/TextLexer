@@ -20,8 +20,11 @@ package com.github.jonathanxd.textlexer;
 
 import com.github.jonathanxd.textlexer.lexer.LexerImpl;
 import com.github.jonathanxd.textlexer.lexer.token.IToken;
+import com.github.jonathanxd.textlexer.lexer.token.history.ITokenList;
+import com.github.jonathanxd.textlexer.lexer.token.processor.TokensProcessor;
 import com.github.jonathanxd.textlexer.lexer.token.structure.analise.StructureAnalyzer;
 import com.github.jonathanxd.textlexer.lexer.token.type.ITokenType;
+import com.github.jonathanxd.textlexer.scanner.CharScanner;
 import com.github.jonathanxd.textlexer.scanner.IScanner;
 
 import java.io.File;
@@ -33,10 +36,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 import java.util.function.Predicate;
-
-import com.github.jonathanxd.textlexer.lexer.token.history.ITokenList;
-import com.github.jonathanxd.textlexer.lexer.token.processor.TokensProcessor;
-import com.github.jonathanxd.textlexer.scanner.CharScanner;
 
 /**
  * Created by jonathan on 06/02/16.

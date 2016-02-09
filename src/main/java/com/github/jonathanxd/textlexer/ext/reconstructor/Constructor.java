@@ -18,13 +18,13 @@
  */
 package com.github.jonathanxd.textlexer.ext.reconstructor;
 
-import java.util.List;
-import java.util.Set;
-import java.util.TreeSet;
-
 import com.github.jonathanxd.textlexer.ext.reconstructor.data.IDataConstructor;
 import com.github.jonathanxd.textlexer.lexer.token.IToken;
 import com.github.jonathanxd.textlexer.lexer.token.history.ITokenList;
+
+import java.util.List;
+import java.util.Set;
+import java.util.TreeSet;
 
 /**
  * Created by jonathan on 08/02/16.

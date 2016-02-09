@@ -18,6 +18,8 @@
  */
 package com.github.jonathanxd.textlexer.lexer.token.processor;
 
+import com.github.jonathanxd.iutils.collection.ListUtils;
+import com.github.jonathanxd.iutils.iterator.SafeBackableIterator;
 import com.github.jonathanxd.textlexer.Debug;
 import com.github.jonathanxd.textlexer.lexer.token.IToken;
 import com.github.jonathanxd.textlexer.lexer.token.builder.BuilderList;
@@ -36,9 +38,6 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.TreeSet;
 import java.util.function.Predicate;
-
-import com.github.jonathanxd.iutils.collection.ListUtils;
-import com.github.jonathanxd.iutils.iterator.SafeBackableIterator;
 
 /**
  * Created by jonathan on 30/01/16.
@@ -208,9 +207,9 @@ public class TokensProcessor implements ITokensProcessor {
 
                 IToken<?> token = Objects.requireNonNull(
                         currentBuilder.build(processorData),
-                        "IToken<?> createToken(ProcessorData) cannot be null! Use hide() method to hide the Token! ITokenType: "+currentBuilder.getTokenType()
-                                +" at "
-                                +Debug.getClassString(currentBuilder.getTokenType().getClass(), getTokenTypeCreateMethod()));
+                        "IToken<?> createToken(ProcessorData) cannot be null! Use hide() method to hide the Token! ITokenType: " + currentBuilder.getTokenType()
+                                + " at "
+                                + Debug.getClassString(currentBuilder.getTokenType().getClass(), getTokenTypeCreateMethod()));
 
 
                 if (token != null) {

@@ -18,13 +18,13 @@
  */
 package com.github.jonathanxd.textlexer.lexer.token.history;
 
+import com.github.jonathanxd.textlexer.lexer.token.IToken;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.function.Function;
-
-import com.github.jonathanxd.textlexer.lexer.token.IToken;
 
 /**
  * Created by jonathan on 30/01/16.
@@ -37,7 +37,7 @@ public class TokenListImpl implements ITokenList {
     @Override
     public void add(IToken token) {
         tokenList.add(token);
-        if(!token.hide()) {
+        if (!token.hide()) {
             visibleTokens.add(token);
         }
     }
@@ -73,41 +73,41 @@ public class TokenListImpl implements ITokenList {
 
         Function<IToken<?>, State> tokenConsumer = (token) -> {
 
-            if(tokenClass.isAssignableFrom(token.getClass())) {
+            if (tokenClass.isAssignableFrom(token.getClass())) {
                 return State.OK;
             }
 
-            if(stopAt.isAssignableFrom(token.getClass())) {
+            if (stopAt.isAssignableFrom(token.getClass())) {
                 return State.BREAK;
             }
             return State.CONTINUE;
         };
 
-        if(loopDirection == LoopDirection.FIRST_TO_LAST) {
+        if (loopDirection == LoopDirection.FIRST_TO_LAST) {
             for (int x = size() - 1; x > -1; --x) {
                 IToken<?> token = fetch(x);
 
                 State state = tokenConsumer.apply(token);
 
-                if(state == State.OK) {
+                if (state == State.OK) {
                     return token;
                 }
 
-                if(state == State.BREAK){
+                if (state == State.BREAK) {
                     break;
                 }
             }
-        }else if(loopDirection == LoopDirection.LAST_TO_FIRST) {
+        } else if (loopDirection == LoopDirection.LAST_TO_FIRST) {
             for (int x = 0; x < size(); ++x) {
                 IToken<?> token = fetch(x);
 
                 State state = tokenConsumer.apply(token);
 
-                if(state == State.OK) {
+                if (state == State.OK) {
                     return token;
                 }
 
-                if(state == State.BREAK){
+                if (state == State.BREAK) {
                     break;
                 }
             }

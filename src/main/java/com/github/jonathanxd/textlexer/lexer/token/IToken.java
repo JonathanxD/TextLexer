@@ -18,13 +18,12 @@
  */
 package com.github.jonathanxd.textlexer.lexer.token;
 
+import com.github.jonathanxd.iutils.annotation.ProcessedBy;
 import com.github.jonathanxd.textlexer.lexer.LexerImpl;
+import com.github.jonathanxd.textlexer.lexer.token.history.ITokenList;
 import com.github.jonathanxd.textlexer.lexer.token.history.TokenListImpl;
 import com.github.jonathanxd.textlexer.lexer.token.history.analise.AnaliseTokenList;
 import com.github.jonathanxd.textlexer.lexer.token.structure.analise.StructureRule;
-import com.github.jonathanxd.textlexer.lexer.token.history.ITokenList;
-
-import com.github.jonathanxd.iutils.annotation.ProcessedBy;
 
 /**
  * Created by jonathan on 30/01/16.

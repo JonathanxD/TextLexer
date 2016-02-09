@@ -18,17 +18,15 @@
  */
 package com.github.jonathanxd.textlexer.lexer.token.type;
 
+import com.github.jonathanxd.iutils.annotation.ProcessedBy;
+import com.github.jonathanxd.textlexer.lexer.token.IToken;
+import com.github.jonathanxd.textlexer.lexer.token.builder.TokenBuilder;
+import com.github.jonathanxd.textlexer.lexer.token.history.ITokenList;
 import com.github.jonathanxd.textlexer.lexer.token.processor.OrderComparator;
 import com.github.jonathanxd.textlexer.lexer.token.processor.ProcessorData;
 import com.github.jonathanxd.textlexer.lexer.token.structure.analise.StructureRule;
 
 import java.util.Collection;
-
-import com.github.jonathanxd.textlexer.lexer.token.IToken;
-import com.github.jonathanxd.textlexer.lexer.token.builder.TokenBuilder;
-import com.github.jonathanxd.textlexer.lexer.token.history.ITokenList;
-
-import com.github.jonathanxd.iutils.annotation.ProcessedBy;
 
 /**
  * Created by jonathan on 30/01/16.

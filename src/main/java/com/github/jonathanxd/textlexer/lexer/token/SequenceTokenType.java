@@ -18,12 +18,12 @@
  */
 package com.github.jonathanxd.textlexer.lexer.token;
 
-import java.util.List;
-
-import com.github.jonathanxd.textlexer.lexer.token.builder.TokenBuilder;
-import com.github.jonathanxd.textlexer.lexer.token.processor.ProcessorData;
 import com.github.jonathanxd.iutils.iterator.Navigator;
 import com.github.jonathanxd.iutils.iterator.SafeBackableIterator;
+import com.github.jonathanxd.textlexer.lexer.token.builder.TokenBuilder;
+import com.github.jonathanxd.textlexer.lexer.token.processor.ProcessorData;
+
+import java.util.List;
 
 /**
  * Created by jonathan on 08/02/16.

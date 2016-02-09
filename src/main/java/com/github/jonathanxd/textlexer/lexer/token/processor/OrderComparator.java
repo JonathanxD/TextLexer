@@ -18,10 +18,10 @@
  */
 package com.github.jonathanxd.textlexer.lexer.token.processor;
 
+import com.github.jonathanxd.textlexer.lexer.token.type.ITokenType;
+
 import java.util.Collection;
 import java.util.Comparator;
-
-import com.github.jonathanxd.textlexer.lexer.token.type.ITokenType;
 
 /**
  * Created by jonathan on 08/02/16.
