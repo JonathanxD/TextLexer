@@ -1,5 +1,5 @@
 /*
- * 	Configurator - Easy way to manage configurations (for Bukkit)
+ * 	TextLexer - Lexical Analyzer API for Java! <https://github.com/JonathanxD/TextLexer>
  *     Copyright (C) 2016 TheRealBuggy/JonathanxD (https://github.com/JonathanxD/) <jonathan.scripter@programmer.net>
  *
  * 	GNU GPLv3
