@@ -1,5 +1,5 @@
 /*
- * 	TextLexer - Lexical Analyzer API for Java! <https://github.com/JonathanxD/TextLexer>
+ * 	Configurator - Easy way to manage configurations (for Bukkit)
  *     Copyright (C) 2016 TheRealBuggy/JonathanxD (https://github.com/JonathanxD/) <jonathan.scripter@programmer.net>
  *
  * 	GNU GPLv3
@@ -16,32 +16,20 @@
  *     You should have received a copy of the GNU Affero General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.github.jonathanxd.textlexer.lexer.token.structure.analise;
+package com.github.jonathanxd.iutils.optional;
 
-import com.github.jonathanxd.iutils.annotations.ProcessedBy;
-import com.github.jonathanxd.textlexer.lexer.token.IToken;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
 /**
- * Created by jonathan on 07/02/16.
+ * Created by jonathan on 13/02/16.
  */
-@ProcessedBy({StructureAnalyzer.class, SimpleAnalyzer.class})
-public interface StructureRule {
 
-    default Class<? extends IToken> after() {
-        return null;
-    }
-
-    default Class<? extends IToken> before() {
-        return null;
-    }
-
-    default int dataLength() {
-        return -1;
-    }
-
-    default boolean valueRule() {
-        return getToken().dataToValue() != null;
-    }
-
-    IToken<?> getToken();
-}
+/**
+ * Optional Method call
+ */
+@Retention(RetentionPolicy.CLASS)
+@Target(ElementType.METHOD)
+public @interface Optional {}

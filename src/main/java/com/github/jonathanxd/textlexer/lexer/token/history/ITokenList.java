@@ -18,6 +18,7 @@
  */
 package com.github.jonathanxd.textlexer.lexer.token.history;
 
+import com.github.jonathanxd.iutils.annotations.Immutable;
 import com.github.jonathanxd.textlexer.lexer.token.IToken;
 
 import java.util.ArrayList;
@@ -126,5 +127,6 @@ public interface ITokenList {
         return list;
     }
 
+    @Immutable
     List<IToken<?>> allToList();
 }

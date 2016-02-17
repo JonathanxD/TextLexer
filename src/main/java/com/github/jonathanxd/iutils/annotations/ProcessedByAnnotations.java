@@ -16,32 +16,21 @@
  *     You should have received a copy of the GNU Affero General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.github.jonathanxd.textlexer.lexer.token.structure.analise;
+package com.github.jonathanxd.iutils.annotations;
 
-import com.github.jonathanxd.iutils.annotations.ProcessedBy;
-import com.github.jonathanxd.textlexer.lexer.token.IToken;
+import java.lang.annotation.Documented;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
 
 /**
- * Created by jonathan on 07/02/16.
+ * Created by jonathan on 08/02/16.
  */
-@ProcessedBy({StructureAnalyzer.class, SimpleAnalyzer.class})
-public interface StructureRule {
 
-    default Class<? extends IToken> after() {
-        return null;
-    }
-
-    default Class<? extends IToken> before() {
-        return null;
-    }
-
-    default int dataLength() {
-        return -1;
-    }
-
-    default boolean valueRule() {
-        return getToken().dataToValue() != null;
-    }
-
-    IToken<?> getToken();
+/**
+ * {@link ProcessedBy} Annotations
+ */
+@Documented
+@Retention(RetentionPolicy.RUNTIME)
+public @interface ProcessedByAnnotations {
+    ProcessedBy[] value();
 }

@@ -1,5 +1,5 @@
 /*
- * 	TextLexer - Lexical Analyzer API for Java! <https://github.com/JonathanxD/TextLexer>
+ * 	Configurator - Easy way to manage configurations (for Bukkit)
  *     Copyright (C) 2016 TheRealBuggy/JonathanxD (https://github.com/JonathanxD/) <jonathan.scripter@programmer.net>
  *
  * 	GNU GPLv3
@@ -16,32 +16,22 @@
  *     You should have received a copy of the GNU Affero General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.github.jonathanxd.textlexer.lexer.token.structure.analise;
-
-import com.github.jonathanxd.iutils.annotations.ProcessedBy;
-import com.github.jonathanxd.textlexer.lexer.token.IToken;
+package com.github.jonathanxd.iutils.optional;
 
 /**
- * Created by jonathan on 07/02/16.
+ * Created by jonathan on 13/02/16.
  */
-@ProcessedBy({StructureAnalyzer.class, SimpleAnalyzer.class})
-public interface StructureRule {
+public class Require {
 
-    default Class<? extends IToken> after() {
-        return null;
+    public static <T> T require(java.util.Optional<T> optional, String message) {
+        if(optional == null || !optional.isPresent())
+            throw new IllegalStateException(message);
+
+        return optional.get();
     }
 
-    default Class<? extends IToken> before() {
-        return null;
+    public static <T> T require(java.util.Optional<T> optional) {
+        return require(optional, "Optional cannot be EMPTY");
     }
 
-    default int dataLength() {
-        return -1;
-    }
-
-    default boolean valueRule() {
-        return getToken().dataToValue() != null;
-    }
-
-    IToken<?> getToken();
 }

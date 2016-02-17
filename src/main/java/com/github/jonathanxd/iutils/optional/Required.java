@@ -1,5 +1,5 @@
 /*
- * 	TextLexer - Lexical Analyzer API for Java! <https://github.com/JonathanxD/TextLexer>
+ * 	Configurator - Easy way to manage configurations (for Bukkit)
  *     Copyright (C) 2016 TheRealBuggy/JonathanxD (https://github.com/JonathanxD/) <jonathan.scripter@programmer.net>
  *
  * 	GNU GPLv3
@@ -16,23 +16,20 @@
  *     You should have received a copy of the GNU Affero General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.github.jonathanxd.iutils.annotation;
+package com.github.jonathanxd.iutils.optional;
 
-import java.lang.annotation.Documented;
-import java.lang.annotation.Repeatable;
+import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
 /**
- * Created by jonathan on 08/02/16.
+ * Created by jonathan on 13/02/16.
  */
 
 /**
- * This annotations indicates which classes will process the target
+ * Required Method call
  */
-@Documented
-@Retention(RetentionPolicy.RUNTIME)
-@Repeatable(ProcessedByAnnotations.class)
-public @interface ProcessedBy {
-    Class<?>[] value();
-}
+@Retention(RetentionPolicy.CLASS)
+@Target(ElementType.METHOD)
+public @interface Required {}

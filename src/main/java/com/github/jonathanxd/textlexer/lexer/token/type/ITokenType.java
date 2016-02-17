@@ -18,7 +18,7 @@
  */
 package com.github.jonathanxd.textlexer.lexer.token.type;
 
-import com.github.jonathanxd.iutils.annotation.ProcessedBy;
+import com.github.jonathanxd.iutils.annotations.ProcessedBy;
 import com.github.jonathanxd.textlexer.lexer.token.IToken;
 import com.github.jonathanxd.textlexer.lexer.token.builder.TokenBuilder;
 import com.github.jonathanxd.textlexer.lexer.token.history.ITokenList;
