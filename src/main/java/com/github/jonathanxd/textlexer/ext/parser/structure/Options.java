@@ -18,16 +18,31 @@
  */
 package com.github.jonathanxd.textlexer.ext.parser.structure;
 
+import com.github.jonathanxd.textlexer.ext.parser.structure.options.ElementOption;
+import com.github.jonathanxd.textlexer.ext.parser.structure.options.ExitOption;
+import com.github.jonathanxd.textlexer.ext.parser.structure.options.HardHeadOption;
+import com.github.jonathanxd.textlexer.ext.parser.structure.options.HeadOption;
+import com.github.jonathanxd.textlexer.ext.parser.structure.options.IgnoreOption;
+import com.github.jonathanxd.textlexer.ext.parser.structure.options.InnerOption;
+import com.github.jonathanxd.textlexer.ext.parser.structure.options.StackOption;
+
 /**
  * Created by jonathan on 17/02/16.
  */
 public class Options {
-    public static final Option HARD_HEAD = new Option("HARD_HEAD");
-    public static final Option HEAD = new Option("HEAD");
-    public static final Option STACK = new Option("STACK");
-    public static final Option ELEMENT = new Option("ELEMENT");
-    public static final Option IGNORE = new Option("IGNORE");
-    public static final Option EXIT = new Option("EXIT NODE");
+    public static final Option<?> HARD_HEAD = new HardHeadOption();
+    public static final Option<?> HEAD = new HeadOption();
+    public static final Option<?> ELEMENT = new ElementOption();
+    public static final Option<?> IGNORE = new IgnoreOption();
+    public static final Option<?> EXIT = new ExitOption();
+
+    public static final Option<?> STACK = new StackOption();
     // INNER
-    public static final Option INNER = new Option("INNER");
+    public static final Option<?> INNER = new InnerOption();
+
+    public boolean is(Option<?> staticOption, Option<?> option) {
+
+        return staticOption.getClass().isAssignableFrom(option.getClass());
+
+    }
 }

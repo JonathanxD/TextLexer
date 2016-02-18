@@ -24,22 +24,24 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.StringJoiner;
+import java.util.function.BiConsumer;
 
 /**
  * Created by jonathan on 17/02/16.
  */
 public class TokenHolder {
 
-    final IToken<?> token;
+    final String name;
+    final List<IToken<?>> tokens = new ArrayList<>();
     final List<TokenHolder> childTokens = new ArrayList<>();
 
-    TokenHolder(IToken<?> token) {
-        this(token, Collections.emptyList());
+    TokenHolder(String name, IToken<?> token) {
+        this(name, Collections.singletonList(token), Collections.emptyList());
     }
 
-    TokenHolder(IToken<?> token, List<TokenHolder> childTokens) {
-        this.token = token;
-
+    TokenHolder(String name, List<IToken<?>> tokens, List<TokenHolder> childTokens) {
+        this.tokens.addAll(tokens);
+        this.name = name;
         if (!childTokens.isEmpty())
             this.childTokens.addAll(childTokens);
     }
@@ -48,7 +50,7 @@ public class TokenHolder {
 
         StringBuilder sb = new StringBuilder();
 
-        String shortName = "TokenHolder[name="+holder.token.getSimpleName()+", toString="+holder.token.toString()+"]";
+        String shortName = "TokenHolder[name=" + holder.name + ",tokens=(" + holder.tokens + ")]";
 
         sb.append(shortName);
 
@@ -69,16 +71,48 @@ public class TokenHolder {
         return sb.toString();
     }
 
-    public static TokenHolder of(IToken<?> token) {
-        return new TokenHolder(token);
+    public static TokenHolder of(String name, IToken<?> token) {
+        return new TokenHolder(name(name, token), token);
     }
 
-    public static TokenHolder of(IToken<?> token, List<TokenHolder> childTokens) {
-        return new TokenHolder(token, childTokens);
+    private static String name(String name, IToken<?> token) {
+        return name != null ? name : token.getSimpleName();
     }
 
-    public static TokenHolder from(TokenHolder tokenHolder) {
-        return new TokenHolder(tokenHolder.token, tokenHolder.childTokens);
+    public static TokenHolder ofHolders(String name, List<TokenHolder> tokenHolder, List<TokenHolder> childTokens) {
+
+        List<IToken<?>> tokens = new ArrayList<>();
+        List<TokenHolder> childHolders = new ArrayList<>(childTokens);
+
+        tokenHolder.forEach(token -> {
+            tokens.addAll(token.getTokens());
+            childHolders.addAll(token.getChildTokens());
+        });
+
+        return new TokenHolder(name, tokens, childHolders);
+    }
+
+    public static TokenHolder of(String name, List<IToken<?>> token, List<TokenHolder> childTokens) {
+        return new TokenHolder(name, token, childTokens);
+    }
+
+    public static TokenHolder from(String name, TokenHolder tokenHolder) {
+        return new TokenHolder(name, tokenHolder.tokens, tokenHolder.childTokens);
+    }
+
+    public static void recursiveLoop(TokenHolder tokenHolder, BiConsumer<TokenHolder, List<IToken<?>>> tokensConsumer) {
+        tokensConsumer.accept(tokenHolder, tokenHolder.getTokens());
+
+        List<TokenHolder> child = new ArrayList<>(tokenHolder.getChildTokens());
+
+        for (TokenHolder holder : child) {
+            if (holder.hasChildTokens()) {
+                recursiveLoop(holder, tokensConsumer);
+            } else {
+                tokensConsumer.accept(tokenHolder, holder.getTokens());
+            }
+        }
+
     }
 
     public void link(TokenHolder tokenHolder) {
@@ -86,7 +120,7 @@ public class TokenHolder {
     }
 
     public TokenHolder link(IToken<?> token) {
-        TokenHolder holder = of(token);
+        TokenHolder holder = of(token.getSimpleName(), token);
         childTokens.add(holder);
         return holder;
     }
@@ -95,8 +129,8 @@ public class TokenHolder {
         return !childTokens.isEmpty();
     }
 
-    public IToken<?> getToken() {
-        return token;
+    public List<IToken<?>> getTokens() {
+        return tokens;
     }
 
     public List<TokenHolder> getChildTokens() {

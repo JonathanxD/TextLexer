@@ -20,16 +20,20 @@ package com.github.jonathanxd.textlexer.test.calc.ext.parser;
 
 import com.github.jonathanxd.iutils.annotations.Immutable;
 import com.github.jonathanxd.textlexer.ext.parser.Processor;
+import com.github.jonathanxd.textlexer.ext.parser.holder.TokenHolder;
 import com.github.jonathanxd.textlexer.ext.parser.processor.ParserProcessor;
 import com.github.jonathanxd.textlexer.ext.parser.structure.Options;
+import com.github.jonathanxd.textlexer.ext.parser.structure.ParseStructure;
 import com.github.jonathanxd.textlexer.ext.parser.structure.StructureOptions;
 import com.github.jonathanxd.textlexer.lexer.token.IToken;
+import com.github.jonathanxd.textlexer.lexer.token.history.TokenListUtil;
 import com.github.jonathanxd.textlexer.test.calc.tokens.Garbage;
 import com.github.jonathanxd.textlexer.test.calc.tokens.GroupClose;
 import com.github.jonathanxd.textlexer.test.calc.tokens.GroupOpen;
 import com.github.jonathanxd.textlexer.test.calc.tokens.operators.Operator;
 
 import java.util.List;
+import java.util.function.Predicate;
 
 /**
  * Created by jonathan on 17/02/16.
@@ -37,8 +41,8 @@ import java.util.List;
 public class CalcProcessor implements ParserProcessor {
 
     @Override
-    public void process(Processor processor) {
-
+    public boolean isProcessor() {
+        return false;
     }
 
     @Override
@@ -54,6 +58,28 @@ public class CalcProcessor implements ParserProcessor {
         } else {
             return new StructureOptions().set(Options.ELEMENT, true)
                     .and(Options.EXIT, true);
+        }
+    }
+
+    @Override
+    public void processFinish(ParseStructure structure) {
+        for (TokenHolder holder : structure.getTokenHolders()) {
+            TokenHolder.recursiveLoop(holder, (tokenHolder, iTokenList) -> {
+                if(TokenListUtil.findTokenInList(GroupOpen.class, iTokenList)) {
+                    structure.createModifier().unify("Group", tokenHolder,
+                            new GroupPredicate(),
+                            new GroupPredicate().negate());
+                }
+            });
+        }
+    }
+
+
+    private static final class GroupPredicate implements Predicate<TokenHolder> {
+
+        @Override
+        public boolean test(TokenHolder tokenHolder) {
+            return TokenListUtil.findTokenInList(GroupOpen.class, tokenHolder.getTokens()) || TokenListUtil.findTokenInList(GroupClose.class, tokenHolder.getTokens());
         }
     }
 }

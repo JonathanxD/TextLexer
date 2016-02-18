@@ -42,8 +42,32 @@ public class StructureOptions {
         return set(option, value);
     }
 
+    @SuppressWarnings("unchecked")
+    public <T> Option<T> getOption(Option<T> option) {
+
+        return getOption(option.getClass());
+    }
+
+    @SuppressWarnings("unchecked")
+    public <T> Option<T> getOption(Class<?> typeClass) {
+
+        for(Option<?> optionX : optionses) {
+
+            if(typeClass.isAssignableFrom(optionX.getClass())) {
+                return (Option<T>) optionX;
+            }
+        }
+
+        return null;
+    }
+
+    public boolean is(Option.Type type) {
+        return getOption(type.getType()) != null;
+    }
+
     public boolean is(Option option) {
-        return optionses.contains(option);
+
+        return getOption(option.getClass()) != null;
     }
 
     public StructureOptions clone(Predicate<? super Option> filter) {

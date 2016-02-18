@@ -20,6 +20,7 @@ package com.github.jonathanxd.textlexer.ext.parser.structure;
 
 import com.github.jonathanxd.textlexer.ext.parser.holder.TokenHolder;
 import com.github.jonathanxd.textlexer.ext.parser.structure.exceptions.EmptyCheckException;
+import com.github.jonathanxd.textlexer.ext.parser.structure.modifier.StructureModifier;
 import com.github.jonathanxd.textlexer.lexer.token.IToken;
 
 import java.util.ArrayList;
@@ -37,13 +38,17 @@ public class ParseStructure {
 
 
     public TokenHolder addToken(IToken<?> token) {
-        TokenHolder holder = TokenHolder.of(token);
+        TokenHolder holder = TokenHolder.of(null, token);
         tokenHolders.add(holder);
         return holder;
     }
 
     public void link(TokenHolder tokenHolder, IToken<?> token) {
         tokenHolders.stream().filter(holder -> holder == tokenHolder).forEach(holder -> holder.link(token));
+    }
+
+    public StructureModifier createModifier() {
+        return new StructureModifier(this);
     }
 
     public ParseSection createSection() {
@@ -106,6 +111,10 @@ public class ParseStructure {
             return current.pollLast();
         }
 
+    }
+
+    public List<TokenHolder> getTokenHolders() {
+        return tokenHolders;
     }
 
     @Override

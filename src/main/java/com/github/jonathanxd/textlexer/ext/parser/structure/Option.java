@@ -21,12 +21,22 @@ package com.github.jonathanxd.textlexer.ext.parser.structure;
 /**
  * Created by jonathan on 17/02/16.
  */
-public class Option {
+public abstract class Option<T> {
 
     private final String name;
+    private final T value;
 
-    Option(String name) {
+    public Option(String name) {
+        this(name, null);
+    }
+
+    public Option(String name, T value) {
         this.name = name;
+        this.value = value;
+    }
+
+    public T getValue() {
+        return value;
     }
 
     public String getName() {
@@ -35,6 +45,25 @@ public class Option {
 
     @Override
     public String toString() {
-        return "Options[" + name + "]";
+        return "Option[" + name + " = " + value + "]";
+    }
+
+    public static class Type {
+        private final String name;
+        private final Class<?> type;
+
+        public Type(String name, Class<?> type) {
+            this.name = name;
+            this.type = type;
+        }
+
+        public Class<?> getType() {
+            return type;
+        }
+
+        @Override
+        public String toString() {
+            return "Option[name=" + name + ", type=" + type + "]";
+        }
     }
 }

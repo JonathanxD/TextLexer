@@ -18,7 +18,9 @@
  */
 package com.github.jonathanxd.textlexer.ext.parser.processor;
 
+import com.github.jonathanxd.textlexer.ext.parser.Parser;
 import com.github.jonathanxd.textlexer.ext.parser.Processor;
+import com.github.jonathanxd.textlexer.ext.parser.structure.ParseStructure;
 import com.github.jonathanxd.textlexer.ext.parser.structure.StructureOptions;
 import com.github.jonathanxd.textlexer.lexer.token.IToken;
 
@@ -26,7 +28,16 @@ import com.github.jonathanxd.textlexer.lexer.token.IToken;
  * Created by jonathan on 17/02/16.
  */
 public interface ParserProcessor {
-    void process(Processor processor);
+    default void process(Processor processor) {}
+
+    /**
+     * Determine if the ParseProcessor is an StructureProcessor, you need to return true if want to use process method.
+     * @see Parser#parse()
+     * @return
+     */
+    boolean isProcessor();
 
     StructureOptions tokenOptions(IToken<?> token);
+
+    void processFinish(ParseStructure structure);
 }

@@ -68,4 +68,18 @@ public class TokenListUtil {
         });
         return filteredTokenList;
     }
+
+    public static boolean findTokenInList(Class<? extends IToken> tokenClass, List<IToken<?>> tokenList) {
+        for (IToken<?> token : tokenList) {
+            if (tokenClass.isAssignableFrom(token.getClass()))
+                return true;
+        }
+
+        return false;
+    }
+
+    public static boolean findTokenInList(Class<? extends IToken> tokenClass, ITokenList tokenList) {
+        return findTokenInList(tokenClass, tokenList.toList());
+    }
+
 }
