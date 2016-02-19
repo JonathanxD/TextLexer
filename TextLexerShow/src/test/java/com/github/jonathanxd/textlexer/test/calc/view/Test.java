@@ -1,6 +1,6 @@
-/*
- * 	TextLexer - Lexical Analyzer API for Java! <https://github.com/JonathanxD/TextLexer>
- *     Copyright (C) 2016 TheRealBuggy/JonathanxD (https://github.com/JonathanxD/) <jonathan.scripter@programmer.net>
+/**
+ * 	${name} - ${description} <${url}>
+ *     Copyright (C) ${year} ${organization} <${email}>
  *
  * 	GNU GPLv3
  *
@@ -16,15 +16,29 @@
  *     You should have received a copy of the GNU Affero General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.github.jonathanxd.textlexer.ext.parser.structure.options;
+package com.github.jonathanxd.textlexer.test.calc.view;
 
-import com.github.jonathanxd.textlexer.ext.parser.structure.Option;
+import com.github.jonathanxd.textlexer.ext.parser.structure.ParseStructure;
+import com.github.jonathanxd.textlexer.ext.show.StructureGUI;
+import com.github.jonathanxd.textlexer.test.calc.CalcTest;
 
 /**
  * Created by jonathan on 18/02/16.
  */
-public class ElementOption extends Option {
-    public ElementOption() {
-        super("ELEMENT");
+public class Test {
+
+    @org.junit.Test
+    public void viewTest() {
+        CalcTest calcTest = new CalcTest();
+
+        ParseStructure structure = calcTest.LexerAndParserTest();
+
+        StructureGUI gui = StructureGUI.make(structure);
+
+        gui.show();
+    }
+
+    public static void main(String[] args) {
+        new Test().viewTest();
     }
 }

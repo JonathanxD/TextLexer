@@ -24,6 +24,7 @@ import com.github.jonathanxd.textlexer.ext.parser.structure.modifier.StructureMo
 import com.github.jonathanxd.textlexer.lexer.token.IToken;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Deque;
 import java.util.LinkedList;
 import java.util.List;
@@ -111,6 +112,34 @@ public class ParseStructure {
             return current.pollLast();
         }
 
+    }
+
+    public void remove(TokenHolder tokenHolder) {
+
+        List<Runnable> removeSched = new ArrayList<>();
+        for(TokenHolder headHolder : this.getTokenHolders()) {
+            TokenHolder.recursive(headHolder, this.getTokenHolders(), (tokenHolders1, tokenHolder1) -> {
+                if(tokenHolder1 == tokenHolder) {
+                    removeSched.add(() -> tokenHolders1.remove(tokenHolder1));
+                }
+            });
+        }
+
+        removeSched.forEach(Runnable::run);
+    }
+
+    public void replace(TokenHolder tokenHolder, TokenHolder newTokenHolder) {
+
+        List<Runnable> replaceSched = new ArrayList<>();
+        for(TokenHolder headHolder : this.getTokenHolders()) {
+            TokenHolder.recursive(headHolder, this.getTokenHolders(), (tokenHolders1, tokenHolder1) -> {
+                if(tokenHolder1 == tokenHolder) {
+                    replaceSched.add(() -> Collections.replaceAll(tokenHolders1, tokenHolder, newTokenHolder));
+                }
+            });
+        }
+
+        replaceSched.forEach(Runnable::run);
     }
 
     public List<TokenHolder> getTokenHolders() {

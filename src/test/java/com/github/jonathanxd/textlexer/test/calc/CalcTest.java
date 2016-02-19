@@ -45,7 +45,11 @@ import java.util.List;
 public class CalcTest {
 
     @Test
-    public void LexerAndParserTest() {
+    public void LexerAndParserTTest() {
+        LexerAndParserTest();
+    }
+
+    public ParseStructure LexerAndParserTest() {
         TextLexer lexer = new TextLexer();
 
         try {
@@ -58,7 +62,7 @@ public class CalcTest {
             e.printStackTrace();
         }
 
-        lexer.processString("5 + 7 * 4 + (5 + 7)");
+        lexer.processString("5 + 7 * 4 + (5 + 7 * 4)");
 
         ITokenList list = lexer.getTokens();
 
@@ -68,7 +72,7 @@ public class CalcTest {
         ParseStructure structure = parser.parse();
 
         System.out.println("Structure: " + structure);
-
+        return structure;
 
 
 /*

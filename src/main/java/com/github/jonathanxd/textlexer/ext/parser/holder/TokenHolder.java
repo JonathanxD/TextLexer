@@ -18,6 +18,7 @@
  */
 package com.github.jonathanxd.textlexer.ext.parser.holder;
 
+import com.github.jonathanxd.textlexer.ext.parser.structure.ParseStructure;
 import com.github.jonathanxd.textlexer.lexer.token.IToken;
 
 import java.util.ArrayList;
@@ -25,6 +26,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.StringJoiner;
 import java.util.function.BiConsumer;
+import java.util.function.Consumer;
 
 /**
  * Created by jonathan on 17/02/16.
@@ -100,19 +102,30 @@ public class TokenHolder {
         return new TokenHolder(name, tokenHolder.tokens, tokenHolder.childTokens);
     }
 
-    public static void recursiveLoop(TokenHolder tokenHolder, BiConsumer<TokenHolder, List<IToken<?>>> tokensConsumer) {
-        tokensConsumer.accept(tokenHolder, tokenHolder.getTokens());
+    public static void recursiveLoop(TokenHolder tokenHolder, ParseStructure structure, TokenLoopCallback tokensConsumer) {
+        tokensConsumer.accept(tokenHolder, tokenHolder.getTokens(), structure);
 
         List<TokenHolder> child = new ArrayList<>(tokenHolder.getChildTokens());
 
         for (TokenHolder holder : child) {
             if (holder.hasChildTokens()) {
-                recursiveLoop(holder, tokensConsumer);
+                recursiveLoop(holder, structure, tokensConsumer);
             } else {
-                tokensConsumer.accept(tokenHolder, holder.getTokens());
+                tokensConsumer.accept(tokenHolder, holder.getTokens(), structure);
             }
         }
 
+    }
+
+    public static void recursive(TokenHolder holder, List<TokenHolder> tokenHolderList,  BiConsumer<List<TokenHolder>, TokenHolder> tokenHolderConsumer) {
+        tokenHolderConsumer.accept(tokenHolderList, holder);
+        for(TokenHolder tokenHolder : holder.getChildTokens()) {
+            recursive(tokenHolder, holder.getChildTokens(), tokenHolderConsumer);
+        }
+    }
+
+    public String getName() {
+        return name;
     }
 
     public void link(TokenHolder tokenHolder) {

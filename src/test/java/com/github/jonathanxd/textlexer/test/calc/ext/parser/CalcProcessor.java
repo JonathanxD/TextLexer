@@ -63,10 +63,12 @@ public class CalcProcessor implements ParserProcessor {
 
     @Override
     public void processFinish(ParseStructure structure) {
+
         for (TokenHolder holder : structure.getTokenHolders()) {
-            TokenHolder.recursiveLoop(holder, (tokenHolder, iTokenList) -> {
+            TokenHolder.recursiveLoop(holder, structure, (tokenHolder, iTokenList, aStructure) -> {
+
                 if(TokenListUtil.findTokenInList(GroupOpen.class, iTokenList)) {
-                    structure.createModifier().unify("Group", tokenHolder,
+                    structure.createModifier().unify("Group", tokenHolder, aStructure,
                             new GroupPredicate(),
                             new GroupPredicate().negate());
                 }

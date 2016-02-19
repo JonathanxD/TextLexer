@@ -16,15 +16,19 @@
  *     You should have received a copy of the GNU Affero General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.github.jonathanxd.textlexer.ext.parser.structure.options;
+package com.github.jonathanxd.textlexer.ext.parser.holder;
 
-import com.github.jonathanxd.textlexer.ext.parser.structure.Option;
+import com.github.jonathanxd.textlexer.ext.parser.structure.ParseStructure;
+import com.github.jonathanxd.textlexer.lexer.token.IToken;
+
+import java.util.List;
 
 /**
  * Created by jonathan on 18/02/16.
  */
-public class ElementOption extends Option {
-    public ElementOption() {
-        super("ELEMENT");
-    }
+@FunctionalInterface
+public interface TokenLoopCallback {
+
+    void accept(TokenHolder tokenHolder, List<IToken<?>> tokenList, ParseStructure structure);
+
 }
