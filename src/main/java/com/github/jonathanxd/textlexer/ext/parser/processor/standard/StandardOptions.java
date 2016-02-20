@@ -16,17 +16,16 @@
  *     You should have received a copy of the GNU Affero General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.github.jonathanxd.textlexer.ext.parser.processor;
+package com.github.jonathanxd.textlexer.ext.parser.processor.standard;
 
-import com.github.jonathanxd.textlexer.ext.parser.structure.ParseStructure;
-import com.github.jonathanxd.textlexer.lexer.token.IToken;
-
-import java.util.List;
+import com.github.jonathanxd.textlexer.ext.parser.processor.standard.options.AutoAssignOption;
+import com.github.jonathanxd.textlexer.ext.parser.processor.standard.options.HostOption;
+import com.github.jonathanxd.textlexer.ext.parser.structure.Option;
 
 /**
- * Created by jonathan on 17/02/16.
+ * Created by jonathan on 19/02/16.
  */
-public interface ParserProcessor {
-    void process(List<IToken<?>> tokenList, ParseStructure structure, ParseStructure.ParseSection section);
-    void processFinish(ParseStructure structure);
+public final class StandardOptions {
+    public static final Option<?> HOST = new HostOption();
+    public static final Option<?> AUTO_ASSIGN = new AutoAssignOption();
 }

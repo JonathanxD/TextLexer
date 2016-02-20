@@ -30,6 +30,7 @@ import java.awt.*;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.LinkedList;
 
 import javax.swing.*;
@@ -44,6 +45,8 @@ public class StructureGUI {
     private final Object parent;
     private final ParseStructure structure;
     private static final int[] mainSizes = {200, 150, 80, 30};
+    private boolean multiLink = false;
+    private boolean linkMains = false;
 
     StructureGUI(ParseStructure structure) {
         this.structure = structure;
@@ -82,6 +85,21 @@ public class StructureGUI {
         jf.setVisible(true);
     }
 
+    public void setLinkMains(boolean linkMains) {
+        this.linkMains = linkMains;
+    }
+
+    public boolean isLinkMains() {
+        return linkMains;
+    }
+
+    public void setMultiLink(boolean multiLink) {
+        this.multiLink = multiLink;
+    }
+
+    public boolean isMultiLink() {
+        return multiLink;
+    }
 
     public void show() {
         jf.setVisible(true);
@@ -111,7 +129,13 @@ public class StructureGUI {
             Object root = null;
 
             if(mains != null) {
-                for(Object main : mains) {
+
+                boolean continue_ = true;
+
+                Iterator<Object> iterator = mains.iterator();
+                while(iterator.hasNext()) {
+
+                    Object main = iterator.next();
 
                     if(linkedList.size() > 2) {
                         Object last = linkedList.getLast();
@@ -121,11 +145,24 @@ public class StructureGUI {
                             break;
                         }
                     }
-
-
-                    for(Object link : linkedList) {
-                        addEdge(parent, null, "", main, link, true);
+                    if(continue_) {
+                        for(Object link : linkedList) {
+                            addEdge(parent, null, "", main, link, true);
+                        }
+                        continue_ = false;
                     }
+                    if(!multiLink) {
+                        if(!linkMains) {
+                            break;
+                        }
+                        if(iterator.hasNext()) {
+                            Object next = iterator.next();
+                            if(graph.getEdgesBetween(main, next).length == 0) {
+                                addEdge(parent, null, "", main, next, true);
+                            }
+                        }
+                    }
+
                 }
             }
             if(root != null) {

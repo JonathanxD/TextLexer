@@ -16,15 +16,17 @@
  *     You should have received a copy of the GNU Affero General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.github.jonathanxd.textlexer.ext.parser.structure.options;
+package com.github.jonathanxd.textlexer.ext.parser.processor.standard.options;
 
 import com.github.jonathanxd.textlexer.ext.parser.structure.Option;
 
 /**
- * Created by jonathan on 18/02/16.
+ * Created by jonathan on 19/02/16.
  */
-public class ElementOption extends Option {
-    public ElementOption() {
-        super("ELEMENT");
+public class AutoAssignOption extends Option {
+
+    public AutoAssignOption() {
+        super("Auto Assign");
     }
+
 }

@@ -18,22 +18,15 @@
  */
 package com.github.jonathanxd.textlexer.ext.parser;
 
-import com.github.jonathanxd.iutils.optional.Require;
 import com.github.jonathanxd.textlexer.ext.parser.holder.TokenHolder;
 import com.github.jonathanxd.textlexer.ext.parser.processor.ParserProcessor;
-import com.github.jonathanxd.textlexer.ext.parser.structure.Options;
 import com.github.jonathanxd.textlexer.ext.parser.structure.ParseStructure;
-import com.github.jonathanxd.textlexer.ext.parser.structure.StructureOptions;
 import com.github.jonathanxd.textlexer.lexer.token.IToken;
 import com.github.jonathanxd.textlexer.lexer.token.history.ITokenList;
 
 import java.util.ArrayList;
-import java.util.Deque;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.ListIterator;
-import java.util.Objects;
-import java.util.Optional;
 
 /**
  * Created by jonathan on 17/02/16.
@@ -65,78 +58,9 @@ public class Parser {
         ParseStructure structure = new ParseStructure();
         ParseStructure.ParseSection section = structure.createSection();
 
-        Deque<IToken<?>> tokenDeque = new LinkedList<>();
         List<IToken<?>> tokenList = getTokenList().allToList();
 
-
-        ListIterator<IToken<?>> tokenIterator = tokenList.listIterator();
-
-        TokenHolder previousHeadHolder = null;
-
-        while (tokenIterator.hasNext()) {
-            int index = tokenIterator.nextIndex();
-            IToken<?> token = tokenIterator.next();
-            IToken<?> next = next(index, tokenList);
-            IToken<?> previous = (index - 1 > -1 ? tokenList.get(tokenIterator.previousIndex()) : null);
-
-
-            if (!call(token, index, tokenList, structure, section)) {
-                StructureOptions options = optionsOf(token);
-
-                if (options.is(Options.IGNORE))
-                    continue;
-
-                if (!options.is(Options.HARD_HEAD) && !options.is(Options.HEAD)
-                        && (options.is(Options.STACK) || options.is(Options.ELEMENT))) {
-                    if (next == null || optionsOf(next).is(Options.STACK)) {
-                        if (previousHeadHolder != null) {
-                            previousHeadHolder.link(token);
-                        } else {
-                            section.enter(structure.addToken(token));
-                        }
-                    } else {
-                        tokenDeque.addLast(token);
-                    }
-
-                } else {
-
-                    if (options.is(Options.HEAD)) {
-                        if (!section.canExit()) {
-                            previousHeadHolder = structure.addToken(token);
-                            section.enter(previousHeadHolder);
-                        } else {
-                            previousHeadHolder = section.link(token);
-                        }
-                    } else {
-                        previousHeadHolder = structure.addToken(token);
-                        section.enter(previousHeadHolder);
-                    }
-
-                    for (IToken<?> iToken : tokenDeque) {
-                        section.link(iToken);
-
-                        if (optionsOf(iToken).is(Options.EXIT)) {
-                            section.exit();
-                        }
-                    }
-                    tokenDeque.clear();
-
-                    if (optionsOf(token).is(Options.EXIT)) {
-                        section.exit();
-                    }
-                }
-            }
-        }
-
-        if (!tokenDeque.isEmpty()) {
-            for (IToken<?> token : tokenDeque) {
-                if (previousHeadHolder != null) {
-                    previousHeadHolder.link(token);
-                } else {
-                    section.enter(structure.addToken(token));
-                }
-            }
-        }
+        processors.forEach(processor -> processor.process(tokenList, structure, section));
 
         processingEnd(structure);
 
@@ -144,41 +68,8 @@ public class Parser {
 
     }
 
-    private IToken<?> next(int index, List<IToken<?>> tokenList) {
-        for (int x = index + 1; x < tokenList.size(); ++x) {
-            IToken<?> token = tokenList.get(x);
-            if (!optionsOf(token).is(Options.IGNORE)) {
-                return token;
-            }
-        }
-        return null;
-    }
-
     private void processingEnd(ParseStructure structure) {
         processors.forEach(processor -> processor.processFinish(structure));
-    }
-
-    private boolean call(IToken<?> token, int index, List<IToken<?>> tokenList, ParseStructure structure, ParseStructure.ParseSection section) {
-
-        //boolean isProcessor = false;
-
-        for (ParserProcessor parserProcessor : processors) {
-            if(parserProcessor.isProcessor()) {
-                ListIterator<IToken<?>> iterator = tokenList.listIterator(index);
-                Processor processor = new AProcessor(token, iterator, structure, section);
-                parserProcessor.process(processor);
-                //isProcessor = true;
-                // TODO NOTE: Don't supports multiple processing at time.
-                return true;
-            }
-        }
-
-        return false; //isProcessor
-    }
-
-    public StructureOptions optionsOf(IToken<?> token) {
-        Optional<ParserProcessor> processorOptional = processors.stream().findFirst();
-        return Objects.requireNonNull(Require.require(processorOptional, "Cannot find Options for Tokens: " + token).tokenOptions(token), "Null options!");
     }
 
 

@@ -19,14 +19,18 @@
 package com.github.jonathanxd.textlexer.ext.parser.processor;
 
 import com.github.jonathanxd.textlexer.ext.parser.structure.ParseStructure;
+import com.github.jonathanxd.textlexer.ext.parser.structure.StructureOptions;
 import com.github.jonathanxd.textlexer.lexer.token.IToken;
 
-import java.util.List;
-
 /**
- * Created by jonathan on 17/02/16.
+ * Created by jonathan on 19/02/16.
  */
-public interface ParserProcessor {
-    void process(List<IToken<?>> tokenList, ParseStructure structure, ParseStructure.ParseSection section);
-    void processFinish(ParseStructure structure);
+public interface OptionProcessor {
+
+    StructureOptions optionsOf(IToken<?> token);
+
+    default StructureOptions optionsOf(IToken<?> token, ParseStructure structure, ParseStructure.ParseSection section) {
+        return optionsOf(token);
+    }
+
 }

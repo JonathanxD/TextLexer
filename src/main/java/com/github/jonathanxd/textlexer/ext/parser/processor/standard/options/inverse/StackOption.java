@@ -16,16 +16,16 @@
  *     You should have received a copy of the GNU Affero General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.github.jonathanxd.textlexer.ext.parser.structure.options;
+package com.github.jonathanxd.textlexer.ext.parser.processor.standard.options.inverse;
 
 import com.github.jonathanxd.textlexer.ext.parser.structure.Option;
 
 /**
  * Created by jonathan on 18/02/16.
  */
-public class HardHeadOption extends Option {
+public class StackOption extends Option {
 
-    public HardHeadOption() {
-        super("Hard Head");
+    public StackOption() {
+        super("STACK");
     }
 }

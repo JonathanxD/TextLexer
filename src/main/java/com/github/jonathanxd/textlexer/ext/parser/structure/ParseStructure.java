@@ -88,6 +88,10 @@ public class ParseStructure {
             enter(tokenHolder, false);
         }
 
+        public TokenHolder getCurrent() {
+            return !hasCurrent() ? null : current.getLast();
+        }
+
         private void enter(TokenHolder tokenHolder, boolean cleanup) {
             if(cleanup) current.clear();
 

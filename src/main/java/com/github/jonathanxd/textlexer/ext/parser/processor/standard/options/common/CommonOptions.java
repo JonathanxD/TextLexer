@@ -16,15 +16,21 @@
  *     You should have received a copy of the GNU Affero General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.github.jonathanxd.textlexer.ext.parser.structure.options;
+package com.github.jonathanxd.textlexer.ext.parser.processor.standard.options.common;
 
 import com.github.jonathanxd.textlexer.ext.parser.structure.Option;
 
 /**
- * Created by jonathan on 18/02/16.
+ * Created by jonathan on 19/02/16.
  */
-public class InnerOption extends Option {
-    public InnerOption() {
-        super("Inner");
-    }
+public final class CommonOptions {
+    public static final Option<?> IGNORE = new IgnoreOption();
+    public static final Option<?> EXIT = new ExitOption();
+    public static final Option<?> STACK = new StackOption();
+
+
+    /**
+     * @see #EXIT
+     */
+    public static final Option<?> SEPARATOR = EXIT;
 }

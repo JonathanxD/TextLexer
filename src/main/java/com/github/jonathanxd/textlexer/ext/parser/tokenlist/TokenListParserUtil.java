@@ -18,8 +18,8 @@
  */
 package com.github.jonathanxd.textlexer.ext.parser.tokenlist;
 
-import com.github.jonathanxd.textlexer.ext.parser.Parser;
-import com.github.jonathanxd.textlexer.ext.parser.structure.Options;
+import com.github.jonathanxd.textlexer.ext.parser.processor.OptionProcessor;
+import com.github.jonathanxd.textlexer.ext.parser.processor.standard.inverse.InverseOptions;
 import com.github.jonathanxd.textlexer.lexer.token.IToken;
 
 import java.util.List;
@@ -29,10 +29,10 @@ import java.util.List;
  */
 public class TokenListParserUtil {
 
-    public static IToken<?> next(List<IToken<?>> list, int index, Parser parser) {
+    public static IToken<?> next(List<IToken<?>> list, int index, OptionProcessor processor) {
         for (int x = index; x < list.size(); ++x) {
             IToken<?> token = list.get(x);
-            if (parser.optionsOf(token).is(Options.IGNORE)) {
+            if (processor.optionsOf(token).is(InverseOptions.IGNORE)) {
                 continue;
             }
             return token;

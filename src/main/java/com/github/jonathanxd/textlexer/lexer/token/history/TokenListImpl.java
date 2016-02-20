@@ -19,6 +19,7 @@
 package com.github.jonathanxd.textlexer.lexer.token.history;
 
 import com.github.jonathanxd.textlexer.lexer.token.IToken;
+import com.github.jonathanxd.textlexer.lexer.token.history.analise.ElementSpecification;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -69,15 +70,21 @@ public class TokenListImpl implements ITokenList {
 
     @Override
     public IToken find(Class<? extends IToken> tokenClass, Class<? extends IToken> stopAt, LoopDirection loopDirection) {
-        Objects.requireNonNull(tokenClass);
+        return find(ElementSpecification.classCollectionSpec(Collections.singleton(tokenClass), Collections.singleton(stopAt), loopDirection));
+    }
+
+    @Override
+    public IToken find(ElementSpecification elementSpecification) {
+
+        LoopDirection loopDirection = elementSpecification.getDirection();
 
         Function<IToken<?>, State> tokenConsumer = (token) -> {
 
-            if (tokenClass.isAssignableFrom(token.getClass())) {
+            if (elementSpecification.testFindToken(token)) {
                 return State.OK;
             }
 
-            if (stopAt.isAssignableFrom(token.getClass())) {
+            if (elementSpecification.testStopToken(token)) {
                 return State.BREAK;
             }
             return State.CONTINUE;

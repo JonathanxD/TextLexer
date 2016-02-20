@@ -75,6 +75,39 @@ public class StructureModifier {
 
     }
 
+    @SuppressWarnings("Duplicates")
+    public void unifyHead(String id, TokenHolder head, ParseStructure structure, Predicate<TokenHolder> unifyPredicate, Predicate<TokenHolder> childUnify) {
+
+
+        List<TokenHolder> unify = new ArrayList<>(Collections.singleton(head));
+
+        List<TokenHolder> childs = new ArrayList<>();
+
+        List<Runnable> removal = new ArrayList<>();
+
+        for (TokenHolder tokenHolder : head.getChildTokens()) {
+            TokenHolder.recursive(tokenHolder, head.getChildTokens(), (list, token) -> {
+                if (unifyPredicate.test(token)) {
+                    unify.add(token);
+                    removal.add(() -> list.remove(token));
+                } else if (childUnify.test(token)) {
+                    childs.add(token);
+                }
+            });
+        }
+
+
+
+        removal.forEach(Runnable::run);
+
+
+        TokenHolder holder = TokenHolder.ofHolders(id, unify, childs);
+
+        // UPDATE
+        structure.replace(head, holder);
+
+    }
+
     public ParseStructure getStructure() {
         return structure;
     }

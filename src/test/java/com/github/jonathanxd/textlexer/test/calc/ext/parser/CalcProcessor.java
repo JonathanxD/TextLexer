@@ -18,13 +18,11 @@
  */
 package com.github.jonathanxd.textlexer.test.calc.ext.parser;
 
-import com.github.jonathanxd.iutils.annotations.Immutable;
-import com.github.jonathanxd.textlexer.ext.parser.Processor;
 import com.github.jonathanxd.textlexer.ext.parser.holder.TokenHolder;
-import com.github.jonathanxd.textlexer.ext.parser.processor.ParserProcessor;
-import com.github.jonathanxd.textlexer.ext.parser.structure.Options;
+import com.github.jonathanxd.textlexer.ext.parser.processor.standard.inverse.InverseOptions;
 import com.github.jonathanxd.textlexer.ext.parser.structure.ParseStructure;
 import com.github.jonathanxd.textlexer.ext.parser.structure.StructureOptions;
+import com.github.jonathanxd.textlexer.ext.parser.processor.standard.inverse.InverseProcessor;
 import com.github.jonathanxd.textlexer.lexer.token.IToken;
 import com.github.jonathanxd.textlexer.lexer.token.history.TokenListUtil;
 import com.github.jonathanxd.textlexer.test.calc.tokens.Garbage;
@@ -32,32 +30,26 @@ import com.github.jonathanxd.textlexer.test.calc.tokens.GroupClose;
 import com.github.jonathanxd.textlexer.test.calc.tokens.GroupOpen;
 import com.github.jonathanxd.textlexer.test.calc.tokens.operators.Operator;
 
-import java.util.List;
 import java.util.function.Predicate;
 
 /**
  * Created by jonathan on 17/02/16.
  */
-public class CalcProcessor implements ParserProcessor {
+public class CalcProcessor extends InverseProcessor {
 
     @Override
-    public boolean isProcessor() {
-        return false;
-    }
-
-    @Override
-    public StructureOptions tokenOptions(IToken<?> token) {
+    public StructureOptions optionsOf(IToken<?> token) {
         if (token instanceof Operator) {
-            return new StructureOptions().set(Options.HEAD, true).and(Options.INNER, true);
+            return new StructureOptions().set(InverseOptions.HEAD, true).and(InverseOptions.INNER, true);
         } else if (token instanceof GroupOpen || token instanceof GroupClose) {
 
-            return new StructureOptions().set(Options.STACK, true)
-                    .and(Options.EXIT, true);
+            return new StructureOptions().set(InverseOptions.STACK, true)
+                    .and(InverseOptions.EXIT, true);
         } else if (token instanceof Garbage) {
-            return new StructureOptions().set(Options.IGNORE, true);
+            return new StructureOptions().set(InverseOptions.IGNORE, true);
         } else {
-            return new StructureOptions().set(Options.ELEMENT, true)
-                    .and(Options.EXIT, true);
+            return new StructureOptions().set(InverseOptions.ELEMENT, true)
+                    .and(InverseOptions.EXIT, true);
         }
     }
 

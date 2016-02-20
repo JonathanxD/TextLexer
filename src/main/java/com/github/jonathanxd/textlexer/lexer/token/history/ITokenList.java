@@ -20,6 +20,7 @@ package com.github.jonathanxd.textlexer.lexer.token.history;
 
 import com.github.jonathanxd.iutils.annotations.Immutable;
 import com.github.jonathanxd.textlexer.lexer.token.IToken;
+import com.github.jonathanxd.textlexer.lexer.token.history.analise.ElementSpecification;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -42,7 +43,10 @@ public interface ITokenList {
 
     int size();
 
+    @Deprecated
     IToken find(Class<? extends IToken> tokenClass, Class<? extends IToken> stopAt, LoopDirection loopDirection);
+
+    IToken find(ElementSpecification elementSpecification);
 
     @SuppressWarnings("unchecked")
     default <T, R extends IToken<T>> Optional<R> first(Class<? extends IToken<T>> tokenClass) {

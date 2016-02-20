@@ -50,7 +50,7 @@ public interface ITokenType<T> {
 
     IToken<T> createToken(String data);
 
-    default IToken<T> createToken(ProcessorData processorData) {
+    default IToken<?> createToken(ProcessorData processorData) {
         return createToken(processorData.getData());
     }
 
