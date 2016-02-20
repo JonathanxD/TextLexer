@@ -21,6 +21,8 @@ package com.github.jonathanxd.textlexer.ext.parser.processor.standard.inverse;
 import com.github.jonathanxd.textlexer.ext.parser.holder.TokenHolder;
 import com.github.jonathanxd.textlexer.ext.parser.processor.OptionProcessor;
 import com.github.jonathanxd.textlexer.ext.parser.processor.ParserProcessor;
+import com.github.jonathanxd.textlexer.ext.parser.processor.standard.options.DefaultOptions;
+import com.github.jonathanxd.textlexer.ext.parser.processor.standard.options.OptionSupport;
 import com.github.jonathanxd.textlexer.ext.parser.structure.ParseStructure;
 import com.github.jonathanxd.textlexer.ext.parser.structure.StructureOptions;
 import com.github.jonathanxd.textlexer.lexer.token.IToken;
@@ -33,6 +35,7 @@ import java.util.ListIterator;
 /**
  * Created by jonathan on 19/02/16.
  */
+@OptionSupport(value = {DefaultOptions.Common.class, DefaultOptions.InverseProc.class}, description = "Uses all options of DefaultOptions.Common and DefaultOptions.InverseProc")
 public abstract class InverseProcessor implements OptionProcessor, ParserProcessor {
 
     @Override
@@ -50,12 +53,12 @@ public abstract class InverseProcessor implements OptionProcessor, ParserProcess
 
             StructureOptions options = optionsOf(token);
 
-            if (options.is(InverseOptions.IGNORE))
+            if (options.is(DefaultOptions.Common.IGNORE))
                 continue;
 
-            if (!options.is(InverseOptions.HARD_HEAD) && !options.is(InverseOptions.HEAD)
-                    && (options.is(InverseOptions.STACK) || options.is(InverseOptions.ELEMENT))) {
-                if (next == null || optionsOf(next).is(InverseOptions.STACK)) {
+            if (!options.is(DefaultOptions.InverseProc.HARD_HEAD) && !options.is(DefaultOptions.Common.HOST)
+                    && (options.is(DefaultOptions.Common.IGNORE) || options.is(DefaultOptions.InverseProc.ELEMENT))) {
+                if (next == null || optionsOf(next).is(DefaultOptions.Common.STACK)) {
                     if (previousHeadHolder != null) {
                         previousHeadHolder.link(token);
                     } else {
@@ -67,7 +70,7 @@ public abstract class InverseProcessor implements OptionProcessor, ParserProcess
 
             } else {
 
-                if (options.is(InverseOptions.HEAD)) {
+                if (options.is(DefaultOptions.Common.HOST)) {
                     if (!section.canExit()) {
                         previousHeadHolder = structure.addToken(token);
                         section.enter(previousHeadHolder);
@@ -82,13 +85,13 @@ public abstract class InverseProcessor implements OptionProcessor, ParserProcess
                 for (IToken<?> iToken : tokenDeque) {
                     section.link(iToken);
 
-                    if (optionsOf(iToken).is(InverseOptions.EXIT)) {
+                    if (optionsOf(iToken).is(DefaultOptions.Common.EXIT)) {
                         section.exit();
                     }
                 }
                 tokenDeque.clear();
 
-                if (optionsOf(token).is(InverseOptions.EXIT)) {
+                if (optionsOf(token).is(DefaultOptions.Common.EXIT)) {
                     section.exit();
                 }
             }
@@ -109,7 +112,7 @@ public abstract class InverseProcessor implements OptionProcessor, ParserProcess
     private IToken<?> next(int index, List<IToken<?>> tokenList) {
         for (int x = index + 1; x < tokenList.size(); ++x) {
             IToken<?> token = tokenList.get(x);
-            if (!optionsOf(token).is(InverseOptions.IGNORE)) {
+            if (!optionsOf(token).is(DefaultOptions.Common.IGNORE)) {
                 return token;
             }
         }

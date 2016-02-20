@@ -19,7 +19,6 @@
 package com.github.jonathanxd.textlexer.ext.parser.tokenlist;
 
 import com.github.jonathanxd.textlexer.ext.parser.processor.OptionProcessor;
-import com.github.jonathanxd.textlexer.ext.parser.processor.standard.inverse.InverseOptions;
 import com.github.jonathanxd.textlexer.lexer.token.IToken;
 
 import java.util.List;

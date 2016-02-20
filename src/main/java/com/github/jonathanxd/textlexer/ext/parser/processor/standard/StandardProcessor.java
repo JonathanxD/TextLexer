@@ -18,10 +18,10 @@
  */
 package com.github.jonathanxd.textlexer.ext.parser.processor.standard;
 
-import com.github.jonathanxd.textlexer.ext.parser.holder.TokenHolder;
 import com.github.jonathanxd.textlexer.ext.parser.processor.OptionProcessor;
 import com.github.jonathanxd.textlexer.ext.parser.processor.ParserProcessor;
-import com.github.jonathanxd.textlexer.ext.parser.processor.standard.options.common.CommonOptions;
+import com.github.jonathanxd.textlexer.ext.parser.processor.standard.options.DefaultOptions;
+import com.github.jonathanxd.textlexer.ext.parser.processor.standard.options.OptionSupport;
 import com.github.jonathanxd.textlexer.ext.parser.structure.ParseStructure;
 import com.github.jonathanxd.textlexer.ext.parser.structure.StructureOptions;
 import com.github.jonathanxd.textlexer.lexer.token.IToken;
@@ -34,6 +34,7 @@ import java.util.ListIterator;
 /**
  * Created by jonathan on 19/02/16.
  */
+@OptionSupport(value = {DefaultOptions.Common.class, DefaultOptions.Standard.class}, description = "Uses all Options of DefaultOptions.Common and DefaultOptions.Standard")
 public abstract class StandardProcessor implements ParserProcessor, OptionProcessor {
 
     @Override
@@ -46,10 +47,10 @@ public abstract class StandardProcessor implements ParserProcessor, OptionProces
             IToken<?> token = tokenIterator.next();
             StructureOptions options = optionsOf(token, structure, section);
             try{
-                if (options.is(CommonOptions.IGNORE))
+                if (options.is(DefaultOptions.Common.IGNORE))
                     continue;
 
-                if (options.is(CommonOptions.STACK)) {
+                if (options.is(DefaultOptions.Common.STACK)) {
                     if (!section.hasCurrent())
                         section.enter(structure.addToken(token));
                     else
@@ -57,7 +58,7 @@ public abstract class StandardProcessor implements ParserProcessor, OptionProces
                     section.exit();
                 }
 
-                if (options.is(StandardOptions.AUTO_ASSIGN)) {
+                if (options.is(DefaultOptions.Standard.AUTO_ASSIGN)) {
 
                     if (!section.hasCurrent())
                         section.enter(structure.addToken(token));
@@ -65,12 +66,12 @@ public abstract class StandardProcessor implements ParserProcessor, OptionProces
                         section.link(token);
                 }
 
-                if (options.is(StandardOptions.HOST)) {
+                if (options.is(DefaultOptions.Common.HOST)) {
                     section.enter(structure.addToken(token));
                 }
 
 
-                if (options.is(CommonOptions.EXIT/* OR CommonOptions.SEPARATOR*/))
+                if (options.is(DefaultOptions.Common.EXIT/* OR CommonOptions.SEPARATOR*/))
                     section.exit();
             }
             catch (Exception e) {

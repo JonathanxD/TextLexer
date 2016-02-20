@@ -80,8 +80,16 @@ public class ParseStructure {
             enter(tokenHolder, true);
         }
 
+        public void enter(IToken<?> token) {
+            enter(ParseStructure.this.addToken(token), true);
+        }
+
         public void softEnter(TokenHolder tokenHolder) {
             keepEnter(tokenHolder);
+        }
+
+        public void softEnter(IToken<?> token) {
+            keepEnter(addToken(token));
         }
 
         private void keepEnter(TokenHolder tokenHolder) {

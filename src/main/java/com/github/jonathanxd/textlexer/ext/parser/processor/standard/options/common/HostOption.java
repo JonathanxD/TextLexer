@@ -16,16 +16,17 @@
  *     You should have received a copy of the GNU Affero General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.github.jonathanxd.textlexer.ext.parser.processor.standard;
+package com.github.jonathanxd.textlexer.ext.parser.processor.standard.options.common;
 
-import com.github.jonathanxd.textlexer.ext.parser.processor.standard.options.AutoAssignOption;
-import com.github.jonathanxd.textlexer.ext.parser.processor.standard.options.HostOption;
 import com.github.jonathanxd.textlexer.ext.parser.structure.Option;
 
 /**
  * Created by jonathan on 19/02/16.
  */
-public final class StandardOptions {
-    public static final Option<?> HOST = new HostOption();
-    public static final Option<?> AUTO_ASSIGN = new AutoAssignOption();
+public class HostOption extends Option {
+
+    public HostOption() {
+        super("Host");
+    }
+
 }

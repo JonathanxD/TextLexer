@@ -19,7 +19,6 @@
 package com.github.jonathanxd.textlexer.test.calc.ext.parser;
 
 import com.github.jonathanxd.textlexer.ext.parser.holder.TokenHolder;
-import com.github.jonathanxd.textlexer.ext.parser.processor.standard.inverse.InverseOptions;
 import com.github.jonathanxd.textlexer.ext.parser.structure.ParseStructure;
 import com.github.jonathanxd.textlexer.ext.parser.structure.StructureOptions;
 import com.github.jonathanxd.textlexer.ext.parser.processor.standard.inverse.InverseProcessor;
