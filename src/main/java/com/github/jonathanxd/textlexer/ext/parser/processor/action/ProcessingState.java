@@ -16,27 +16,15 @@
  *     You should have received a copy of the GNU Affero General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.github.jonathanxd.textlexer.ext.parser.tokenlist;
-
-import com.github.jonathanxd.textlexer.ext.parser.processor.OptionProcessor;
-import com.github.jonathanxd.textlexer.lexer.token.IToken;
-
-import java.util.List;
+package com.github.jonathanxd.textlexer.ext.parser.processor.action;
 
 /**
- * Created by jonathan on 17/02/16.
+ * Created by jonathan on 19/02/16.
  */
-public class TokenListParserUtil {
+public enum ProcessingState {
+    DEFAULT,
+    CONTINUE,
+    BREAK;
 
-    public static IToken<?> next(List<IToken<?>> list, int index, OptionProcessor processor) {
-        for (int x = index; x < list.size(); ++x) {
-            IToken<?> token = list.get(x);
-            if (processor.optionsOf(token).is(InverseOptions.IGNORE)) {
-                continue;
-            }
-            return token;
-        }
-        return null;
-    }
 
 }

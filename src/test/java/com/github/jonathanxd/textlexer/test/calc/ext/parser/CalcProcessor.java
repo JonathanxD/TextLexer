@@ -19,6 +19,7 @@
 package com.github.jonathanxd.textlexer.test.calc.ext.parser;
 
 import com.github.jonathanxd.textlexer.ext.parser.holder.TokenHolder;
+import com.github.jonathanxd.textlexer.ext.parser.processor.standard.options.DefaultOptions;
 import com.github.jonathanxd.textlexer.ext.parser.structure.ParseStructure;
 import com.github.jonathanxd.textlexer.ext.parser.structure.StructureOptions;
 import com.github.jonathanxd.textlexer.ext.parser.processor.standard.inverse.InverseProcessor;
@@ -39,16 +40,16 @@ public class CalcProcessor extends InverseProcessor {
     @Override
     public StructureOptions optionsOf(IToken<?> token) {
         if (token instanceof Operator) {
-            return new StructureOptions().set(InverseOptions.HEAD, true).and(InverseOptions.INNER, true);
+            return new StructureOptions().set(DefaultOptions.Common.HOST, true);/*.and(DefaultOptions.InverseProc.INNER, true);*/
         } else if (token instanceof GroupOpen || token instanceof GroupClose) {
 
-            return new StructureOptions().set(InverseOptions.STACK, true)
-                    .and(InverseOptions.EXIT, true);
+            return new StructureOptions().set(DefaultOptions.Common.STACK, true)
+                    .and(DefaultOptions.Common.EXIT, true);
         } else if (token instanceof Garbage) {
-            return new StructureOptions().set(InverseOptions.IGNORE, true);
+            return new StructureOptions().set(DefaultOptions.Common.IGNORE, true);
         } else {
-            return new StructureOptions().set(InverseOptions.ELEMENT, true)
-                    .and(InverseOptions.EXIT, true);
+            return new StructureOptions().set(DefaultOptions.InverseProc.ELEMENT, true)
+                    .and(DefaultOptions.Common.EXIT, true);
         }
     }
 

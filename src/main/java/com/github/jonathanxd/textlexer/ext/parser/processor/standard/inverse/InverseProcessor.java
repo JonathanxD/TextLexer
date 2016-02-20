@@ -57,7 +57,7 @@ public abstract class InverseProcessor implements OptionProcessor, ParserProcess
                 continue;
 
             if (!options.is(DefaultOptions.InverseProc.HARD_HEAD) && !options.is(DefaultOptions.Common.HOST)
-                    && (options.is(DefaultOptions.Common.IGNORE) || options.is(DefaultOptions.InverseProc.ELEMENT))) {
+                    && (options.is(DefaultOptions.Common.STACK) || options.is(DefaultOptions.InverseProc.ELEMENT))) {
                 if (next == null || optionsOf(next).is(DefaultOptions.Common.STACK)) {
                     if (previousHeadHolder != null) {
                         previousHeadHolder.link(token);

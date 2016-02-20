@@ -18,7 +18,6 @@
  */
 package com.github.jonathanxd.textlexer.ext.parser.processor.action;
 
-import com.github.jonathanxd.textlexer.ext.parser.structure.Option;
 import com.github.jonathanxd.textlexer.ext.parser.structure.ParseStructure;
 import com.github.jonathanxd.textlexer.lexer.token.IToken;
 
@@ -26,6 +25,7 @@ import java.util.ArrayDeque;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Queue;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
@@ -60,8 +60,21 @@ public class Actions {
         return this;
     }
 
-    public void doAll(IToken<?> token, ParseStructure.ParseSection section) {
-        actions.forEach(action -> action.doAction(token, section));
+    public ProcessingState doAll(IToken<?> token, ParseStructure.ParseSection section) {
+        AtomicReference<ProcessingState> state = new AtomicReference<>();
+
+        actions.forEach(action -> {
+            ProcessingState otherState = action.stateAction(token, section);
+            if (state.get() == null) {
+                state.set(otherState);
+            } else {
+                if (state.get().compareTo(otherState) >= -1) {
+                    state.set(otherState);
+                }
+            }
+        });
+
+        return state.get();
     }
 
     @SuppressWarnings("unchecked")

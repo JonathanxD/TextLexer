@@ -26,5 +26,9 @@ import com.github.jonathanxd.textlexer.lexer.token.IToken;
  */
 @FunctionalInterface
 public interface Action {
-    void doAction(IToken<?> token, ParseStructure.ParseSection section);
+
+    ProcessingState stateAction(IToken<?> token, ParseStructure.ParseSection section);
+
+
+
 }
