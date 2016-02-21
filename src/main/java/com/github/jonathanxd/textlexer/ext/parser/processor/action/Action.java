@@ -18,8 +18,10 @@
  */
 package com.github.jonathanxd.textlexer.ext.parser.processor.action;
 
-import com.github.jonathanxd.textlexer.ext.parser.structure.ParseStructure;
+import com.github.jonathanxd.textlexer.ext.parser.structure.ParseSection;
 import com.github.jonathanxd.textlexer.lexer.token.IToken;
+
+import java.util.List;
 
 /**
  * Created by jonathan on 19/02/16.
@@ -27,8 +29,17 @@ import com.github.jonathanxd.textlexer.lexer.token.IToken;
 @FunctionalInterface
 public interface Action {
 
-    ProcessingState stateAction(IToken<?> token, ParseStructure.ParseSection section);
-
-
+    /**
+     * Do an action with this token
+     *
+     * @param token     Token
+     * @param section   Section of token
+     * @param tokenList List of tokens
+     * @param index     Index of this token in list
+     * @return a State
+     * @see Actions#doAll(IToken, ParseSection, List, int)
+     * @see com.github.jonathanxd.textlexer.ext.parser.processor.ActionProcessor
+     */
+    ProcessingState stateAction(IToken<?> token, ParseSection section, List<IToken<?>> tokenList, int index);
 
 }

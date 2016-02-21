@@ -96,6 +96,7 @@ public class TokensProcessor implements ITokensProcessor {
 
     }
 
+    @SuppressWarnings("deprecation")
     @Override
     public void process(char input, List<Character> allChars, int index) {
         boolean anyMatch = false;
@@ -121,7 +122,7 @@ public class TokensProcessor implements ITokensProcessor {
                 endCurrent(type);
                 // END IF NECESSARY, SEE METHOD JAVADOC
 
-                /* RULE CHECK */
+                /* RULE CHECK DEPRECATED */
                 Class<? extends IToken> startToken = type.after();
 
                 if (startToken != null) {

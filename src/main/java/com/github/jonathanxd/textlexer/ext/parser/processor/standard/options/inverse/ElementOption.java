@@ -23,6 +23,10 @@ import com.github.jonathanxd.textlexer.ext.parser.structure.Option;
 /**
  * Created by jonathan on 18/02/16.
  */
+
+/**
+ * Element
+ */
 public class ElementOption extends Option {
     public ElementOption() {
         super("ELEMENT");

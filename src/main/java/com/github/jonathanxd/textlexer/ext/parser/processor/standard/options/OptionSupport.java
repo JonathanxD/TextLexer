@@ -26,6 +26,10 @@ import java.lang.annotation.Target;
 /**
  * Created by jonathan on 19/02/16.
  */
+
+/**
+ * Determine which Options is Supported by the Processor.
+ */
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.CLASS)
 public @interface OptionSupport {

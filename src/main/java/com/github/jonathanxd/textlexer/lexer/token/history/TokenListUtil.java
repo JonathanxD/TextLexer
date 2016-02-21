@@ -82,4 +82,33 @@ public class TokenListUtil {
         return findTokenInList(tokenClass, tokenList.toList());
     }
 
+    public static int lastVisibleTokenIndex(int index, List<IToken<?>> tokenList) {
+        for(int x = index; x > -1; --x) {
+            IToken<?> token = tokenList.get(x);
+            if(!token.hide())
+                return x;
+        }
+
+        return -1;
+    }
+
+    public static IToken<?> lastVisibleToken(int index, List<IToken<?>> tokenList) {
+        int findex = lastVisibleTokenIndex(index, tokenList);
+        return findex == -1 ? null : tokenList.get(findex);
+    }
+
+    public static int nextVisibleTokenIndex(int index, List<IToken<?>> tokenList) {
+        for(int x = index; x < tokenList.size(); ++x) {
+            IToken<?> token = tokenList.get(x);
+            if(!token.hide())
+                return x;
+        }
+
+        return -1;
+    }
+
+    public static IToken<?> nextVisibleToken(int index, List<IToken<?>> tokenList) {
+        int findex = nextVisibleTokenIndex(index, tokenList);
+        return findex == -1 ? null : tokenList.get(findex);
+    }
 }

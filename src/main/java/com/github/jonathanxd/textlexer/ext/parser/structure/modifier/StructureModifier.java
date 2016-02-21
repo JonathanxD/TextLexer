@@ -19,7 +19,7 @@
 package com.github.jonathanxd.textlexer.ext.parser.structure.modifier;
 
 import com.github.jonathanxd.textlexer.ext.parser.holder.TokenHolder;
-import com.github.jonathanxd.textlexer.ext.parser.structure.ParseStructure;
+import com.github.jonathanxd.textlexer.ext.parser.structure.StructuredTokens;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -29,28 +29,45 @@ import java.util.function.Predicate;
 /**
  * Created by jonathan on 18/02/16.
  */
+
+/**
+ * Structure modification utilities
+ */
 public class StructureModifier {
 
-    private final ParseStructure structure;
+    /**
+     * Structure
+     */
+    private final StructuredTokens structure;
+    /**
+     * Token list
+     */
     private final List<TokenHolder> tokenHolderList;
 
-    public StructureModifier(ParseStructure structure) {
+    /**
+     * Create new Structure Modifier
+     *
+     * @param structure Structure
+     */
+    public StructureModifier(StructuredTokens structure) {
         this.structure = structure;
         this.tokenHolderList = this.structure.getTokenHolders();
     }
 
-    /*public TokenNavigate navigate() {
-
-    }*/
-
-
-    public void unify(String id, TokenHolder section, ParseStructure structure, Predicate<TokenHolder> unifyPredicate, Predicate<TokenHolder> childUnify) {
+    /**
+     * Unify TokenHolders replacing old section with new TokenHolder holding unification and child
+     * elements
+     *
+     * @param id             Id of new TokenHolder
+     * @param section        Section to unify
+     * @param structure      Structure
+     * @param unifyPredicate Predicate that determine if this token will be unified
+     */
+    public void unify(String id, TokenHolder section, StructuredTokens structure, Predicate<TokenHolder> unifyPredicate) {
 
 
         List<TokenHolder> unify = new ArrayList<>();
 
-        // TODO REMOVE CHILD DETECTION! Update 19/02/2016 00:20 (GMT-2) fixed it
-        List<TokenHolder> childs = new ArrayList<>();
 
         List<Runnable> removal = new ArrayList<>();
 
@@ -59,8 +76,6 @@ public class StructureModifier {
                 if (unifyPredicate.test(token)) {
                     unify.add(token);
                     removal.add(() -> list.remove(token));
-                } else if (childUnify.test(token)) {
-                    childs.add(token);
                 }
             });
         }
@@ -75,8 +90,17 @@ public class StructureModifier {
 
     }
 
-    @SuppressWarnings("Duplicates")
-    public void unifyHead(String id, TokenHolder head, ParseStructure structure, Predicate<TokenHolder> unifyPredicate, Predicate<TokenHolder> childUnify) {
+    /**
+     * Unify to head, this unification replaces the head. In this case the head is an related token
+     * but not the child token.
+     *
+     * @param id             Id of new replacement
+     * @param head           Head
+     * @param structure      Structure
+     * @param unifyPredicate Predicate that determine if this token will be unified
+     * @param childUnify     Predicate that determine if this token is a child
+     */
+    public void unifyHead(String id, TokenHolder head, StructuredTokens structure, Predicate<TokenHolder> unifyPredicate, Predicate<TokenHolder> childUnify) {
 
 
         List<TokenHolder> unify = new ArrayList<>(Collections.singleton(head));
@@ -97,9 +121,12 @@ public class StructureModifier {
         }
 
 
-
         removal.forEach(Runnable::run);
 
+        unify.forEach(u -> u.getChildTokens().forEach(c -> {
+            if (childs.contains(c))
+                childs.remove(c);
+        }));
 
         TokenHolder holder = TokenHolder.ofHolders(id, unify, childs);
 
@@ -108,7 +135,12 @@ public class StructureModifier {
 
     }
 
-    public ParseStructure getStructure() {
+    /**
+     * Return StructuredTokens
+     *
+     * @return StructuredTokens
+     */
+    public StructuredTokens getStructure() {
         return structure;
     }
 }

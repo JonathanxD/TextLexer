@@ -19,7 +19,7 @@
 package com.github.jonathanxd.textlexer.ext.show;
 
 import com.github.jonathanxd.textlexer.ext.parser.holder.TokenHolder;
-import com.github.jonathanxd.textlexer.ext.parser.structure.ParseStructure;
+import com.github.jonathanxd.textlexer.ext.parser.structure.StructuredTokens;
 import com.github.jonathanxd.textlexer.lexer.token.IToken;
 import com.mxgraph.layout.hierarchical.mxHierarchicalLayout;
 import com.mxgraph.layout.mxIGraphLayout;
@@ -43,12 +43,12 @@ public class StructureGUI {
     private final JFrame jf;
     private final mxGraph graph;
     private final Object parent;
-    private final ParseStructure structure;
+    private final StructuredTokens structure;
     private static final int[] mainSizes = {200, 150, 80, 30};
     private boolean multiLink = false;
     private boolean linkMains = false;
 
-    StructureGUI(ParseStructure structure) {
+    StructureGUI(StructuredTokens structure) {
         this.structure = structure;
 
         jf = new JFrame("View");
@@ -110,7 +110,7 @@ public class StructureGUI {
 
     }
 
-    public static StructureGUI make(ParseStructure structure) {
+    public static StructureGUI make(StructuredTokens structure) {
         return new StructureGUI(structure);
     }
 

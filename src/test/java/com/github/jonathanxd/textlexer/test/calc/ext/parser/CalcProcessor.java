@@ -20,8 +20,9 @@ package com.github.jonathanxd.textlexer.test.calc.ext.parser;
 
 import com.github.jonathanxd.textlexer.ext.parser.holder.TokenHolder;
 import com.github.jonathanxd.textlexer.ext.parser.processor.standard.options.DefaultOptions;
-import com.github.jonathanxd.textlexer.ext.parser.structure.ParseStructure;
-import com.github.jonathanxd.textlexer.ext.parser.structure.StructureOptions;
+import com.github.jonathanxd.textlexer.ext.parser.structure.ParseSection;
+import com.github.jonathanxd.textlexer.ext.parser.structure.StructuredTokens;
+import com.github.jonathanxd.textlexer.ext.parser.processor.standard.options.StructureOptions;
 import com.github.jonathanxd.textlexer.ext.parser.processor.standard.inverse.InverseProcessor;
 import com.github.jonathanxd.textlexer.lexer.token.IToken;
 import com.github.jonathanxd.textlexer.lexer.token.history.TokenListUtil;
@@ -38,7 +39,7 @@ import java.util.function.Predicate;
 public class CalcProcessor extends InverseProcessor {
 
     @Override
-    public StructureOptions optionsOf(IToken<?> token) {
+    public StructureOptions optionsOf(IToken<?> token, ParseSection section) {
         if (token instanceof Operator) {
             return new StructureOptions().set(DefaultOptions.Common.HOST, true);/*.and(DefaultOptions.InverseProc.INNER, true);*/
         } else if (token instanceof GroupOpen || token instanceof GroupClose) {
@@ -54,15 +55,14 @@ public class CalcProcessor extends InverseProcessor {
     }
 
     @Override
-    public void processFinish(ParseStructure structure) {
+    public void processFinish(StructuredTokens structure) {
 
         for (TokenHolder holder : structure.getTokenHolders()) {
             TokenHolder.recursiveLoop(holder, structure, (tokenHolder, iTokenList, aStructure) -> {
 
                 if(TokenListUtil.findTokenInList(GroupOpen.class, iTokenList)) {
                     structure.createModifier().unify("Group", tokenHolder, aStructure,
-                            new GroupPredicate(),
-                            new GroupPredicate().negate());
+                            new GroupPredicate());
                 }
             });
         }

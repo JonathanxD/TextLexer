@@ -20,9 +20,7 @@ package com.github.jonathanxd.textlexer.test.calc;
 
 import com.github.jonathanxd.textlexer.TextLexer;
 import com.github.jonathanxd.textlexer.ext.parser.Parser;
-import com.github.jonathanxd.textlexer.ext.parser.holder.TokenHolder;
-import com.github.jonathanxd.textlexer.ext.parser.structure.ParseStructure;
-import com.github.jonathanxd.textlexer.lexer.token.IToken;
+import com.github.jonathanxd.textlexer.ext.parser.structure.StructuredTokens;
 import com.github.jonathanxd.textlexer.lexer.token.history.ITokenList;
 import com.github.jonathanxd.textlexer.test.calc.ext.parser.CalcProcessor;
 import com.github.jonathanxd.textlexer.test.calc.tokens.Garbage;
@@ -37,8 +35,6 @@ import com.github.jonathanxd.textlexer.test.calc.tokens.operators.Plus;
 
 import org.junit.Test;
 
-import java.util.List;
-
 /**
  * Created by jonathan on 17/02/16.
  */
@@ -49,7 +45,7 @@ public class CalcTest {
         LexerAndParserTest();
     }
 
-    public ParseStructure LexerAndParserTest() {
+    public StructuredTokens LexerAndParserTest() {
         TextLexer lexer = new TextLexer();
 
         try {
@@ -69,7 +65,7 @@ public class CalcTest {
         Parser parser = new Parser(list);
         parser.addProcessor(new CalcProcessor());
 
-        ParseStructure structure = parser.parse();
+        StructuredTokens structure = parser.parse();
 
         System.out.println("Structure: " + structure);
         return structure;

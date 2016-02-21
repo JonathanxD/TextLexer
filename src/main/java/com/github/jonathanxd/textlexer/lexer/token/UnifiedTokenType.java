@@ -19,7 +19,7 @@
 package com.github.jonathanxd.textlexer.lexer.token;
 
 import com.github.jonathanxd.textlexer.lexer.token.builder.TokenBuilder;
-import com.github.jonathanxd.textlexer.lexer.token.history.ITokenList;
+import com.github.jonathanxd.textlexer.lexer.token.processor.ProcessorData;
 import com.github.jonathanxd.textlexer.lexer.token.type.ITokenType;
 
 /**
@@ -40,8 +40,14 @@ public abstract class UnifiedTokenType<T> extends AbstractToken<T> implements IT
     }
 
     @Override
-    public TokenBuilder process(ITokenList ITokenList, TokenBuilder current, char character) {
-        current.addToData(character);
+    public TokenBuilder process(ProcessorData data) {
+
+        TokenBuilder current = data.getBuilderList().hasCurrent() ? data.getBuilderList().current() : null;
+
+        if (current != null) {
+            current.addToData(data.getCharacter());
+        }
+
         return current;
     }
 

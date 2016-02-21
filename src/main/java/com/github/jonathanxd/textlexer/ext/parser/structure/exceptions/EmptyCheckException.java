@@ -21,6 +21,10 @@ package com.github.jonathanxd.textlexer.ext.parser.structure.exceptions;
 /**
  * Created by jonathan on 17/02/16.
  */
+
+/**
+ * Occurs if the current TokenHolder is null
+ */
 public class EmptyCheckException extends RuntimeException {
 
     public EmptyCheckException() {

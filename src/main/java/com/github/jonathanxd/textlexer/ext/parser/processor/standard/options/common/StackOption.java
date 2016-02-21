@@ -23,6 +23,10 @@ import com.github.jonathanxd.textlexer.ext.parser.structure.Option;
 /**
  * Created by jonathan on 18/02/16.
  */
+
+/**
+ * Stack in host
+ */
 public class StackOption extends Option {
     public StackOption() {
         super("STACK TO HOLDER");

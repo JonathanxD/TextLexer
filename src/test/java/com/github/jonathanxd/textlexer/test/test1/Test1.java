@@ -18,12 +18,17 @@
  */
 package com.github.jonathanxd.textlexer.test.test1;
 
+import com.github.jonathanxd.iutils.iterator.IteratorUtil;
 import com.github.jonathanxd.textlexer.test.test1.tokens.ExpressionOpen;
 import com.github.jonathanxd.textlexer.test.test1.tokens.Variable;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Optional;
 
-import com.github.jonathanxd.textlexer.ext.reconstructor.Constructor;
+import com.github.jonathanxd.textlexer.ext.constructor.Constructor;
 import com.github.jonathanxd.textlexer.TextLexer;
 import com.github.jonathanxd.textlexer.lexer.token.IToken;
 import com.github.jonathanxd.textlexer.lexer.token.history.ITokenList;
@@ -42,6 +47,27 @@ public class Test1 {
 
     @Test
     public void LexerTest() throws Exception {
+
+        List<String> strList = new ArrayList<>(Arrays.asList("A", "B", "C", "D"));
+
+        int x = 0;
+        for(String strA : strList) {
+            Iterator<String> iter = strList.iterator();
+            IteratorUtil.goTo(iter, x);
+
+            System.out.println("NEX: "+iter.next()+" |CURRENT: "+strA);
+            /**
+             NEX: A |CURRENT: A
+             NEX: B |CURRENT: B
+             NEX: C |CURRENT: C
+             NEX: D |CURRENT: D
+             */
+
+            ++x;
+        }
+
+
+
         TextLexer textLexer = new TextLexer();
         textLexer.addTokenTypes(ExpressionOpen.class, ExpressionClose.class, IfToken.class, Space.class, Variable.class);
         textLexer.addStructureAnalyzer(new SimpleAnalyzer());
@@ -75,6 +101,9 @@ public class Test1 {
         System.out.println("Data: "+str);
 
         Assert.assertEquals("Invalid data construction or token data modification", str, "if (y)");
+
+
+
 
     }
 

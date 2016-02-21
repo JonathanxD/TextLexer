@@ -21,6 +21,7 @@ package com.github.jonathanxd.textlexer.lexer.token.history;
 import com.github.jonathanxd.iutils.annotations.Immutable;
 import com.github.jonathanxd.textlexer.lexer.token.IToken;
 import com.github.jonathanxd.textlexer.lexer.token.history.analise.ElementSpecification;
+import com.github.jonathanxd.textlexer.lexer.token.history.list.CommonTokenList;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -42,6 +43,8 @@ public interface ITokenList {
     IToken fetchLast();
 
     int size();
+
+    void updateVisible();
 
     @Deprecated
     IToken find(Class<? extends IToken> tokenClass, Class<? extends IToken> stopAt, LoopDirection loopDirection);
@@ -125,12 +128,26 @@ public interface ITokenList {
         }
     }
 
-    default List<IToken<?>> toList() {
-        List<IToken<?>> list = new ArrayList<>();
+    void filter(Predicate<? super IToken<?>> tokenFilter);
+
+    default CommonTokenList toList() {
+        CommonTokenList list = CommonTokenList.mutable();
         forEach(list::add);
         return list;
     }
 
+    void modify(ModifyFunction modifyFunction);
+
     @Immutable
-    List<IToken<?>> allToList();
+    CommonTokenList allToList();
+
+    static ITokenList of(List<IToken<?>> tokenList) {
+        ITokenList iTokenList = new TokenListImpl();
+
+        tokenList.forEach(iTokenList::add);
+
+        iTokenList.updateVisible();
+
+        return iTokenList;
+    }
 }

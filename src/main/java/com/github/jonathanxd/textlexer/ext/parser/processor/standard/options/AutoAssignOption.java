@@ -23,6 +23,11 @@ import com.github.jonathanxd.textlexer.ext.parser.structure.Option;
 /**
  * Created by jonathan on 19/02/16.
  */
+
+/**
+ * Create if don't have any {@link com.github.jonathanxd.textlexer.ext.parser.processor.standard.options.common.HostOption}
+ * or link if exists.
+ */
 public class AutoAssignOption extends Option {
 
     public AutoAssignOption() {

@@ -21,10 +21,22 @@ package com.github.jonathanxd.textlexer.ext.parser.processor.action;
 /**
  * Created by jonathan on 19/02/16.
  */
-public enum ProcessingState {
-    DEFAULT,
-    CONTINUE,
-    BREAK;
 
+/**
+ * State of Process
+ */
+public enum ProcessingState {
+    /**
+     * DEFAULT State
+     */
+    DEFAULT,
+    /**
+     * CONTINUE without running the rest of code
+     */
+    CONTINUE,
+    /**
+     * BREAK the processing
+     */
+    BREAK
 
 }

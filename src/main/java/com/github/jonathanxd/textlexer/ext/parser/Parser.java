@@ -18,45 +18,76 @@
  */
 package com.github.jonathanxd.textlexer.ext.parser;
 
-import com.github.jonathanxd.textlexer.ext.parser.holder.TokenHolder;
-import com.github.jonathanxd.textlexer.ext.parser.processor.ParserProcessor;
-import com.github.jonathanxd.textlexer.ext.parser.structure.ParseStructure;
+import com.github.jonathanxd.textlexer.ext.parser.processor.StructureProcessor;
+import com.github.jonathanxd.textlexer.ext.parser.structure.ParseSection;
+import com.github.jonathanxd.textlexer.ext.parser.structure.StructuredTokens;
 import com.github.jonathanxd.textlexer.lexer.token.IToken;
 import com.github.jonathanxd.textlexer.lexer.token.history.ITokenList;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.ListIterator;
 
 /**
- * Created by jonathan on 17/02/16.
+ * Parsing Processor
  */
 public class Parser {
 
+    /**
+     * TokenList
+     */
     private final ITokenList tokenList;
-    private final List<ParserProcessor> processors = new ArrayList<>();
-    private final List<TokenHolder> tokenHolders = new ArrayList<>();
 
+    /**
+     * Processor list
+     */
+    private final List<StructureProcessor> processors = new ArrayList<>();
+
+    /**
+     * Create new parser
+     *
+     * @param tokenList TokenList
+     */
     public Parser(ITokenList tokenList) {
         this.tokenList = tokenList;
     }
 
+
+    /**
+     * Return TokenList
+     *
+     * @return TokenList
+     */
     public ITokenList getTokenList() {
         return tokenList;
     }
 
-    public void addProcessor(ParserProcessor processor) {
+    /**
+     * Add a Processor to Processor List
+     *
+     * @param processor Processor
+     */
+    public void addProcessor(StructureProcessor processor) {
         getProcessors().add(processor);
     }
 
-    protected List<ParserProcessor> getProcessors() {
+    /**
+     * Return processors
+     *
+     * @return Processors
+     */
+    protected List<StructureProcessor> getProcessors() {
         return processors;
     }
 
-    public ParseStructure process() {
+    /**
+     * Process Structure calling processor and Return StructuredTokens
+     *
+     * @return Processed StructuredTokens
+     */
+    public StructuredTokens process() {
 
-        ParseStructure structure = new ParseStructure();
-        ParseStructure.ParseSection section = structure.createSection();
+        StructuredTokens structure = new StructuredTokens();
+        ParseSection section = structure.createSection();
 
         List<IToken<?>> tokenList = getTokenList().allToList();
 
@@ -68,49 +99,21 @@ public class Parser {
 
     }
 
-    private void processingEnd(ParseStructure structure) {
+    /**
+     * End parsing process
+     *
+     * @param structure StructuredTokens
+     */
+    private void processingEnd(StructuredTokens structure) {
         processors.forEach(processor -> processor.processFinish(structure));
     }
 
-
-    public ParseStructure parse() {
+    /**
+     * @see #process()
+     * @return StructuredTokens
+     */
+    public StructuredTokens parse() {
         return process();
-    }
-
-    private static final class AProcessor implements Processor {
-
-        private final IToken<?> token;
-        private final ListIterator<IToken<?>> iterator;
-        private final ParseStructure structure;
-        private final ParseStructure.ParseSection section;
-
-        private AProcessor(IToken<?> token, ListIterator<IToken<?>> iterator, ParseStructure structure, ParseStructure.ParseSection section) {
-            this.token = token;
-            this.iterator = iterator;
-            this.structure = structure;
-            this.section = section;
-        }
-
-
-        @Override
-        public IToken<?> currentToken() {
-            return token;
-        }
-
-        @Override
-        public IToken<?> safeNext() {
-            return iterator.next();
-        }
-
-        @Override
-        public ParseStructure structure() {
-            return structure;
-        }
-
-        @Override
-        public ParseStructure.ParseSection section() {
-            return section;
-        }
     }
 
 }

@@ -18,8 +18,9 @@
  */
 package com.github.jonathanxd.textlexer.ext.parser.processor;
 
-import com.github.jonathanxd.textlexer.ext.parser.structure.ParseStructure;
-import com.github.jonathanxd.textlexer.ext.parser.structure.StructureOptions;
+import com.github.jonathanxd.textlexer.ext.parser.processor.standard.options.StructureOptions;
+import com.github.jonathanxd.textlexer.ext.parser.structure.ParseSection;
+import com.github.jonathanxd.textlexer.ext.parser.structure.StructuredTokens;
 import com.github.jonathanxd.textlexer.lexer.token.IToken;
 
 /**
@@ -27,10 +28,15 @@ import com.github.jonathanxd.textlexer.lexer.token.IToken;
  */
 public interface OptionProcessor {
 
-    StructureOptions optionsOf(IToken<?> token);
-
-    default StructureOptions optionsOf(IToken<?> token, ParseStructure structure, ParseStructure.ParseSection section) {
-        return optionsOf(token);
+    default StructureOptions optionsOf(IToken<?> token) {
+        return new StructureOptions();
     }
+
+    @Deprecated
+    default StructureOptions optionsOf(IToken<?> token, StructuredTokens structure, ParseSection section) {
+        return optionsOf(token, section);
+    }
+
+    StructureOptions optionsOf(IToken<?> token, ParseSection section);
 
 }

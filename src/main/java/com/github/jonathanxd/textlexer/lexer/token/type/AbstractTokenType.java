@@ -20,6 +20,7 @@ package com.github.jonathanxd.textlexer.lexer.token.type;
 
 import com.github.jonathanxd.textlexer.lexer.token.builder.TokenBuilder;
 import com.github.jonathanxd.textlexer.lexer.token.history.ITokenList;
+import com.github.jonathanxd.textlexer.lexer.token.processor.ProcessorData;
 
 /**
  * Created by jonathan on 06/02/16.
@@ -27,8 +28,13 @@ import com.github.jonathanxd.textlexer.lexer.token.history.ITokenList;
 public abstract class AbstractTokenType<T> implements ITokenType<T> {
 
     @Override
-    public TokenBuilder process(ITokenList ITokenList, TokenBuilder current, char character) {
-        current.addToData(character);
+    public TokenBuilder process(ProcessorData data) {
+        TokenBuilder current = data.getBuilderList().hasCurrent() ? data.getBuilderList().current() : null;
+
+        if(current != null) {
+            current.addToData(data.getCharacter());
+        }
+
         return current;
     }
 

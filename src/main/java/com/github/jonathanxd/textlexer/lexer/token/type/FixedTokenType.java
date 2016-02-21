@@ -21,6 +21,7 @@ package com.github.jonathanxd.textlexer.lexer.token.type;
 import com.github.jonathanxd.textlexer.lexer.token.IToken;
 import com.github.jonathanxd.textlexer.lexer.token.builder.TokenBuilder;
 import com.github.jonathanxd.textlexer.lexer.token.history.ITokenList;
+import com.github.jonathanxd.textlexer.lexer.token.processor.ProcessorData;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
@@ -40,9 +41,15 @@ public class FixedTokenType<T> implements ITokenType<T> {
     }
 
     @Override
-    public TokenBuilder process(ITokenList ITokenList, TokenBuilder current, char character) {
-        current.addToData(character);
+    public TokenBuilder process(ProcessorData processorData) {
+        TokenBuilder current = processorData.getBuilderList().hasCurrent() ? processorData.getBuilderList().current() : null;
+
+        if(current != null) {
+            current.addToData(processorData.getCharacter());
+        }
+
         return current;
+
     }
 
     @Override

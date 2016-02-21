@@ -23,6 +23,10 @@ import com.github.jonathanxd.textlexer.ext.parser.structure.Option;
 /**
  * Created by jonathan on 19/02/16.
  */
+
+/**
+ * Host next token
+ */
 public class HostOption extends Option {
 
     public HostOption() {

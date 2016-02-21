@@ -20,12 +20,14 @@ package com.github.jonathanxd.textlexer.lexer.token.history;
 
 import com.github.jonathanxd.textlexer.lexer.token.IToken;
 import com.github.jonathanxd.textlexer.lexer.token.history.analise.ElementSpecification;
+import com.github.jonathanxd.textlexer.lexer.token.history.list.CommonTokenList;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Objects;
 import java.util.function.Function;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
 /**
  * Created by jonathan on 30/01/16.
@@ -56,6 +58,15 @@ public class TokenListImpl implements ITokenList {
     @Override
     public int size() {
         return visibleTokens.size();
+    }
+
+    @Override
+    public void updateVisible() {
+        visibleTokens.clear();
+        tokenList.forEach(token -> {
+            if(!token.hide())
+                visibleTokens.add(token);
+        });
     }
 
     @Override
@@ -90,8 +101,12 @@ public class TokenListImpl implements ITokenList {
             return State.CONTINUE;
         };
 
+        final int start = (elementSpecification.getStartIndex() > -1 && elementSpecification.getStartIndex() < size()
+                ? elementSpecification.getStartIndex()
+        : (loopDirection == LoopDirection.FIRST_TO_LAST ? size() - 1 : 0));
+
         if (loopDirection == LoopDirection.FIRST_TO_LAST) {
-            for (int x = size() - 1; x > -1; --x) {
+            for (int x = start; x > -1; --x) {
                 IToken<?> token = fetch(x);
 
                 State state = tokenConsumer.apply(token);
@@ -105,7 +120,7 @@ public class TokenListImpl implements ITokenList {
                 }
             }
         } else if (loopDirection == LoopDirection.LAST_TO_FIRST) {
-            for (int x = 0; x < size(); ++x) {
+            for (int x = start; x < size(); ++x) {
                 IToken<?> token = fetch(x);
 
                 State state = tokenConsumer.apply(token);
@@ -124,8 +139,31 @@ public class TokenListImpl implements ITokenList {
     }
 
     @Override
-    public List<IToken<?>> allToList() {
-        return Collections.unmodifiableList(tokenList);
+    public void filter(Predicate<? super IToken<?>> tokenFilter) {
+        List<IToken<?>> iTokenList = tokenList.stream().filter(tokenFilter).collect(Collectors.toList());
+        tokenList.clear();
+        tokenList.addAll(iTokenList);
+        updateVisible();
+    }
+
+    @Override
+    public void modify(ModifyFunction modifyFunction) {
+        List<IToken<?>> localTokenList = new ArrayList<>(tokenList);
+        for(int x = 0; x < tokenList.size(); ++x) {
+
+            IToken<?> token = tokenList.get(x);
+            modifyFunction.fix(token, localTokenList, x);
+        }
+
+        tokenList.clear();
+        tokenList.addAll(localTokenList);
+
+        updateVisible();
+    }
+
+    @Override
+    public CommonTokenList allToList() {
+        return CommonTokenList.immutable(tokenList);
     }
 
     private enum State {

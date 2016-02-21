@@ -32,25 +32,43 @@ public class ElementSpecification {
     private final Predicate<IToken> tokenFindPredicate; // OR
     private final Predicate<IToken> stopAtPredicate; // OR
     private final LoopDirection direction;
+    private final int startIndex;
 
-    ElementSpecification(Predicate<IToken> tokenFindPredicate, Predicate<IToken> stopAtPredicate, LoopDirection direction) {
+    ElementSpecification(Predicate<IToken> tokenFindPredicate, Predicate<IToken> stopAtPredicate, LoopDirection direction, int startIndex) {
         this.tokenFindPredicate = tokenFindPredicate;
         this.stopAtPredicate = stopAtPredicate;
         this.direction = direction;
+        this.startIndex = startIndex;
     }
 
     public static ElementSpecification tokenPredicateSpec(Predicate<IToken> tokenFindPredicate,
                                                           Predicate<IToken> stopAtPredicate,
                                                           LoopDirection direction) {
 
-        return new ElementSpecification(tokenFindPredicate, stopAtPredicate, direction);
+        return new ElementSpecification(tokenFindPredicate, stopAtPredicate, direction, -1);
+    }
+
+    public static ElementSpecification tokenPredicateSpec(Predicate<IToken> tokenFindPredicate,
+                                                          Predicate<IToken> stopAtPredicate,
+                                                          LoopDirection direction,
+                                                          int startIndex) {
+
+        return new ElementSpecification(tokenFindPredicate, stopAtPredicate, direction, startIndex);
     }
 
     public static ElementSpecification classCollectionSpec(Collection<Class<? extends IToken>> tokenClasses,
                                                            Collection<Class<? extends IToken>> stopAtClasses,
                                                            LoopDirection direction) {
 
-        return new ClassCollectionSpec(tokenClasses, stopAtClasses, direction);
+        return new ClassCollectionSpec(tokenClasses, stopAtClasses, direction, -1);
+    }
+
+    public static ElementSpecification classCollectionSpec(Collection<Class<? extends IToken>> tokenClasses,
+                                                           Collection<Class<? extends IToken>> stopAtClasses,
+                                                           LoopDirection direction,
+                                                           int startIndex) {
+
+        return new ClassCollectionSpec(tokenClasses, stopAtClasses, direction, startIndex);
     }
 
     public LoopDirection getDirection() {
@@ -65,16 +83,21 @@ public class ElementSpecification {
         return tokenFindPredicate.test(token);
     }
 
+    public int getStartIndex() {
+        return startIndex;
+    }
+
     private static final class ClassCollectionSpec extends ElementSpecification {
         ClassCollectionSpec(Collection<Class<? extends IToken>> tokenClasses,
                             Collection<Class<? extends IToken>> stopAtClasses,
-                            LoopDirection direction) {
+                            LoopDirection direction,
+                            int startIndex) {
 
             /* IF(ANY TOKEN InstanceOf ANY findTokenClass) : FIND */
             super(token -> tokenClasses.stream().filter(findTokenClass -> findTokenClass.isAssignableFrom(token.getClass())).findAny().isPresent(),
                     /* IF(ANY TOKEN InstanceOf ANY stopClass) : STOP */
                     token -> stopAtClasses.stream().filter(stopAtClass -> stopAtClass.isAssignableFrom(token.getClass())).findAny().isPresent(),
-                    direction);
+                    direction, startIndex);
         }
     }
 

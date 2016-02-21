@@ -33,14 +33,7 @@ import java.util.Collection;
  */
 public interface ITokenType<T> {
 
-    @Deprecated
-    TokenBuilder process(ITokenList tokenList, TokenBuilder current, char character);
-
-    default TokenBuilder process(ProcessorData processorData) {
-        return process(processorData.getTokenList(),
-                processorData.getBuilderList().hasCurrent() ? processorData.getBuilderList().current() : null,
-                processorData.getCharacter());
-    }
+    TokenBuilder process(ProcessorData processorData);
 
     boolean matches(char character);
 

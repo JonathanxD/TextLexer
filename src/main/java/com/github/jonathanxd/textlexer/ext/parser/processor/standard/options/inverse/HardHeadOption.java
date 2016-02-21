@@ -23,6 +23,10 @@ import com.github.jonathanxd.textlexer.ext.parser.structure.Option;
 /**
  * Created by jonathan on 18/02/16.
  */
+
+/**
+ * Force HEAD
+ */
 public class HardHeadOption extends Option {
 
     public HardHeadOption() {

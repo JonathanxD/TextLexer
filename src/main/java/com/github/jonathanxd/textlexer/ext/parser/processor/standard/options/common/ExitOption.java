@@ -23,6 +23,10 @@ import com.github.jonathanxd.textlexer.ext.parser.structure.Option;
 /**
  * Created by jonathan on 18/02/16.
  */
+
+/**
+ * Exit from current token
+ */
 public class ExitOption extends Option {
     public ExitOption() {
         super("EXIT NODE");

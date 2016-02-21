@@ -24,8 +24,6 @@ import com.github.jonathanxd.textlexer.ext.parser.processor.standard.options.com
 import com.github.jonathanxd.textlexer.ext.parser.processor.standard.options.common.StackOption;
 import com.github.jonathanxd.textlexer.ext.parser.processor.standard.options.inverse.ElementOption;
 import com.github.jonathanxd.textlexer.ext.parser.processor.standard.options.inverse.HardHeadOption;
-import com.github.jonathanxd.textlexer.ext.parser.processor.standard.options.inverse.HeadOption;
-import com.github.jonathanxd.textlexer.ext.parser.processor.standard.options.inverse.InnerOption;
 import com.github.jonathanxd.textlexer.ext.parser.structure.Option;
 
 /**

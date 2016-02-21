@@ -18,17 +18,25 @@
  */
 package com.github.jonathanxd.textlexer.ext.parser.holder;
 
-import com.github.jonathanxd.textlexer.ext.parser.structure.ParseStructure;
+import com.github.jonathanxd.textlexer.ext.parser.structure.StructuredTokens;
 import com.github.jonathanxd.textlexer.lexer.token.IToken;
 
 import java.util.List;
+import java.util.function.BiConsumer;
 
 /**
  * Created by jonathan on 18/02/16.
  */
 @FunctionalInterface
 public interface TokenLoopCallback {
-
-    void accept(TokenHolder tokenHolder, List<IToken<?>> tokenList, ParseStructure structure);
+    /**
+     * Accept a Token, commonly called by a recursive loop
+     *
+     * @param tokenHolder TokenHolder
+     * @param tokenList   List of Tokens
+     * @param structure   Structure
+     * @see TokenHolder#recursive(TokenHolder, List, BiConsumer)
+     */
+    void accept(TokenHolder tokenHolder, List<IToken<?>> tokenList, StructuredTokens structure);
 
 }

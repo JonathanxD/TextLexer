@@ -20,11 +20,12 @@ package com.github.jonathanxd.textlexer.ext.parser.processor.standard.inverse;
 
 import com.github.jonathanxd.textlexer.ext.parser.holder.TokenHolder;
 import com.github.jonathanxd.textlexer.ext.parser.processor.OptionProcessor;
-import com.github.jonathanxd.textlexer.ext.parser.processor.ParserProcessor;
+import com.github.jonathanxd.textlexer.ext.parser.processor.StructureProcessor;
 import com.github.jonathanxd.textlexer.ext.parser.processor.standard.options.DefaultOptions;
 import com.github.jonathanxd.textlexer.ext.parser.processor.standard.options.OptionSupport;
-import com.github.jonathanxd.textlexer.ext.parser.structure.ParseStructure;
-import com.github.jonathanxd.textlexer.ext.parser.structure.StructureOptions;
+import com.github.jonathanxd.textlexer.ext.parser.structure.ParseSection;
+import com.github.jonathanxd.textlexer.ext.parser.structure.StructuredTokens;
+import com.github.jonathanxd.textlexer.ext.parser.processor.standard.options.StructureOptions;
 import com.github.jonathanxd.textlexer.lexer.token.IToken;
 
 import java.util.Deque;
@@ -33,13 +34,33 @@ import java.util.List;
 import java.util.ListIterator;
 
 /**
- * Created by jonathan on 19/02/16.
+ * Math-Like processor, the second token is the host of first.
+ *
+ * Like:
+ *
+ * 5 + 4 * 7
+ *
+ * 5 is child element of '+'
+ * 4 and 7 is child element of *. 7 is child of the * token because has no more tokens
+ *
+ * Other example is:
+ *
+ * A | B - C : D
+ *
+ * A is child element of '|'
+ *
+ * B is child element of '-'
+ *
+ * C and D is child elements of ':'
+ *
+ * This processor is created because the Math is not based in common order like JSON, XML, Java, etc...
+ *
  */
 @OptionSupport(value = {DefaultOptions.Common.class, DefaultOptions.InverseProc.class}, description = "Uses all options of DefaultOptions.Common and DefaultOptions.InverseProc")
-public abstract class InverseProcessor implements OptionProcessor, ParserProcessor {
+public abstract class InverseProcessor implements OptionProcessor, StructureProcessor {
 
     @Override
-    public void process(List<IToken<?>> tokenList, ParseStructure structure, ParseStructure.ParseSection section) {
+    public void process(List<IToken<?>> tokenList, StructuredTokens structure, ParseSection section) {
         Deque<IToken<?>> tokenDeque = new LinkedList<>();
         ListIterator<IToken<?>> tokenIterator = tokenList.listIterator();
 
@@ -109,6 +130,13 @@ public abstract class InverseProcessor implements OptionProcessor, ParserProcess
 
     }
 
+    /**
+     * Get next visible token
+     * @param index Start index
+     * @param tokenList Token list
+     * @return Next visible or null
+     * @see com.github.jonathanxd.textlexer.lexer.token.history.TokenListUtil#nextVisibleToken(int, List)
+     */
     private IToken<?> next(int index, List<IToken<?>> tokenList) {
         for (int x = index + 1; x < tokenList.size(); ++x) {
             IToken<?> token = tokenList.get(x);
