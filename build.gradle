@@ -20,7 +20,7 @@ allprojects {
     }
 }
 //Sonatype upload
-apply from: 'upload.gradle'
+//apply from: 'upload.gradle'
 
 defaultTasks 'licenseFormat', 'build', 'test', 'jar', 'shadowJar'
 
