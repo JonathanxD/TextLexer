@@ -23,6 +23,8 @@ import com.github.jonathanxd.textlexer.ext.show.StructureGUI;
 import com.github.jonathanxd.textlexer.test.calc.CalcTest;
 import com.github.jonathanxd.textlexer.test.test2.test1.Test2;
 
+import java.io.UnsupportedEncodingException;
+
 /**
  * Created by jonathan on 18/02/16.
  */
@@ -39,7 +41,7 @@ public class Test {
         gui.show();
     }
 
-    public static void main(String[] args) throws InstantiationException, IllegalAccessException {
+    public static void main(String[] args) throws InstantiationException, IllegalAccessException, UnsupportedEncodingException {
         //new Test().viewTest();
 
         Test2 test2 = new Test2();

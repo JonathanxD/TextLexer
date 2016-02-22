@@ -18,24 +18,39 @@
  */
 package com.github.jonathanxd.textlexer.lexer.token;
 
+import com.github.jonathanxd.iutils.extra.IMutableContainer;
+import com.github.jonathanxd.iutils.extra.ImmutableContainer;
+import com.github.jonathanxd.iutils.extra.MutableContainer;
+
 /**
  * Created by jonathan on 06/02/16.
  */
 public abstract class AbstractToken<T> implements IToken<T> {
-    private String data;
+
+    private final IMutableContainer<String> data = new MutableContainer<>();
 
     public AbstractToken(String data) {
-        this.data = data;
+        this.data.set(data);
     }
 
     @Override
-    public String getData() {
+    public IMutableContainer<String> mutableData() {
         return data;
     }
 
     @Override
+    public ImmutableContainer<String> immutableData() {
+        return new ImmutableContainer<>(data.getValue());
+    }
+
+    @Override
+    public String getData() {
+        return immutableData().get();
+    }
+
+    @Override
     public void setData(String data) {
-        this.data = data;
+        this.data.set(data);
     }
 
     @Override

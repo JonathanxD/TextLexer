@@ -19,6 +19,8 @@
 package com.github.jonathanxd.textlexer.lexer.token;
 
 import com.github.jonathanxd.iutils.annotations.ProcessedBy;
+import com.github.jonathanxd.iutils.extra.IMutableContainer;
+import com.github.jonathanxd.iutils.extra.ImmutableContainer;
 import com.github.jonathanxd.textlexer.lexer.LexerImpl;
 import com.github.jonathanxd.textlexer.lexer.token.history.ITokenList;
 import com.github.jonathanxd.textlexer.lexer.token.history.TokenListImpl;
@@ -30,19 +32,67 @@ import com.github.jonathanxd.textlexer.lexer.token.structure.analise.StructureRu
  */
 public interface IToken<T> {
 
+    /**
+     * Converts from Text data to Object representation
+     *
+     * @return Object representation
+     */
     T dataToValue();
 
+    /**
+     * Get data of Token
+     *
+     * @return Data of token
+     */
+    @Deprecated
     String getData();
 
+    /**
+     * Set the data
+     *
+     * @param data Set data
+     */
     void setData(String data);
 
+    /**
+     * Get Data as MutableContainer
+     *
+     * @return Data
+     */
+    IMutableContainer<String> mutableData();
+
+    /**
+     * Get Data as ImmutableContainer
+     *
+     * @return Data
+     */
+    ImmutableContainer<String> immutableData();
+
+    /**
+     * Get Token simple name
+     *
+     * @return Token simple name
+     */
     String getSimpleName();
 
+    /**
+     * Hides the token from {@link ITokenList} list
+     *
+     * @return True to hide or false otherwise
+     */
     @ProcessedBy({ITokenList.class, TokenListImpl.class})
     default boolean hide() {
         return false;
     }
 
+    /**
+     * Structure Rule for Token
+     *
+     * @return StructureRule
+     * @deprecated See {@link com.github.jonathanxd.textlexer.ext.parser.Parser}, and {@link
+     * com.github.jonathanxd.textlexer.ext.parser.processor.rule.RuleProcessor}
+     */
+    @Deprecated
     @ProcessedBy({AnaliseTokenList.class, LexerImpl.class})
     default StructureRule getStructureRule() {
         return null;

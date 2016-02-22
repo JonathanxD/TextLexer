@@ -113,20 +113,34 @@ public class StructureModifier {
             TokenHolder.recursive(tokenHolder, head.getChildTokens(), (list, token) -> {
                 if (unifyPredicate.test(token)) {
                     unify.add(token);
+
+                    childs.addAll(token.getChildTokens());
+                    token.getChildTokens().clear();
+
                     removal.add(() -> list.remove(token));
                 } else if (childUnify.test(token)) {
-                    childs.add(token);
+                    if(!TokenHolder.recursiveChildCheck(childs, token))
+                        childs.add(token);
                 }
             });
         }
 
 
         removal.forEach(Runnable::run);
+        removal.clear();
 
         unify.forEach(u -> u.getChildTokens().forEach(c -> {
-            if (childs.contains(c))
-                childs.remove(c);
+            for(TokenHolder h : childs) {
+                if(h.creationHashCode() == c.creationHashCode()) {
+                    removal.add(() -> childs.remove(c));
+                }
+            }
         }));
+
+
+
+        removal.forEach(Runnable::run);
+        removal.clear();
 
         TokenHolder holder = TokenHolder.ofHolders(id, unify, childs);
 

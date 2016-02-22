@@ -75,7 +75,7 @@ public abstract class StandardProcessor implements StructureProcessor, OptionPro
 
                     if (options.is(DefaultOptions.Common.STACK)) {
                         if (!section.hasCurrent())
-                            section.enter(structure.addToken(token));
+                            section.enter(structure.addToken(token, null));
                         else
                             section.link(token);
                         section.exit();
@@ -84,13 +84,13 @@ public abstract class StandardProcessor implements StructureProcessor, OptionPro
                     if (options.is(DefaultOptions.Standard.AUTO_ASSIGN)) {
 
                         if (!section.hasCurrent())
-                            section.enter(structure.addToken(token));
+                            section.enter(structure.addToken(token, null));
                         else
                             section.link(token);
                     }
 
                     if (options.is(DefaultOptions.Common.HOST)) {
-                        section.enter(structure.addToken(token));
+                        section.enter(structure.addToken(token, null));
                     }
 
 

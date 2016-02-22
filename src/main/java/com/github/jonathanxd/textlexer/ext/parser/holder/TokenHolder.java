@@ -18,13 +18,16 @@
  */
 package com.github.jonathanxd.textlexer.ext.parser.holder;
 
+import com.github.jonathanxd.textlexer.ext.common.TokenElementType;
 import com.github.jonathanxd.textlexer.ext.parser.structure.StructuredTokens;
 import com.github.jonathanxd.textlexer.lexer.token.IToken;
+import com.github.jonathanxd.textlexer.lexer.token.history.list.CommonTokenList;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.StringJoiner;
 import java.util.function.BiConsumer;
 
@@ -53,7 +56,7 @@ public class TokenHolder {
     /**
      * "Head"/"Host" Tokens
      */
-    final List<IToken<?>> tokens = new ArrayList<>();
+    final CommonTokenList tokens = CommonTokenList.mutable();
 
     /**
      * Child Tokens
@@ -107,7 +110,7 @@ public class TokenHolder {
 
         StringBuilder sb = new StringBuilder();
 
-        String shortName = "TokenHolder[name=" + holder.name + ",tokens=(" + holder.tokens + ")]";
+        String shortName = "TokenHolder[name=" + holder.name + ", parent=" + (holder.parent != null ? holder.parent.getName() : "<main>") + ", tokens=(" + holder.tokens + ")]";
 
         sb.append(shortName);
 
@@ -135,8 +138,8 @@ public class TokenHolder {
      * @param token "Head"/"Host" token
      * @return TokenHolder
      */
-    public static TokenHolder of(String name, IToken<?> token) {
-        return new TokenHolder(name(name, token), token);
+    public static TokenHolder of(String name, TokenHolder parent, IToken<?> token) {
+        return new TokenHolder(name(name, token), parent, Collections.singletonList(token), Collections.emptyList());
     }
 
     /**
@@ -180,8 +183,8 @@ public class TokenHolder {
      * @param childTokens Child Tokens
      * @return TokenHolder
      */
-    public static TokenHolder of(String name, List<IToken<?>> token, List<TokenHolder> childTokens) {
-        return new TokenHolder(name, token, childTokens);
+    public static TokenHolder of(String name, TokenHolder parent, CommonTokenList token, List<TokenHolder> childTokens) {
+        return new TokenHolder(name, parent, token, childTokens);
     }
 
     /**
@@ -191,19 +194,20 @@ public class TokenHolder {
      * @param tokenHolder Other TokenHolder
      * @return TokenHolder
      */
-    public static TokenHolder from(String name, TokenHolder tokenHolder) {
-        return new TokenHolder(name, tokenHolder.tokens, tokenHolder.childTokens);
+    public static TokenHolder from(String name, TokenHolder parent, TokenHolder tokenHolder) {
+        return new TokenHolder(name, parent, tokenHolder.tokens, tokenHolder.childTokens);
     }
 
     /**
      * Do a recursive loop in TokenHolders
      *
-     * @param tokenHolder    TokenHolder
-     * @param structure      Structure
-     * @param tokensConsumer Consumer
+     * @param tokenHolder    TokenHolder TokenHolder to do a recursive loop
+     * @param structure      Structure passed to TokenLoopCallback
+     * @param tokensConsumer Consumer TokenLoopCallback to receive tokens, the first received tokens
+     *                       are HeadTokens
      */
     public static void recursiveLoop(TokenHolder tokenHolder, StructuredTokens structure, TokenLoopCallback tokensConsumer) {
-        tokensConsumer.accept(tokenHolder, tokenHolder.getTokens(), structure);
+        tokensConsumer.accept(tokenHolder, tokenHolder.getTokens(), structure, TokenElementType.HEAD);
 
         List<TokenHolder> child = new ArrayList<>(tokenHolder.getChildTokens());
 
@@ -211,10 +215,41 @@ public class TokenHolder {
             if (holder.hasChildTokens()) {
                 recursiveLoop(holder, structure, tokensConsumer);
             } else {
-                tokensConsumer.accept(tokenHolder, holder.getTokens(), structure);
+                tokensConsumer.accept(tokenHolder, holder.getTokens(), structure, TokenElementType.CHILD_PART);
             }
         }
 
+    }
+
+    public static boolean recursiveChildCheck(List<TokenHolder> tokenHolder, TokenHolder child) {
+        for (TokenHolder holder : tokenHolder) {
+            if (recursiveChildCheck(holder, child)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Do a recursive loop in TokenHolders and check child token exists
+     *
+     * @param tokenHolder TokenHolder TokenHolder to do a recursive loop
+     * @param child       Child holder to check
+     */
+    public static boolean recursiveChildCheck(TokenHolder tokenHolder, TokenHolder child) {
+
+        if (tokenHolder.getChildTokens().contains(child)) {
+            return true;
+        }
+
+
+        for (TokenHolder holder : tokenHolder.getChildTokens()) {
+            if (recursiveChildCheck(holder, child)) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     /**
@@ -255,8 +290,8 @@ public class TokenHolder {
      * @param token Token
      * @return New TokenHolder created for Token
      */
-    public TokenHolder link(IToken<?> token) {
-        TokenHolder holder = of(token.getSimpleName(), token);
+    public TokenHolder link(IToken<?> token, TokenHolder parent) {
+        TokenHolder holder = of(token.getSimpleName(), parent, token);
         childTokens.add(holder);
         return holder;
     }
@@ -288,6 +323,15 @@ public class TokenHolder {
         return childTokens;
     }
 
+    /**
+     * Get parent token
+     *
+     * @return Parent Token
+     */
+    public Optional<TokenHolder> getParent() {
+        return Optional.ofNullable(parent);
+    }
+
     @Override
     public String toString() {
         return TokenHolder.toString(this);
@@ -296,6 +340,10 @@ public class TokenHolder {
     @Override
     public int hashCode() {
         return Objects.hash(name, tokens, childTokens);
+    }
+
+    public int creationHashCode() {
+        return super.hashCode();
     }
 
     @Override

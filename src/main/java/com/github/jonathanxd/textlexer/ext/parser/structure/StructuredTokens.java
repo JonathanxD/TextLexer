@@ -46,8 +46,8 @@ public class StructuredTokens {
      * @param token Token
      * @return new TokenHolder
      */
-    public TokenHolder addToken(IToken<?> token) {
-        TokenHolder holder = TokenHolder.of(null, token);
+    public TokenHolder addToken(IToken<?> token, TokenHolder parent) {
+        TokenHolder holder = TokenHolder.of(null, parent, token);
         tokenHolders.add(holder);
         return holder;
     }
@@ -59,7 +59,7 @@ public class StructuredTokens {
      * @param token       Token to link to TokenHolder
      */
     public void link(TokenHolder tokenHolder, IToken<?> token) {
-        tokenHolders.stream().filter(holder -> holder == tokenHolder).forEach(holder -> holder.link(token));
+        tokenHolders.stream().filter(holder -> holder == tokenHolder).forEach(holder -> holder.link(token, tokenHolder));
     }
 
     /**

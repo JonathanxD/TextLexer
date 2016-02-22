@@ -81,9 +81,9 @@ public abstract class InverseProcessor implements OptionProcessor, StructureProc
                     && (options.is(DefaultOptions.Common.STACK) || options.is(DefaultOptions.InverseProc.ELEMENT))) {
                 if (next == null || optionsOf(next).is(DefaultOptions.Common.STACK)) {
                     if (previousHeadHolder != null) {
-                        previousHeadHolder.link(token);
+                        previousHeadHolder.link(token, previousHeadHolder);
                     } else {
-                        section.enter(structure.addToken(token));
+                        section.enter(structure.addToken(token, null));
                     }
                 } else {
                     tokenDeque.addLast(token);
@@ -93,13 +93,13 @@ public abstract class InverseProcessor implements OptionProcessor, StructureProc
 
                 if (options.is(DefaultOptions.Common.HOST)) {
                     if (!section.canExit()) {
-                        previousHeadHolder = structure.addToken(token);
+                        previousHeadHolder = structure.addToken(token, null);
                         section.enter(previousHeadHolder);
                     } else {
                         previousHeadHolder = section.link(token);
                     }
                 } else {
-                    previousHeadHolder = structure.addToken(token);
+                    previousHeadHolder = structure.addToken(token, null);
                     section.enter(previousHeadHolder);
                 }
 
@@ -121,9 +121,9 @@ public abstract class InverseProcessor implements OptionProcessor, StructureProc
         if (!tokenDeque.isEmpty()) {
             for (IToken<?> token : tokenDeque) {
                 if (previousHeadHolder != null) {
-                    previousHeadHolder.link(token);
+                    previousHeadHolder.link(token, previousHeadHolder);
                 } else {
-                    section.enter(structure.addToken(token));
+                    section.enter(structure.addToken(token, null));
                 }
             }
         }

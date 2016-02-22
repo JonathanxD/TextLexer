@@ -19,6 +19,8 @@
 package com.github.jonathanxd.textlexer.test.test2.test1;
 
 import com.github.jonathanxd.textlexer.TextLexer;
+import com.github.jonathanxd.textlexer.ext.constructor.structure.PositionFactory;
+import com.github.jonathanxd.textlexer.ext.constructor.structure.StructureConstructor;
 import com.github.jonathanxd.textlexer.ext.parser.Parser;
 import com.github.jonathanxd.textlexer.ext.parser.structure.StructuredTokens;
 import com.github.jonathanxd.textlexer.ext.visitor.visit.StructureVisitor;
@@ -36,6 +38,8 @@ import com.github.jonathanxd.textlexer.test.test2.test1.visit.listener.TokenVisi
 
 import org.junit.Test;
 
+import java.io.UnsupportedEncodingException;
+
 /**
  * Created by jonathan on 08/02/16.
  */
@@ -46,7 +50,7 @@ public class Test2 {
         Test();
     }
 
-    public StructuredTokens Test() throws IllegalAccessException, InstantiationException {
+    public StructuredTokens Test() throws IllegalAccessException, InstantiationException, UnsupportedEncodingException {
         TextLexer textLexer = new TextLexer();
 
         textLexer.addTokenTypes(MapOpen.class, Garbage.class, MapClose.class, Comma.class, KeyToken.class, KeyValueDivider.class, ValueToken.class);
@@ -79,6 +83,12 @@ public class Test2 {
         visitor.addListener(new TokenVisitor());
 
         visitor.visit();
+
+        StructureConstructor constructor = new StructureConstructor(structure, PositionFactory.DEFAULT);
+
+        String str = new String(constructor.construct(), "UTF-8");
+
+        System.out.println("CONSTRUCT: "+str);
 
         return structure;
     }

@@ -35,7 +35,7 @@ public interface Visitor<T> {
      * @param token Token to visit
      */
     default void visit(IToken<?> token) {
-        visit(TokenHolder.of(token.getSimpleName(), token));
+        visit(TokenHolder.of(token.getSimpleName(), null, token));
     }
 
     /**
@@ -44,7 +44,7 @@ public interface Visitor<T> {
      * @param token Token to Exit
      */
     default void exit(IToken<?> token) {
-        exit(TokenHolder.of(token.getSimpleName(), token));
+        exit(TokenHolder.of(token.getSimpleName(), null, token));
     }
 
     /**

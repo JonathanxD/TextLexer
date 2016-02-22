@@ -58,7 +58,8 @@ public class ParseSection {
      */
     public TokenHolder link(IToken<?> token) {
         currentHolderCheck("No current TokenHolder to link, you should use link(TokenHolder, IToken) instead!");
-        TokenHolder newHolder = current.getLast().link(token);
+        TokenHolder parent = current.getLast();
+        TokenHolder newHolder = parent.link(token, parent);
         keepEnter(newHolder);
         return newHolder;
     }
@@ -106,7 +107,8 @@ public class ParseSection {
      * @param token Token
      */
     public void enter(IToken<?> token) {
-        enter(structure.addToken(token), true);
+        TokenHolder parent = hasCurrent() ? getCurrent() : null;
+        enter(structure.addToken(token, parent), true);
     }
 
     /**
@@ -126,7 +128,8 @@ public class ParseSection {
      * @param token Token
      */
     public void softEnter(IToken<?> token) {
-        keepEnter(structure.addToken(token));
+        TokenHolder parent = hasCurrent() ? getCurrent() : null;
+        keepEnter(structure.addToken(token, parent));
     }
 
     /**

@@ -32,7 +32,7 @@ import java.util.function.Predicate;
 public class SMLUnify {
     public static void unify(StructuredTokens structure) {
         for (TokenHolder holder : structure.getTokenHolders()) {
-            TokenHolder.recursiveLoop(holder, structure, (tokenHolder, iTokenList, aStructure) -> {
+            TokenHolder.recursiveLoop(holder, structure, (tokenHolder, iTokenList, aStructure, type) -> {
                 if (TokenListUtil.findTokenInList(MapOpen.class, iTokenList) )
                 {
                     structure.createModifier().unifyHead("Map", tokenHolder, aStructure,

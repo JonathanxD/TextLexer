@@ -58,7 +58,7 @@ public class CalcProcessor extends InverseProcessor {
     public void processFinish(StructuredTokens structure) {
 
         for (TokenHolder holder : structure.getTokenHolders()) {
-            TokenHolder.recursiveLoop(holder, structure, (tokenHolder, iTokenList, aStructure) -> {
+            TokenHolder.recursiveLoop(holder, structure, (tokenHolder, iTokenList, aStructure, type) -> {
 
                 if(TokenListUtil.findTokenInList(GroupOpen.class, iTokenList)) {
                     structure.createModifier().unify("Group", tokenHolder, aStructure,
