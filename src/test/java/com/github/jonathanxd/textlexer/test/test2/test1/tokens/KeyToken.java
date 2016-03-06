@@ -31,6 +31,7 @@ import com.github.jonathanxd.textlexer.lexer.token.structure.analise.StructureRu
 import com.github.jonathanxd.textlexer.test.test2.test1.tokens.host.MapClose;
 import com.github.jonathanxd.textlexer.test.test2.test1.tokens.host.MapOpen;
 
+import java.util.Collections;
 import java.util.Iterator;
 
 /**
@@ -67,6 +68,14 @@ public class KeyToken extends UnifiedTokenType<String> {
 
     @Override
     public boolean matches(ProcessorData processorData) {
+
+        if(!processorData.isFutureAnalysis()) {
+            try{
+                IToken<?> next = processorData.getTokensProcessor().future(1, Collections.emptyList(), this, processorData.getScanner());
+
+                System.out.println("Next: "+next);
+            }catch (Exception e){}
+        }
 
         char character = processorData.getCharacter();
         BuilderList builderList = processorData.getBuilderList();

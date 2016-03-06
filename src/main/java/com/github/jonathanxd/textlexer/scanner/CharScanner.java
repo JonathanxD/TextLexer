@@ -54,4 +54,12 @@ public class CharScanner implements IScanner {
     public int getCurrentIndex() {
         return currentIndex;
     }
+
+    @Override
+    public CharScanner clone() {
+        CharScanner cs = new CharScanner(this.chars.clone());
+        cs.currentIndex = this.currentIndex;
+
+        return cs;
+    }
 }

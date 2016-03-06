@@ -22,6 +22,7 @@ import com.github.jonathanxd.textlexer.lexer.token.type.ITokenType;
 
 import java.util.Deque;
 import java.util.LinkedList;
+import java.util.stream.Collectors;
 
 /**
  * Created by jonathan on 06/02/16.
@@ -64,8 +65,17 @@ public class BuilderList {
             endCurrent();
     }
 
+    public Deque<BuilderProcessData> getTokenBuilders() {
+        return new LinkedList<>(tokenBuilders);
+    }
+
     @Override
     public String toString() {
         return tokenBuilders.toString();
+    }
+
+    public void applyTo(BuilderList builderList) {
+        builderList.tokenBuilders.clear();
+        builderList.tokenBuilders.addAll(this.tokenBuilders.stream().map(BuilderProcessData::clone).collect(Collectors.toList()));
     }
 }

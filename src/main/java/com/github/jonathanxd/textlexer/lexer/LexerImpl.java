@@ -33,6 +33,7 @@ import java.util.List;
 public class LexerImpl implements ILexer {
 
     private final List<StructureAnalyzer> structureAnalyzers;
+    private IScanner currentScanner = null;
 
     public LexerImpl(List<StructureAnalyzer> structureAnalyzers) {
         this.structureAnalyzers = structureAnalyzers;
@@ -42,23 +43,38 @@ public class LexerImpl implements ILexer {
     @Override
     public ITokenList process(IScanner scanner, ITokensProcessor tokenTypeList) {
 
+        if(currentScanner != null && currentScanner != scanner)
+            throw new RuntimeException("Doesn't supports 2 process method call with different scanners!");
+
+        this.currentScanner = scanner;
+
         List<Character> characters = Collections.unmodifiableList(ListUtils.from(scanner.getChars()));
 
         while (scanner.hasNextChar()) {
             char current = scanner.nextChar();
-            tokenTypeList.process(current, characters, scanner.getCurrentIndex());
+            tokenTypeList.process(current, characters, scanner.getCurrentIndex(), scanner);
         }
         tokenTypeList.closeOpenBuilders();
 
         ITokenList tokenList = tokenTypeList.getTokenList();
         analyse(tokenList);
 
+        this.currentScanner = null;
+
         return tokenList;
     }
 
+    @Override
     public void analyse(ITokenList tokenList) {
         if (structureAnalyzers != null && !structureAnalyzers.isEmpty())
             for (StructureAnalyzer analyzer : structureAnalyzers)
                 analyzer.analyse(tokenList);
+    }
+
+    @Override
+    public ILexer clone() {
+        LexerImpl lexer = new LexerImpl(this.structureAnalyzers);
+        lexer.currentScanner = this.currentScanner;
+        return lexer;
     }
 }

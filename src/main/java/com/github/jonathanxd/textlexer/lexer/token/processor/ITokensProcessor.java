@@ -21,6 +21,7 @@ package com.github.jonathanxd.textlexer.lexer.token.processor;
 import com.github.jonathanxd.textlexer.lexer.token.IToken;
 import com.github.jonathanxd.textlexer.lexer.token.history.ITokenList;
 import com.github.jonathanxd.textlexer.lexer.token.type.ITokenType;
+import com.github.jonathanxd.textlexer.scanner.IScanner;
 
 import java.util.List;
 import java.util.function.Predicate;
@@ -28,15 +29,59 @@ import java.util.function.Predicate;
 /**
  * Created by jonathan on 30/01/16.
  */
-public interface ITokensProcessor {
+public interface ITokensProcessor extends Cloneable {
 
+    /**
+     * Add a Token Factory (TokenType)
+     *
+     * @param token TokenFactory
+     */
     void addTokenType(ITokenType<?> token);
 
+    /**
+     * Add a Token and token matcher (Is Recommended to use {@link ITokenType} instead)
+     *
+     * @param token   Token to add
+     * @param matcher Character Matcher
+     * @param <T>     Type of {@param token} return
+     */
     <T> void addToken(Class<IToken<T>> token, Predicate<Character> matcher);
 
-    void process(char input, List<Character> allChars, int index);
+    /**
+     * Process a character
+     *
+     * @param input    Current Character
+     * @param allChars All Characters
+     * @param index    Index of 'pointer' to a character in {@param allChars} List.
+     * @param scanner  The Scanner
+     */
+    void process(char input, List<Character> allChars, int index, IScanner scanner);
 
+    /**
+     * Returns A List of Tokens
+     *
+     * @return A List of Tokens
+     */
     ITokenList getTokenList();
 
+    /**
+     * Close current open builder
+     *
+     * @return True if has current builder.
+     */
     boolean closeOpenBuilders();
+
+    /**
+     * Get Future Token emulating tokens.
+     *
+     * @param index          Position of token to get
+     * @param emulatedTokens Emulated/fake tokens, the size of the emulatedTokens List need to be
+     *                       the same of {@param index} parameter or empty list
+     * @param currentType    Current token type to be set as current token building.
+     * @param scanner        The Scanner
+     * @return Token in Offset
+     */
+    IToken<?> future(int index, List<IToken<?>> emulatedTokens, ITokenType<?> currentType, IScanner scanner);
+
+    ITokensProcessor clone();
 }

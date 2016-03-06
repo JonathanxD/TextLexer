@@ -21,7 +21,7 @@ package com.github.jonathanxd.textlexer.scanner;
 /**
  * Created by jonathan on 30/01/16.
  */
-public interface IScanner {
+public interface IScanner extends Cloneable {
 
     char nextChar();
 
@@ -34,4 +34,7 @@ public interface IScanner {
     default Object getSource() {
         return null;
     }
+
+    IScanner clone();
+
 }

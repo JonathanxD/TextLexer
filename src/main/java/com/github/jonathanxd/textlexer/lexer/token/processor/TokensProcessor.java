@@ -25,12 +25,16 @@ import com.github.jonathanxd.textlexer.lexer.token.IToken;
 import com.github.jonathanxd.textlexer.lexer.token.builder.BuilderList;
 import com.github.jonathanxd.textlexer.lexer.token.builder.TokenBuilder;
 import com.github.jonathanxd.textlexer.lexer.token.history.ITokenList;
+import com.github.jonathanxd.textlexer.lexer.token.history.LoopDirection;
 import com.github.jonathanxd.textlexer.lexer.token.history.TokenListImpl;
 import com.github.jonathanxd.textlexer.lexer.token.history.analise.AnaliseTokenList;
 import com.github.jonathanxd.textlexer.lexer.token.type.FixedTokenType;
 import com.github.jonathanxd.textlexer.lexer.token.type.ITokenType;
+import com.github.jonathanxd.textlexer.scanner.IScanner;
 
 import java.lang.reflect.Method;
+import java.util.Arrays;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Objects;
@@ -49,6 +53,7 @@ public class TokensProcessor implements ITokensProcessor {
     final BuilderList builderList = new BuilderList();
     final ITokenList tokenList = new TokenListImpl();
     ITokenType<?> lastTokenType = null;
+    private boolean isFuture = false;
 
     @Override
     public void addTokenType(ITokenType<?> token) {
@@ -96,12 +101,9 @@ public class TokensProcessor implements ITokensProcessor {
 
     }
 
-    @SuppressWarnings("deprecation")
-    @Override
-    public void process(char input, List<Character> allChars, int index) {
+    public void process(char input, List<Character> allChars, int index, IScanner scanner) {
         boolean anyMatch = false;
         Iterator<ITokenType<?>> tokenTypeIterator = tokenTypes.iterator();
-
 
         while (tokenTypeIterator.hasNext()) {
             ITokenType<?> type = tokenTypeIterator.next();
@@ -112,7 +114,8 @@ public class TokensProcessor implements ITokensProcessor {
             ProcessorData.ProcessorDataBuilder processorDataBuilder = createProcessorBuilder()
                     .setCharacter(input)
                     .setCharacterIterator(backableIterator)
-                    .setIndex(index);
+                    .setIndex(index)
+                    .setiScanner(scanner.clone());
 
             ProcessorData processorData = processorDataBuilder.build();
 
@@ -189,8 +192,10 @@ public class TokensProcessor implements ITokensProcessor {
 
     private ProcessorData.ProcessorDataBuilder createProcessorBuilder() {
         ProcessorData.ProcessorDataBuilder builder = ProcessorData.builder()
+                .setTokensProcessor(this)
                 .setTokenList(tokenList)
-                .setBuilderList(builderList);
+                .setBuilderList(builderList)
+                .setFutureAnalysis(isFuture);
 
         return builder;
     }
@@ -241,5 +246,52 @@ public class TokensProcessor implements ITokensProcessor {
             return false;
         }
 
+    }
+
+    @Override
+    public IToken<?> future(int index, List<IToken<?>> emulatedTokens, ITokenType<?> currentType, IScanner scanner) {
+        Objects.requireNonNull(scanner);
+
+        TokensProcessor tokensProcessor = clone();
+
+        tokensProcessor.isFuture = true;
+        tokensProcessor.closeOpenBuilders();
+
+        tokensProcessor.builderList.add(new TokenBuilder(currentType), currentType);
+        if(!emulatedTokens.isEmpty())
+            for(int x = 0; x < index; ++x) {
+                tokensProcessor.tokenList.add(emulatedTokens.get(x));
+            }
+
+        int start = tokensProcessor.tokenList.size();
+        while(tokensProcessor.tokenList.size() == start) {
+            char next = scanner.nextChar();
+
+            int scanIndex = scanner.getCurrentIndex();
+
+            List<Character> chars = ListUtils.from(scanner.getChars());
+            try{
+                tokensProcessor.process(next, chars, scanIndex, scanner);
+            }catch (Exception e) {
+                throw new RuntimeException("Cannot get future token. [TokenList: "+tokensProcessor.getTokenList()+"]", e);
+            }
+        }
+
+        return tokensProcessor.tokenList.fetchLast();
+    }
+
+    @Override
+    public TokensProcessor clone() {
+        TokensProcessor tokensProcessor = new TokensProcessor();
+
+        // Appliers
+        this.tokenTypes.forEach(tokensProcessor::addTokenType);
+        this.builderList.applyTo(tokensProcessor.builderList);
+        this.tokenList.forEach(tokensProcessor.tokenList::add, LoopDirection.FIRST_TO_LAST);
+
+        // Set
+        tokensProcessor.lastTokenType = this.lastTokenType;
+
+        return tokensProcessor;
     }
 }

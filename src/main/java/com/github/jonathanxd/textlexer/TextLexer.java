@@ -18,6 +18,7 @@
  */
 package com.github.jonathanxd.textlexer;
 
+import com.github.jonathanxd.textlexer.lexer.ILexer;
 import com.github.jonathanxd.textlexer.lexer.LexerImpl;
 import com.github.jonathanxd.textlexer.lexer.token.IToken;
 import com.github.jonathanxd.textlexer.lexer.token.history.ITokenList;
@@ -71,14 +72,14 @@ public final class TextLexer {
     }
 
     public TextLexer processFile(File file) {
-        LexerImpl lexer = new LexerImpl(analyzers);
+        ILexer lexer = new LexerImpl(analyzers);
         lexer.process(new FileScanner(file), tokensProcessor);
 
         return this;
     }
 
     public TextLexer processString(String string) {
-        LexerImpl lexer = new LexerImpl(analyzers);
+        ILexer lexer = new LexerImpl(analyzers);
         lexer.process(new CharScanner(string.toCharArray()), tokensProcessor);
         return this;
     }
@@ -154,6 +155,13 @@ public final class TextLexer {
         @Override
         public Object getSource() {
             return file;
+        }
+
+        @Override
+        public FileScanner clone() {
+            FileScanner fileScanner = new FileScanner(this.file);
+            fileScanner.currentIndex = this.currentIndex;
+            return fileScanner;
         }
     }
 }

@@ -21,6 +21,7 @@ package com.github.jonathanxd.textlexer.lexer.token.processor;
 import com.github.jonathanxd.iutils.iterator.SafeBackableIterator;
 import com.github.jonathanxd.textlexer.lexer.token.builder.BuilderList;
 import com.github.jonathanxd.textlexer.lexer.token.history.ITokenList;
+import com.github.jonathanxd.textlexer.scanner.IScanner;
 
 /**
  * Created by jonathan on 07/02/16.
@@ -32,22 +33,28 @@ public class ProcessorData {
     private final String data;
     private final int index;
     private final SafeBackableIterator<Character> characterIterator;
+    private final IScanner scanner;
+    private final ITokensProcessor tokensProcessor;
+    private final boolean isFutureAnalysis;
 
-    public ProcessorData(ITokenList tokenList, BuilderList builderList, Character character, String data, int index, SafeBackableIterator<Character> characterIterator) {
+    public ProcessorData(ITokenList tokenList, BuilderList builderList, Character character, String data, int index, SafeBackableIterator<Character> characterIterator, IScanner scanner, ITokensProcessor tokensProcessor, boolean isFutureAnalysis) {
         this.tokenList = tokenList;
         this.builderList = builderList;
         this.character = character;
         this.data = data;
         this.index = index;
         this.characterIterator = characterIterator;
+        this.scanner = scanner;
+        this.tokensProcessor = tokensProcessor;
+        this.isFutureAnalysis = isFutureAnalysis;
     }
 
-    public ProcessorData(ITokenList tokenList, BuilderList builderList, char character, SafeBackableIterator<Character> characterIterator, int index) {
-        this(tokenList, builderList, character, null, index, characterIterator);
+    public ProcessorData(ITokenList tokenList, BuilderList builderList, char character, SafeBackableIterator<Character> characterIterator, int index, IScanner scanner, ITokensProcessor tokensProcessor, boolean isFutureAnalysis) {
+        this(tokenList, builderList, character, null, index, characterIterator, scanner, tokensProcessor, isFutureAnalysis);
     }
 
-    public ProcessorData(ITokenList tokenList, BuilderList builderList, String data, SafeBackableIterator<Character> characterIterator, int index) {
-        this(tokenList, builderList, null, data, index, characterIterator);
+    public ProcessorData(ITokenList tokenList, BuilderList builderList, String data, SafeBackableIterator<Character> characterIterator, int index, IScanner scanner, ITokensProcessor tokensProcessor, boolean isFutureAnalysis) {
+        this(tokenList, builderList, null, data, index, characterIterator, scanner, tokensProcessor, isFutureAnalysis);
     }
 
     public static ProcessorDataBuilder builder() {
@@ -78,6 +85,18 @@ public class ProcessorData {
         return index;
     }
 
+    public IScanner getScanner() {
+        return scanner;
+    }
+
+    public ITokensProcessor getTokensProcessor() {
+        return tokensProcessor;
+    }
+
+    public boolean isFutureAnalysis() {
+        return isFutureAnalysis;
+    }
+
     public boolean charPresent() {
         return character != null;
     }
@@ -98,6 +117,14 @@ public class ProcessorData {
         return characterIterator != null;
     }
 
+    public boolean scannerPresent() {
+        return scanner != null;
+    }
+
+    public boolean tokensProcessorPresent() {
+        return tokensProcessor != null;
+    }
+
     public static class ProcessorDataBuilder {
         private String data;
         private ITokenList tokenList;
@@ -105,6 +132,9 @@ public class ProcessorData {
         private Character character;
         private int index;
         private SafeBackableIterator<Character> characterIterator;
+        private IScanner iScanner;
+        private ITokensProcessor tokensProcessor;
+        private boolean isFutureAnalysis = false;
 
         private ProcessorDataBuilder() {
         }
@@ -139,8 +169,23 @@ public class ProcessorData {
             return this;
         }
 
+        public ProcessorDataBuilder setiScanner(IScanner iScanner) {
+            this.iScanner = iScanner;
+            return this;
+        }
+
+        public ProcessorDataBuilder setTokensProcessor(ITokensProcessor tokensProcessor) {
+            this.tokensProcessor = tokensProcessor;
+            return this;
+        }
+
+        public ProcessorDataBuilder setFutureAnalysis(boolean futureAnalysis) {
+            isFutureAnalysis = futureAnalysis;
+            return this;
+        }
+
         public ProcessorData build() {
-            ProcessorData processorData = new ProcessorData(tokenList, builderList, character, data, index, characterIterator);
+            ProcessorData processorData = new ProcessorData(tokenList, builderList, character, data, index, characterIterator, iScanner, tokensProcessor, isFutureAnalysis);
             return processorData;
         }
 
@@ -151,7 +196,10 @@ public class ProcessorData {
                     .setData(data.getData())
                     .setTokenList(data.getTokenList())
                     .setCharacterIterator(data.getCharacterIterator())
-                    .setIndex(data.getIndex());
+                    .setIndex(data.getIndex())
+                    .setiScanner(data.getScanner())
+                    .setTokensProcessor(data.getTokensProcessor())
+                    .setFutureAnalysis(data.isFutureAnalysis());
         }
     }
 }

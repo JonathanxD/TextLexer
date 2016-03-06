@@ -23,7 +23,7 @@ import com.github.jonathanxd.textlexer.lexer.token.type.ITokenType;
 /**
  * Created by jonathan on 06/02/16.
  */
-public class BuilderProcessData {
+public class BuilderProcessData implements Cloneable {
     private final TokenBuilder builder;
     private final ITokenType<?> type;
 
@@ -43,5 +43,11 @@ public class BuilderProcessData {
     @Override
     public String toString() {
         return "BPD[Type: " + getType() + ", Builder: " + builder + "]";
+    }
+
+    @Override
+    protected BuilderProcessData clone() {
+        BuilderProcessData builderProcessData = new BuilderProcessData(this.builder.clone(), this.type);
+        return builderProcessData;
     }
 }

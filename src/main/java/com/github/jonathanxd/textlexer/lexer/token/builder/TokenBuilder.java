@@ -25,7 +25,7 @@ import com.github.jonathanxd.textlexer.lexer.token.type.ITokenType;
 /**
  * Created by jonathan on 30/01/16.
  */
-public class TokenBuilder {
+public class TokenBuilder implements Cloneable {
 
     private final ITokenType<?> tokenType;
 
@@ -66,5 +66,13 @@ public class TokenBuilder {
 
     public String getData() {
         return dataBuilder.toString();
+    }
+
+    @Override
+    protected TokenBuilder clone() {
+        TokenBuilder tokenBuilder = new TokenBuilder(this.tokenType);
+        tokenBuilder.dataBuilder.append(this.dataBuilder.toString());
+        tokenBuilder.build = this.build;
+        return tokenBuilder;
     }
 }
