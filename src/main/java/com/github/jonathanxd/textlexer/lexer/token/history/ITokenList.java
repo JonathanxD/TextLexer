@@ -19,6 +19,7 @@
 package com.github.jonathanxd.textlexer.lexer.token.history;
 
 import com.github.jonathanxd.iutils.annotations.Immutable;
+import com.github.jonathanxd.textlexer.ext.parser.holder.TokenHolder;
 import com.github.jonathanxd.textlexer.lexer.token.IToken;
 import com.github.jonathanxd.textlexer.lexer.token.history.analise.ElementSpecification;
 import com.github.jonathanxd.textlexer.lexer.token.history.list.CommonTokenList;
@@ -30,6 +31,7 @@ import java.util.Optional;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
 /**
  * Created by jonathan on 30/01/16.
@@ -126,6 +128,10 @@ public interface ITokenList {
                 }
             }
         }
+    }
+
+    default List<TokenHolder> toTokenHolderList() {
+        return this.toList().stream().map(token -> TokenHolder.of(token.getSimpleName(), null, token)).collect(Collectors.toList());
     }
 
     void filter(Predicate<? super IToken<?>> tokenFilter);

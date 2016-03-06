@@ -63,7 +63,7 @@ public @interface ListenerFor {
      *
      * @return Supported tokens
      */
-    Class<? extends IToken<?>>[] value();
+    Class<? extends IToken<?>>[] value() default ALL.class;
 
     /**
      * Visit phase
@@ -79,4 +79,6 @@ public @interface ListenerFor {
      */
     Class<? extends Visitor> required() default Visitor.class;
 
+
+    abstract class ALL implements IToken<Object> {}
 }

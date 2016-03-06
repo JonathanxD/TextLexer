@@ -23,6 +23,8 @@ import com.github.jonathanxd.textlexer.ext.visitor.listener.ListenerFor;
 import com.github.jonathanxd.textlexer.ext.visitor.listener.VisitPhase;
 import com.github.jonathanxd.textlexer.test.test2.test1.tokens.KeyToken;
 
+import java.util.List;
+
 /**
  * Created by jonathan on 20/02/16.
  */
@@ -36,6 +38,11 @@ public class TokenVisitor {
     @ListenerFor(value = {KeyToken.class}, phase = VisitPhase.EXIT)
     public void exit(TokenHolder holder) {
         System.out.println("Exit: "+holder);
+    }
+
+    @ListenerFor(phase = VisitPhase.VISIT_END)
+    public void end(List<TokenHolder> end) {
+        System.out.println("Visit END ]-> "+end);
     }
 
 }

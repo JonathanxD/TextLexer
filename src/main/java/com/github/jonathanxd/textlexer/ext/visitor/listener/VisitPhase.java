@@ -33,5 +33,9 @@ public enum VisitPhase {
     /**
      * Exit the token
      */
-    EXIT
+    EXIT,
+    /**
+     * End of Visit Process
+     */
+    VISIT_END
 }

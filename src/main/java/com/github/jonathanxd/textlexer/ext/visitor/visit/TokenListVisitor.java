@@ -48,5 +48,7 @@ public class TokenListVisitor extends CommonVisitor<ITokenList> {
             visit(token);
             exit(token);
         }, LoopDirection.FIRST_TO_LAST);
+
+        endVisit(tokenList.toTokenHolderList());
     }
 }

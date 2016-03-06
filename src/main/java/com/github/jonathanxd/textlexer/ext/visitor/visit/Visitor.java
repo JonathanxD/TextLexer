@@ -21,6 +21,8 @@ package com.github.jonathanxd.textlexer.ext.visitor.visit;
 import com.github.jonathanxd.textlexer.ext.parser.holder.TokenHolder;
 import com.github.jonathanxd.textlexer.lexer.token.IToken;
 
+import java.util.List;
+
 /**
  * Created by jonathan on 20/02/16.
  */
@@ -87,4 +89,9 @@ public interface Visitor<T> {
      * Visit default elements.
      */
     void visit();
+
+    /**
+     * Called in end of visit, when all TokenHolders are visited and exited
+     */
+    void endVisit(List<TokenHolder> tokenHolders);
 }

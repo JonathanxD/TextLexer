@@ -4,7 +4,7 @@ plugins {
 }
 
 group 'com.github.jonathanxd'
-version '1.6'
+version '1.7'
 
 
 allprojects {
@@ -20,7 +20,7 @@ allprojects {
     }
 }
 //Sonatype upload
-//apply from: 'upload.gradle'
+apply from: 'upload.gradle'
 
 defaultTasks 'licenseFormat', 'build', 'test', 'jar', 'shadowJar'
 

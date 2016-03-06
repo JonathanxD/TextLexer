@@ -45,6 +45,7 @@ public class StructureVisitor extends CommonVisitor<StructuredTokens> {
     @Override
     public void visit() {
         recursive(structure.getTokenHolders());
+        endVisit(structure.getTokenHolders());
     }
 
     /**

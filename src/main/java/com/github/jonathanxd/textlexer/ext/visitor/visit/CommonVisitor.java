@@ -24,6 +24,7 @@ import com.github.jonathanxd.textlexer.ext.parser.holder.TokenHolder;
 import com.github.jonathanxd.textlexer.ext.visitor.VisitException;
 import com.github.jonathanxd.textlexer.ext.visitor.listener.ListenerFor;
 import com.github.jonathanxd.textlexer.ext.visitor.listener.VisitPhase;
+import com.github.jonathanxd.textlexer.ext.visitor.util.ArrayUtils;
 import com.github.jonathanxd.textlexer.ext.visitor.util.Reflection;
 import com.github.jonathanxd.textlexer.lexer.token.IToken;
 
@@ -31,8 +32,10 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.function.BiFunction;
 import java.util.function.Predicate;
 
@@ -118,6 +121,11 @@ public abstract class CommonVisitor<T> implements Visitor<T> {
         processVisit(tokenHolder, VisitPhase.EXIT);
     }
 
+    @Override
+    public void endVisit(List<TokenHolder> tokenHolders) {
+        processVisit(tokenHolders, VisitPhase.VISIT_END);
+    }
+
     /**
      * Check methods
      *
@@ -146,6 +154,7 @@ public abstract class CommonVisitor<T> implements Visitor<T> {
      * @param tokenHolder TokenHolder
      * @return new ExtraData
      */
+    @Deprecated
     private ExtraData clone(TokenHolder tokenHolder) {
         ExtraData data;
         try {
@@ -155,8 +164,29 @@ public abstract class CommonVisitor<T> implements Visitor<T> {
         }
 
         Objects.requireNonNull(data, "Null data!");
+        if (tokenHolder != null)
+            data.registerData(tokenHolder);
 
-        data.registerData(tokenHolder);
+        return data;
+    }
+
+    /**
+     * Clone Default Extra data to a new ExtraData
+     *
+     * @param include New data to Include
+     * @return new ExtraData
+     */
+    private ExtraData cloneWith(Object include) {
+        ExtraData data;
+        try {
+            data = defaults.clone();
+        } catch (CloneNotSupportedException e) {
+            throw new RuntimeException("Cannot clone data", e);
+        }
+
+        Objects.requireNonNull(data, "Null data!");
+        if (include != null)
+            data.registerData(include);
 
         return data;
     }
@@ -164,11 +194,11 @@ public abstract class CommonVisitor<T> implements Visitor<T> {
     /**
      * Process the visit of token
      *
-     * @param tokenHolder TokenHolder
-     * @param phase       VisitPhase
+     * @param with  Data to add to ExtraData to be passed to Method
+     * @param phase VisitPhase
      */
-    private void processVisit(TokenHolder tokenHolder, VisitPhase phase) {
-        final ExtraData finalData = clone(tokenHolder);
+    private void processVisit(Object with, VisitPhase phase) {
+        final ExtraData finalData = cloneWith(with);
 
         listeners.entrySet().forEach(entry -> {
             try {
@@ -178,7 +208,7 @@ public abstract class CommonVisitor<T> implements Visitor<T> {
                         entry.getKey().getClass(),
                         entry.getKey().getClass()::getDeclaredMethods,
                         new MethodInvoke(listener),
-                        new MethodPredicate(phase, entry.getValue(), tokenHolder));
+                        new MethodPredicate(phase, entry.getValue(), with));
                 //for(Collection<entry.getValue()
             } catch (Throwable t) {
                 throw new VisitException("Object cause: " + entry.getKey(), t);
@@ -230,14 +260,24 @@ public abstract class CommonVisitor<T> implements Visitor<T> {
          */
         private final Collection<Method> methodCollection;
         /**
-         * TokenHOlder
+         * TokenHolder
          */
-        private final TokenHolder tokenHolder;
+        private final Optional<TokenHolder> tokenHolder;
 
-        private MethodPredicate(VisitPhase phase, Collection<Method> methodCollection, TokenHolder tokenHolder) {
+        /*
+         * Object to send to method
+         */
+        private final Object handle;
+
+        private MethodPredicate(VisitPhase phase, Collection<Method> methodCollection, Object handle) {
             this.phase = phase;
             this.methodCollection = methodCollection;
-            this.tokenHolder = tokenHolder;
+            this.handle = handle;
+            if (handle instanceof TokenHolder) {
+                this.tokenHolder = Optional.of((TokenHolder) handle);
+            } else {
+                this.tokenHolder = Optional.empty();
+            }
         }
 
         @Override
@@ -255,13 +295,21 @@ public abstract class CommonVisitor<T> implements Visitor<T> {
                         return true;
 
                     boolean allPassed = true;
-                    for (IToken<?> token : tokenHolder.getTokens()) {
 
-                        for (Class<? extends IToken<?>> tokenClass : listenerFor.value()) {
-                            if (!tokenClass.isAssignableFrom(token.getClass())) {
-                                allPassed = false;
+                    if (ArrayUtils.contains(listenerFor.value(), ListenerFor.ALL.class)) {
+                        allPassed = true;
+                    } else {
+                        if (tokenHolder.isPresent()) {
+                            for (IToken<?> token : tokenHolder.get().getTokens()) {
+
+                                for (Class<? extends IToken<?>> tokenClass : listenerFor.value()) {
+                                    if (!tokenClass.isAssignableFrom(token.getClass())) {
+                                        allPassed = false;
+                                    }
+                                }
                             }
                         }
+
                     }
                     if (allPassed)
                         return true;
