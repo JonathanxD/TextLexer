@@ -43,7 +43,7 @@ public interface ITokensProcessor extends Cloneable {
      *
      * @param token   Token to add
      * @param matcher Character Matcher
-     * @param <T>     Type of {@param token} return
+     * @param <T>     Type of {@code token} return
      */
     <T> void addToken(Class<IToken<T>> token, Predicate<Character> matcher);
 
@@ -52,7 +52,7 @@ public interface ITokensProcessor extends Cloneable {
      *
      * @param input    Current Character
      * @param allChars All Characters
-     * @param index    Index of 'pointer' to a character in {@param allChars} List.
+     * @param index    Index of 'pointer' to a character in {@code allChars} List.
      * @param scanner  The Scanner
      */
     void process(char input, List<Character> allChars, int index, IScanner scanner);
@@ -76,7 +76,7 @@ public interface ITokensProcessor extends Cloneable {
      *
      * @param index          Position of token to get
      * @param emulatedTokens Emulated/fake tokens, the size of the emulatedTokens List need to be
-     *                       the same of {@param index} parameter or empty list
+     *                       the same of {@code index} parameter or empty list
      * @param currentType    Current token type to be set as current token building.
      * @param scanner        The Scanner
      * @return Token in Offset
