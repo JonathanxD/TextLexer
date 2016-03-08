@@ -29,15 +29,24 @@ public class CharScanner implements IScanner {
     private int currentIndex = -1;
 
     public CharScanner(char[] chars) {
-        this.chars = chars;
+        this.chars = chars.clone();
     }
 
     @Override
     public char nextChar() {
         if (!hasNextChar()) {
-            throw new ArrayIndexOutOfBoundsException(String.format("Size: %d. Index: %d", currentIndex, chars.length));
+            throw new ArrayIndexOutOfBoundsException(String.format("Index: %d. Size: %d. Next: %d", currentIndex, chars.length, currentIndex + 1));
         }
         return chars[++currentIndex];
+    }
+
+    @Override
+    public char previousChar() {
+        if (!hasNextChar()) {
+            throw new ArrayIndexOutOfBoundsException(String.format("Index: %d. Size: %d. Next: %d", currentIndex, chars.length, currentIndex + 1));
+        }
+
+        return chars[--currentIndex];
     }
 
     @Override
@@ -51,12 +60,23 @@ public class CharScanner implements IScanner {
     }
 
     @Override
+    public boolean hasPreviousChar() {
+        return currentIndex - 1 > -1;
+    }
+
+    @Override
     public int getCurrentIndex() {
         return currentIndex;
     }
 
     @Override
+    public void walkTo(int i) {
+        currentIndex = i;
+    }
+
+    @Override
     public CharScanner clone() {
+
         CharScanner cs = new CharScanner(this.chars.clone());
         cs.currentIndex = this.currentIndex;
 

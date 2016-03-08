@@ -233,12 +233,12 @@ public abstract class CommonVisitor<T> implements Visitor<T> {
 
         @Override
         public Object apply(Method method, Object[] args) {
-            ListenerFor listenerFor = get(method);
+            get(method);
 
             try {
                 method.setAccessible(true);
 
-                method.invoke(listener, args);
+                return method.invoke(listener, args);
             } catch (IllegalAccessException | InvocationTargetException e) {
                 e.printStackTrace();
             }

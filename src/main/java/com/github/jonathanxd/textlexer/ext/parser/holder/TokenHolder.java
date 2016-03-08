@@ -31,6 +31,8 @@ import java.util.Optional;
 import java.util.StringJoiner;
 import java.util.function.BiConsumer;
 
+import javax.annotation.Nonnull;
+
 /**
  * Created by jonathan on 17/02/16.
  */
@@ -347,7 +349,13 @@ public class TokenHolder {
     }
 
     @Override
-    public boolean equals(Object obj) {
-        return this.hashCode() == obj.hashCode();
+    public boolean equals(@Nonnull Object obj) {
+        if(!(obj instanceof TokenHolder))
+            return false;
+
+        TokenHolder th = (TokenHolder) obj;
+
+        return this.getName().equals(th.getName()) && this.tokens.containsAll(th.tokens) && this.childTokens.containsAll(th.childTokens);
+
     }
 }

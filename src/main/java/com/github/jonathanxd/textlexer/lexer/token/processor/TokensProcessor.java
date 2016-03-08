@@ -28,13 +28,13 @@ import com.github.jonathanxd.textlexer.lexer.token.history.ITokenList;
 import com.github.jonathanxd.textlexer.lexer.token.history.LoopDirection;
 import com.github.jonathanxd.textlexer.lexer.token.history.TokenListImpl;
 import com.github.jonathanxd.textlexer.lexer.token.history.analise.AnaliseTokenList;
+import com.github.jonathanxd.textlexer.lexer.token.processor.future.CurrentTokenData;
 import com.github.jonathanxd.textlexer.lexer.token.type.FixedTokenType;
 import com.github.jonathanxd.textlexer.lexer.token.type.ITokenType;
 import com.github.jonathanxd.textlexer.scanner.IScanner;
+import com.github.jonathanxd.textlexer.util.StackArrayList;
 
 import java.lang.reflect.Method;
-import java.util.Arrays;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Objects;
@@ -42,6 +42,8 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.TreeSet;
 import java.util.function.Predicate;
+
+import javax.annotation.Nonnull;
 
 /**
  * Created by jonathan on 30/01/16.
@@ -177,7 +179,13 @@ public class TokensProcessor implements ITokensProcessor {
         }
 
         if (!anyMatch) {
-            throw new RuntimeException("Cannot determine token of character '" + input + "'");
+
+            throw new RuntimeException("Cannot determine token of character '"
+                    + input + "' at index '" + index + "'."
+                    + " Future analysis: '" + isFuture + "'."
+                    + " TokenList: '" + tokenList + "'."
+                    + " Token Types: '" + tokenTypes + "'."
+                    + (builderList.hasCurrent() ? " Current Builder: '" + builderList.current() + "'" : ""));
         }
     }
 
@@ -249,37 +257,84 @@ public class TokensProcessor implements ITokensProcessor {
     }
 
     @Override
-    public IToken<?> future(int index, List<IToken<?>> emulatedTokens, ITokenType<?> currentType, IScanner scanner) {
+    public StackArrayList<IToken<?>> future(int from, int index, List<IToken<?>> emulatedTokens, CurrentTokenData data, IScanner scanner, boolean ignoreHidden) {
         Objects.requireNonNull(scanner);
+
+        StackArrayList<IToken<?>> tokens = new StackArrayList<>(index, IToken.class);
 
         TokensProcessor tokensProcessor = clone();
 
         tokensProcessor.isFuture = true;
-        tokensProcessor.closeOpenBuilders();
 
-        tokensProcessor.builderList.add(new TokenBuilder(currentType), currentType);
-        if(!emulatedTokens.isEmpty())
-            for(int x = 0; x < index; ++x) {
+        if(scanner.getCurrentIndex() > -1)
+            scanner.walkTo(scanner.getCurrentIndex()-1);
+
+        if(data != null)
+            data.apply(tokensProcessor.builderList);
+
+        if (!emulatedTokens.isEmpty())
+            for (int x = 0; x < index; ++x) {
                 tokensProcessor.tokenList.add(emulatedTokens.get(x));
             }
 
+        int keepUnchanged = this.tokenList.size();
+
         int start = tokensProcessor.tokenList.size();
-        while(tokensProcessor.tokenList.size() == start) {
+        int remaining = index;
+        int remainingFrom = from;
+
+        while (tokensProcessor.tokenList.size() == start && scanner.hasNextChar()) {
             char next = scanner.nextChar();
 
             int scanIndex = scanner.getCurrentIndex();
 
+            if(remaining == 0) {
+                break;
+            }
+
             List<Character> chars = ListUtils.from(scanner.getChars());
-            try{
+            try {
                 tokensProcessor.process(next, chars, scanIndex, scanner);
-            }catch (Exception e) {
-                throw new RuntimeException("Cannot get future token. [TokenList: "+tokensProcessor.getTokenList()+"]", e);
+
+                if (tokensProcessor.tokenList.size() != start) {
+                    if(keepUnchanged != this.tokenList.size())
+                        throw new RuntimeException("Future system is broken!");
+
+                    IToken<?> last;
+
+                    if ((last = tokensProcessor.tokenList.fetchLast()).hide() && ignoreHidden) {
+                        start = tokensProcessor.tokenList.size();
+                    }
+
+
+                    if (remaining > 0 && remainingFrom == 0) {
+                        --remaining;
+                        start = tokensProcessor.tokenList.size();
+
+                        if (!ignoreHidden || !last.hide()) {
+                            boolean add = tokens.add(last);
+                            if (!add) {
+                                throw new RuntimeException("Cannot add new element ('" + last + "') to list. List max size: " + tokens.size() + ". Current size: " + tokens.sizeWithoutNull() + ". List elements: " + tokens);
+                            }
+                        }
+                    }
+
+                    if(remainingFrom > 0) {
+                        --remainingFrom;
+                        start = tokensProcessor.tokenList.size();
+                    }
+
+                }
+
+            } catch (Exception e) {
+                throw new RuntimeException("Cannot get future token. [TokenList: " + tokensProcessor.getTokenList() + "]", e);
             }
         }
 
-        return tokensProcessor.tokenList.fetchLast();
+        return tokens;
     }
 
+    @Nonnull
     @Override
     public TokensProcessor clone() {
         TokensProcessor tokensProcessor = new TokensProcessor();

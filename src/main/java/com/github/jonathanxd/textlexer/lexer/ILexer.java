@@ -25,9 +25,11 @@ import com.github.jonathanxd.textlexer.scanner.IScanner;
 /**
  * Created by jonathan on 30/01/16.
  */
-public interface ILexer {
+public interface ILexer extends Cloneable {
 
     ITokenList process(IScanner scanner, ITokensProcessor tokenTypeList);
 
     void analyse(ITokenList tokenList);
+
+    ILexer clone();
 }

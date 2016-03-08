@@ -18,7 +18,6 @@
  */
 package com.github.jonathanxd.textlexer.test.test2.test1.tokens;
 
-import com.github.jonathanxd.iutils.iterator.IteratorUtil;
 import com.github.jonathanxd.textlexer.lexer.token.IToken;
 import com.github.jonathanxd.textlexer.lexer.token.UnifiedTokenType;
 import com.github.jonathanxd.textlexer.lexer.token.builder.BuilderList;
@@ -27,12 +26,14 @@ import com.github.jonathanxd.textlexer.lexer.token.history.ITokenList;
 import com.github.jonathanxd.textlexer.lexer.token.history.LoopDirection;
 import com.github.jonathanxd.textlexer.lexer.token.history.analise.ElementSpecification;
 import com.github.jonathanxd.textlexer.lexer.token.processor.ProcessorData;
+import com.github.jonathanxd.textlexer.lexer.token.processor.future.CurrentTokenData;
 import com.github.jonathanxd.textlexer.lexer.token.structure.analise.StructureRule;
 import com.github.jonathanxd.textlexer.test.test2.test1.tokens.host.MapClose;
 import com.github.jonathanxd.textlexer.test.test2.test1.tokens.host.MapOpen;
+import com.github.jonathanxd.textlexer.util.StackArrayList;
 
 import java.util.Collections;
-import java.util.Iterator;
+import java.util.function.Consumer;
 
 /**
  * Created by jonathan on 20/02/16.
@@ -71,7 +72,15 @@ public class KeyToken extends UnifiedTokenType<String> {
 
         if(!processorData.isFutureAnalysis()) {
             try{
-                IToken<?> next = processorData.getTokensProcessor().future(1, Collections.emptyList(), this, processorData.getScanner());
+
+                StackArrayList<IToken<?>> next = processorData.getTokensProcessor().future(1, 2,
+                        Collections.emptyList(),
+                        null,
+                        processorData.getScanner(),
+                        false);
+
+
+                next.foreachAddOrder(System.out::println);
 
                 System.out.println("Next: "+next);
             }catch (Exception e){}

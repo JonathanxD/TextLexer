@@ -24,11 +24,9 @@ import com.github.jonathanxd.textlexer.ext.parser.holder.TokenHolder;
 import com.github.jonathanxd.textlexer.ext.parser.structure.StructuredTokens;
 import com.github.jonathanxd.textlexer.lexer.token.IToken;
 
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
-import java.util.Deque;
 import java.util.List;
-import java.util.function.Consumer;
-import java.util.stream.Collectors;
 
 /**
  * Created by jonathan on 21/02/16.
@@ -48,7 +46,11 @@ public class StructureConstructor {
         StringBuilder sb = new StringBuilder();
         recursive(structuredTokens.getTokenHolders(), sb);
 
-        return sb.toString().getBytes();
+        try {
+            return sb.toString().getBytes("UTF-8");
+        } catch (UnsupportedEncodingException e) {
+            return sb.toString().getBytes();
+        }
     }
 
     private void recursive(List<TokenHolder> tokenHolderList, StringBuilder builder) {
@@ -63,13 +65,12 @@ public class StructureConstructor {
             Map<IToken<?>, Position> positions = positionFactory.getPositionOfToken(tokens, TokenElementType.HEAD);
 
             positions.forEach((token, position) -> {
-                if(position == Position.START) {
+                if (position == Position.START) {
                     builder.append(token.mutableData().get());
-                }else{
+                } else {
                     runnable.add(() -> builder.append(token.mutableData().get()));
                 }
             });
-
 
 
             recursive(tokenHolder.getChildTokens(), builder);
@@ -77,7 +78,6 @@ public class StructureConstructor {
             runnable.forEach(Runnable::run);
         }
     }
-
 
 
 }

@@ -73,7 +73,18 @@ public class LexerImpl implements ILexer {
 
     @Override
     public ILexer clone() {
-        LexerImpl lexer = new LexerImpl(this.structureAnalyzers);
+
+        Object cloneLexer = null;
+
+        try{
+            cloneLexer = super.clone();
+        } catch (CloneNotSupportedException ignored) {
+        }
+
+        if(cloneLexer == null || !(cloneLexer instanceof LexerImpl))
+            cloneLexer = new LexerImpl(this.structureAnalyzers);
+
+        LexerImpl lexer = (LexerImpl) cloneLexer;
         lexer.currentScanner = this.currentScanner;
         return lexer;
     }

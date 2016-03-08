@@ -35,6 +35,13 @@ public class BuilderList {
         return this;
     }
 
+    public BuilderProcessData addNewCommon(ITokenType<?> tokenType) {
+        BuilderProcessData builderProcessData = new BuilderProcessData(new TokenBuilder(tokenType), tokenType);
+        tokenBuilders.addLast(builderProcessData);
+
+        return builderProcessData;
+    }
+
     public TokenBuilder current() {
         return currentData().getBuilder();
     }
@@ -67,6 +74,16 @@ public class BuilderList {
 
     public Deque<BuilderProcessData> getTokenBuilders() {
         return new LinkedList<>(tokenBuilders);
+    }
+
+    public boolean closeOpen() {
+        if (this.hasCurrent()) {
+            while (this.hasCurrent())
+                endCurrent();
+            return true;
+        } else {
+            return false;
+        }
     }
 
     @Override

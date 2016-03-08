@@ -138,6 +138,15 @@ public final class TextLexer {
         }
 
         @Override
+        public char previousChar() {
+            if (!hasNextChar()) {
+                throw new ArrayIndexOutOfBoundsException(String.format("Index: %d. Size: %d. Next: %d", currentIndex, chars.length, currentIndex + 1));
+            }
+
+            return chars[--currentIndex];
+        }
+
+        @Override
         public char[] getChars() {
             return chars;
         }
@@ -148,6 +157,11 @@ public final class TextLexer {
         }
 
         @Override
+        public boolean hasPreviousChar() {
+            return currentIndex - 1 > -1;
+        }
+
+        @Override
         public int getCurrentIndex() {
             return currentIndex;
         }
@@ -155,6 +169,11 @@ public final class TextLexer {
         @Override
         public Object getSource() {
             return file;
+        }
+
+        @Override
+        public void walkTo(int i) {
+            currentIndex = i;
         }
 
         @Override

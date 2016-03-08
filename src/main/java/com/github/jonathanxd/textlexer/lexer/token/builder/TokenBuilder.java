@@ -68,6 +68,15 @@ public class TokenBuilder implements Cloneable {
         return dataBuilder.toString();
     }
 
+    /**
+     * Is not recommended to use this method because it force to create a new String from StringBuilder.
+     * @return String representation
+     */
+    @Override
+    public String toString() {
+        return "TokenBuilder[TokenType["+tokenType.getClass().getSimpleName()+"], Data["+dataBuilder.toString()+"]]";
+    }
+
     @Override
     protected TokenBuilder clone() {
         TokenBuilder tokenBuilder = new TokenBuilder(this.tokenType);

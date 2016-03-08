@@ -23,8 +23,6 @@ package com.github.jonathanxd.textlexer.ext.visitor.util;
  */
 public class ArrayUtils {
 
-
-
     public static <D>boolean contains(D[] array, D value) {
         return Any.ARRAY(array).is(value);
     }
@@ -52,11 +50,11 @@ public class ArrayUtils {
             private final D[] array;
 
             public AnyArray(D[] array) {
-                this.array = array;
+                this.array = array.clone();
             }
 
             public D[] getArray() {
-                return array;
+                return array.clone();
             }
 
             @Override

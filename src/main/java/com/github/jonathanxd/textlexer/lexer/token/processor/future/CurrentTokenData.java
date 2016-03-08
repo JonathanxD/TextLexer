@@ -16,31 +16,32 @@
  *     You should have received a copy of the GNU Affero General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.github.jonathanxd.textlexer.scanner;
+package com.github.jonathanxd.textlexer.lexer.token.processor.future;
+
+import com.github.jonathanxd.textlexer.lexer.token.builder.BuilderList;
+
+import java.util.function.Consumer;
+
+import javax.annotation.Nonnull;
 
 /**
- * Created by jonathan on 30/01/16.
+ * Created by jonathan on 3/7/16.
  */
-public interface IScanner extends Cloneable {
+public class CurrentTokenData {
+    private final Consumer<BuilderList> builderListConsumer;
 
-    char nextChar();
-
-    char previousChar();
-
-    char[] getChars();
-
-    boolean hasNextChar();
-
-    boolean hasPreviousChar();
-
-    int getCurrentIndex();
-
-    default Object getSource() {
-        return null;
+    /**
+     * Create a CurrentTokenData to Future Emulation
+     *
+     * @param builderListConsumer Consume the BuilderList to you modify the list if necessary
+     */
+    public CurrentTokenData(@Nonnull Consumer<BuilderList> builderListConsumer) {
+        this.builderListConsumer = builderListConsumer;
     }
 
-    void walkTo(int i);
-
-    IScanner clone();
-
+    public void apply(BuilderList builderList) {
+        if (this.builderListConsumer != null) {
+            this.builderListConsumer.accept(builderList);
+        }
+    }
 }

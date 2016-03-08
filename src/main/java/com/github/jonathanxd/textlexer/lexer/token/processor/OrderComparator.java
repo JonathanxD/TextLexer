@@ -20,13 +20,14 @@ package com.github.jonathanxd.textlexer.lexer.token.processor;
 
 import com.github.jonathanxd.textlexer.lexer.token.type.ITokenType;
 
+import java.io.Serializable;
 import java.util.Collection;
 import java.util.Comparator;
 
 /**
  * Created by jonathan on 08/02/16.
  */
-public class OrderComparator implements Comparator<ITokenType<?>> {
+public class OrderComparator implements Comparator<ITokenType<?>>, Serializable {
     @Override
     public int compare(ITokenType<?> o1, ITokenType<?> o2) {
         Collection<Class<? extends ITokenType>> tokenClasses = null;

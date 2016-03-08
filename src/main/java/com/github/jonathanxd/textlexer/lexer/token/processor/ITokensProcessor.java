@@ -20,8 +20,10 @@ package com.github.jonathanxd.textlexer.lexer.token.processor;
 
 import com.github.jonathanxd.textlexer.lexer.token.IToken;
 import com.github.jonathanxd.textlexer.lexer.token.history.ITokenList;
+import com.github.jonathanxd.textlexer.lexer.token.processor.future.CurrentTokenData;
 import com.github.jonathanxd.textlexer.lexer.token.type.ITokenType;
 import com.github.jonathanxd.textlexer.scanner.IScanner;
+import com.github.jonathanxd.textlexer.util.StackArrayList;
 
 import java.util.List;
 import java.util.function.Predicate;
@@ -74,14 +76,16 @@ public interface ITokensProcessor extends Cloneable {
     /**
      * Get Future Token emulating tokens.
      *
+     * @param from           Position to start in scanner (Current + from)
      * @param index          Position of token to get
      * @param emulatedTokens Emulated/fake tokens, the size of the emulatedTokens List need to be
      *                       the same of {@code index} parameter or empty list
-     * @param currentType    Current token type to be set as current token building.
+     * @param currentType    CurrentTokenData to be set as current token building.
      * @param scanner        The Scanner
+     * @param ignoreHide     Ignore the hidden tokens
      * @return Token in Offset
      */
-    IToken<?> future(int index, List<IToken<?>> emulatedTokens, ITokenType<?> currentType, IScanner scanner);
+    StackArrayList<IToken<?>> future(int from, int index, List<IToken<?>> emulatedTokens, CurrentTokenData currentType, IScanner scanner, boolean ignoreHide);
 
     ITokensProcessor clone();
 }
