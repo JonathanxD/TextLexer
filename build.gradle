@@ -109,7 +109,7 @@ project(':TextLexerShow') {
 
 allprojects{
     dependencies {
-        compile 'com.github.JonathanxD:JwIUtils:1.2'
+        compile 'com.github.JonathanxD:JwIUtils:v1.7'
         compile group: 'com.google.code.findbugs', name: 'jsr305', version: '3.0.0'
         testCompile group: 'junit', name:'junit', version: '4.11'
     }

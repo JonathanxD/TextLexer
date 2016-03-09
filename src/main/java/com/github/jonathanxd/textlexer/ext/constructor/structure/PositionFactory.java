@@ -18,7 +18,7 @@
  */
 package com.github.jonathanxd.textlexer.ext.constructor.structure;
 
-import com.github.jonathanxd.iutils.map.Map;
+import com.github.jonathanxd.iutils.map.JwMap;
 import com.github.jonathanxd.textlexer.ext.common.TokenElementType;
 import com.github.jonathanxd.textlexer.lexer.token.IToken;
 
@@ -29,7 +29,7 @@ import java.util.List;
  */
 public interface PositionFactory {
 
-    Map<IToken<?>, Position> getPositionOfToken(List<IToken<?>> tokenList, TokenElementType type);
+    JwMap<IToken<?>, Position> getPositionOfToken(List<IToken<?>> tokenList, TokenElementType type);
 
     final PositionFactory DEFAULT = new Default();
     final PositionFactory DIVISOR = new Divisor();
@@ -37,8 +37,8 @@ public interface PositionFactory {
     class Default implements PositionFactory {
 
         @Override
-        public Map<IToken<?>, Position> getPositionOfToken(List<IToken<?>> tokenList, TokenElementType type) {
-            Map<IToken<?>, Position> map = new Map<>();
+        public JwMap<IToken<?>, Position> getPositionOfToken(List<IToken<?>> tokenList, TokenElementType type) {
+            JwMap<IToken<?>, Position> map = new JwMap<>();
 
             for (int x = 0; x < tokenList.size(); ++x) {
                 IToken<?> token = tokenList.get(x);
@@ -56,9 +56,9 @@ public interface PositionFactory {
     class Divisor implements PositionFactory {
 
         @Override
-        public Map<IToken<?>, Position> getPositionOfToken(List<IToken<?>> tokenList, TokenElementType type) {
+        public JwMap<IToken<?>, Position> getPositionOfToken(List<IToken<?>> tokenList, TokenElementType type) {
 
-            Map<IToken<?>, Position> map = new Map<>();
+            JwMap<IToken<?>, Position> map = new JwMap<>();
             int middle = tokenList.size() / 2;
 
             for (int x = 0; x < tokenList.size(); ++x) {

@@ -18,7 +18,7 @@
  */
 package com.github.jonathanxd.textlexer.ext.constructor.structure;
 
-import com.github.jonathanxd.iutils.map.Map;
+import com.github.jonathanxd.iutils.map.JwMap;
 import com.github.jonathanxd.textlexer.ext.common.TokenElementType;
 import com.github.jonathanxd.textlexer.ext.parser.holder.TokenHolder;
 import com.github.jonathanxd.textlexer.ext.parser.structure.StructuredTokens;
@@ -62,7 +62,7 @@ public class StructureConstructor {
 
             List<IToken<?>> tokens = tokenHolder.getTokens();
 
-            Map<IToken<?>, Position> positions = positionFactory.getPositionOfToken(tokens, TokenElementType.HEAD);
+            JwMap<IToken<?>, Position> positions = positionFactory.getPositionOfToken(tokens, TokenElementType.HEAD);
 
             positions.forEach((token, position) -> {
                 if (position == Position.START) {

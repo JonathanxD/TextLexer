@@ -26,14 +26,13 @@ import com.github.jonathanxd.textlexer.lexer.token.history.ITokenList;
 import com.github.jonathanxd.textlexer.lexer.token.history.LoopDirection;
 import com.github.jonathanxd.textlexer.lexer.token.history.analise.ElementSpecification;
 import com.github.jonathanxd.textlexer.lexer.token.processor.ProcessorData;
-import com.github.jonathanxd.textlexer.lexer.token.processor.future.CurrentTokenData;
+import com.github.jonathanxd.textlexer.lexer.token.processor.future.FutureSpec;
 import com.github.jonathanxd.textlexer.lexer.token.structure.analise.StructureRule;
 import com.github.jonathanxd.textlexer.test.test2.test1.tokens.host.MapClose;
 import com.github.jonathanxd.textlexer.test.test2.test1.tokens.host.MapOpen;
 import com.github.jonathanxd.textlexer.util.StackArrayList;
 
 import java.util.Collections;
-import java.util.function.Consumer;
 
 /**
  * Created by jonathan on 20/02/16.
@@ -73,7 +72,8 @@ public class KeyToken extends UnifiedTokenType<String> {
         if(!processorData.isFutureAnalysis()) {
             try{
 
-                StackArrayList<IToken<?>> next = processorData.getTokensProcessor().future(1, 2,
+                StackArrayList<IToken<?>> next = processorData.getTokensProcessor().futureToken(
+                        new FutureSpec(1, 2, ((character, tokenList) ->character != 'v'), null),
                         Collections.emptyList(),
                         null,
                         processorData.getScanner(),

@@ -21,6 +21,7 @@ package com.github.jonathanxd.textlexer.lexer.token.processor;
 import com.github.jonathanxd.textlexer.lexer.token.IToken;
 import com.github.jonathanxd.textlexer.lexer.token.history.ITokenList;
 import com.github.jonathanxd.textlexer.lexer.token.processor.future.CurrentTokenData;
+import com.github.jonathanxd.textlexer.lexer.token.processor.future.FutureSpec;
 import com.github.jonathanxd.textlexer.lexer.token.type.ITokenType;
 import com.github.jonathanxd.textlexer.scanner.IScanner;
 import com.github.jonathanxd.textlexer.util.StackArrayList;
@@ -85,7 +86,21 @@ public interface ITokensProcessor extends Cloneable {
      * @param ignoreHide     Ignore the hidden tokens
      * @return Token in Offset
      */
-    StackArrayList<IToken<?>> future(int from, int index, List<IToken<?>> emulatedTokens, CurrentTokenData currentType, IScanner scanner, boolean ignoreHide);
+    default StackArrayList<IToken<?>> futureToken(int from, int index, List<IToken<?>> emulatedTokens, CurrentTokenData currentType, IScanner scanner, boolean ignoreHide) {
+        return futureToken(new FutureSpec(from, index, null, null), emulatedTokens, currentType, scanner, ignoreHide);
+    }
+
+    /**
+     * Get Future Token emulating tokens, with FutureSpec.
+     *
+     * @param emulatedTokens Emulated/fake tokens, the size of the emulatedTokens List need to be
+     *                       the same of {@code index} parameter or empty list
+     * @param currentType    CurrentTokenData to be set as current token building.
+     * @param scanner        The Scanner
+     * @param ignoreHide     Ignore the hidden tokens
+     * @return Token in Offset
+     */
+    StackArrayList<IToken<?>> futureToken(FutureSpec futureSpec, List<IToken<?>> emulatedTokens, CurrentTokenData currentType, IScanner scanner, boolean ignoreHide);
 
     ITokensProcessor clone();
 }

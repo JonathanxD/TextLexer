@@ -64,7 +64,7 @@ public class TokenListImpl implements ITokenList {
     public void updateVisible() {
         visibleTokens.clear();
         tokenList.forEach(token -> {
-            if(!token.hide())
+            if (!token.hide())
                 visibleTokens.add(token);
         });
     }
@@ -103,7 +103,7 @@ public class TokenListImpl implements ITokenList {
 
         final int start = (elementSpecification.getStartIndex() > -1 && elementSpecification.getStartIndex() < size()
                 ? elementSpecification.getStartIndex()
-        : (loopDirection == LoopDirection.FIRST_TO_LAST ? size() - 1 : 0));
+                : (loopDirection == LoopDirection.FIRST_TO_LAST ? size() - 1 : 0));
 
         if (loopDirection == LoopDirection.FIRST_TO_LAST) {
             for (int x = start; x > -1; --x) {
@@ -149,7 +149,7 @@ public class TokenListImpl implements ITokenList {
     @Override
     public void modify(ModifyFunction modifyFunction) {
         List<IToken<?>> localTokenList = new ArrayList<>(tokenList);
-        for(int x = 0; x < tokenList.size(); ++x) {
+        for (int x = 0; x < tokenList.size(); ++x) {
 
             IToken<?> token = tokenList.get(x);
             modifyFunction.fix(token, localTokenList, x);
@@ -164,6 +164,17 @@ public class TokenListImpl implements ITokenList {
     @Override
     public CommonTokenList allToList() {
         return CommonTokenList.immutable(tokenList);
+    }
+
+    @Override
+    public ITokenList clone() {
+        TokenListImpl tokenList = new TokenListImpl();
+        tokenList.tokenList.addAll(this.tokenList.stream().collect(Collectors.toList()));
+
+        tokenList.visibleTokens.clear();
+
+        tokenList.visibleTokens.addAll(this.visibleTokens.stream().collect(Collectors.toList()));
+        return tokenList;
     }
 
     private enum State {

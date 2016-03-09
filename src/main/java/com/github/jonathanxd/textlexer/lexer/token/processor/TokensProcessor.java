@@ -29,6 +29,7 @@ import com.github.jonathanxd.textlexer.lexer.token.history.LoopDirection;
 import com.github.jonathanxd.textlexer.lexer.token.history.TokenListImpl;
 import com.github.jonathanxd.textlexer.lexer.token.history.analise.AnaliseTokenList;
 import com.github.jonathanxd.textlexer.lexer.token.processor.future.CurrentTokenData;
+import com.github.jonathanxd.textlexer.lexer.token.processor.future.FutureSpec;
 import com.github.jonathanxd.textlexer.lexer.token.type.FixedTokenType;
 import com.github.jonathanxd.textlexer.lexer.token.type.ITokenType;
 import com.github.jonathanxd.textlexer.scanner.IScanner;
@@ -194,6 +195,10 @@ public class TokensProcessor implements ITokensProcessor {
         return tokenList;
     }
 
+    public ITokenList clonedTokenList() {
+        return tokenList.clone();
+    }
+
     private void endCurrent() {
         endCurrent(lastTokenType, true);
     }
@@ -257,10 +262,10 @@ public class TokensProcessor implements ITokensProcessor {
     }
 
     @Override
-    public StackArrayList<IToken<?>> future(int from, int index, List<IToken<?>> emulatedTokens, CurrentTokenData data, IScanner scanner, boolean ignoreHidden) {
+    public StackArrayList<IToken<?>> futureToken(FutureSpec futureSpec, List<IToken<?>> emulatedTokens, CurrentTokenData data, IScanner scanner, boolean ignoreHidden) {
         Objects.requireNonNull(scanner);
 
-        StackArrayList<IToken<?>> tokens = new StackArrayList<>(index, IToken.class);
+        StackArrayList<IToken<?>> tokens = new StackArrayList<>(futureSpec.getAmount(), IToken.class);
 
         TokensProcessor tokensProcessor = clone();
 
@@ -273,18 +278,23 @@ public class TokensProcessor implements ITokensProcessor {
             data.apply(tokensProcessor.builderList);
 
         if (!emulatedTokens.isEmpty())
-            for (int x = 0; x < index; ++x) {
+            for (int x = 0; x < emulatedTokens.size(); ++x) {
                 tokensProcessor.tokenList.add(emulatedTokens.get(x));
             }
 
         int keepUnchanged = this.tokenList.size();
 
         int start = tokensProcessor.tokenList.size();
-        int remaining = index;
-        int remainingFrom = from;
+        int remaining = futureSpec.getAmount();
+        int remainingFrom = futureSpec.getStartIn();
 
         while (tokensProcessor.tokenList.size() == start && scanner.hasNextChar()) {
             char next = scanner.nextChar();
+
+            if(!futureSpec.accept(next, tokensProcessor.clonedTokenList())) {
+                start = tokensProcessor.tokenList.size();
+                continue;
+            }
 
             int scanIndex = scanner.getCurrentIndex();
 
@@ -306,6 +316,10 @@ public class TokensProcessor implements ITokensProcessor {
                         start = tokensProcessor.tokenList.size();
                     }
 
+                    if(!futureSpec.accept(last, tokensProcessor.clonedTokenList())) {
+                        start = tokensProcessor.tokenList.size();
+                        continue;
+                    }
 
                     if (remaining > 0 && remainingFrom == 0) {
                         --remaining;

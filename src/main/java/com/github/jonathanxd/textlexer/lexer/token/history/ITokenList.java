@@ -156,4 +156,6 @@ public interface ITokenList {
 
         return iTokenList;
     }
+
+    ITokenList clone();
 }
