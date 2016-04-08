@@ -33,6 +33,13 @@ import com.github.jonathanxd.textlexer.lexer.token.structure.analise.StructureRu
 public interface IToken<T> {
 
     /**
+     * Converts from Object representation to Text data
+     * @param value Object Representation
+     * @return True if success, false otherwise
+     */
+    boolean valueToData(T value);
+
+    /**
      * Converts from Text data to Object representation
      *
      * @return Object representation

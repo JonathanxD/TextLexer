@@ -16,26 +16,30 @@
  *     You should have received a copy of the GNU Affero General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.github.jonathanxd.textlexer.lexer.token.type;
+package com.github.jonathanxd.textlexer.ext.refactory.listener;
 
-import com.github.jonathanxd.textlexer.lexer.token.builder.TokenBuilder;
+import com.github.jonathanxd.iutils.annotations.Immutable;
+import com.github.jonathanxd.textlexer.lexer.token.IToken;
 import com.github.jonathanxd.textlexer.lexer.token.history.ITokenList;
-import com.github.jonathanxd.textlexer.lexer.token.processor.ProcessorData;
+import com.github.jonathanxd.textlexer.lexer.token.history.list.CommonTokenList;
 
 /**
- * Created by jonathan on 06/02/16.
+ * Created by jonathan on 09/03/16.
  */
-public abstract class AbstractTokenType<T> implements ITokenType<T> {
+public interface ReFactoryListener {
 
-    @Override
-    public TokenBuilder process(ProcessorData data) {
-        TokenBuilder current = data.getBuilderList().hasCurrent() ? data.getBuilderList().current() : null;
+    /**
+     * Factorize a Token.
+     *
+     * @param token         Token to factorize
+     * @param index         Index of token in {@code fromTokenList}
+     * @param fromTokenList Source list
+     * @param toRefactored  New Token List to be returned
+     * @return Return same token to add or null if you will add it manually (adding to {@code
+     * toRefactored} list) or delete it.
+     */
+    IToken<?> factory(IToken<?> token, int index, @Immutable CommonTokenList fromTokenList, ITokenList toRefactored);
 
-        if(current != null) {
-            current.addToData(data.getCharacter());
-        }
-
-        return current;
-    }
+    Class<? extends IToken<?>> target();
 
 }

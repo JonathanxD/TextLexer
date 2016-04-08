@@ -16,11 +16,10 @@
  *     You should have received a copy of the GNU Affero General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.github.jonathanxd.textlexer.lexer.token.type;
+package com.github.jonathanxd.textlexer.lexer.token.factory;
 
 import com.github.jonathanxd.textlexer.lexer.token.IToken;
 import com.github.jonathanxd.textlexer.lexer.token.builder.TokenBuilder;
-import com.github.jonathanxd.textlexer.lexer.token.history.ITokenList;
 import com.github.jonathanxd.textlexer.lexer.token.processor.ProcessorData;
 
 import java.lang.reflect.Constructor;
@@ -30,12 +29,12 @@ import java.util.function.Predicate;
 /**
  * Created by jonathan on 06/02/16.
  */
-public class FixedTokenType<T> implements ITokenType<T> {
+public class FixedTokenFactory<T> implements ITokenFactory<T> {
 
     private final Class<IToken<T>> tokenClass;
     private final Predicate<Character> matcher;
 
-    public FixedTokenType(Class<IToken<T>> tokenClass, Predicate<Character> matcher) {
+    public FixedTokenFactory(Class<IToken<T>> tokenClass, Predicate<Character> matcher) {
         this.tokenClass = tokenClass;
         this.matcher = matcher;
     }

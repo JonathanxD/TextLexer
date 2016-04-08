@@ -18,7 +18,7 @@
  */
 package com.github.jonathanxd.textlexer.lexer.token.processor;
 
-import com.github.jonathanxd.textlexer.lexer.token.type.ITokenType;
+import com.github.jonathanxd.textlexer.lexer.token.factory.ITokenFactory;
 
 import java.io.Serializable;
 import java.util.Collection;
@@ -27,11 +27,11 @@ import java.util.Comparator;
 /**
  * Created by jonathan on 08/02/16.
  */
-public class OrderComparator implements Comparator<ITokenType<?>>, Serializable {
+public class OrderComparator implements Comparator<ITokenFactory<?>>, Serializable {
     @Override
-    public int compare(ITokenType<?> o1, ITokenType<?> o2) {
-        Collection<Class<? extends ITokenType>> tokenClasses = null;
-        Class<? extends ITokenType> otherCheck = null;
+    public int compare(ITokenFactory<?> o1, ITokenFactory<?> o2) {
+        Collection<Class<? extends ITokenFactory>> tokenClasses = null;
+        Class<? extends ITokenFactory> otherCheck = null;
         int aReturn = 0;
 
         if (o1.orderAfterClasses() != null) {

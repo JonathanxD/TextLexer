@@ -19,7 +19,11 @@
 package com.github.jonathanxd.textlexer.lexer.token.processor;
 
 import com.github.jonathanxd.iutils.iterator.SafeBackableIterator;
+import com.github.jonathanxd.textlexer.lexer.AnnonData;
+import com.github.jonathanxd.textlexer.lexer.token.IToken;
 import com.github.jonathanxd.textlexer.lexer.token.builder.BuilderList;
+import com.github.jonathanxd.textlexer.lexer.token.builder.TokenBuilder;
+import com.github.jonathanxd.textlexer.lexer.token.factory.ITokenFactory;
 import com.github.jonathanxd.textlexer.lexer.token.history.ITokenList;
 import com.github.jonathanxd.textlexer.scanner.IScanner;
 
@@ -91,6 +95,22 @@ public class ProcessorData {
 
     public ITokensProcessor getTokensProcessor() {
         return tokensProcessor;
+    }
+
+    public AnnonData getLastToken() {
+
+        if (builderList.hasCurrent()) {
+            TokenBuilder tokenBuilder = builderList.current();
+            ITokenFactory<?> source = tokenBuilder.getTokenFactory();
+            return new AnnonData(source, tokenBuilder.getData());
+        } else {
+            IToken<?> source = tokenList.fetchLast();
+            return new AnnonData(source, source.mutableData().get());
+        }
+    }
+
+    public boolean hasLastToken() {
+        return builderList.hasCurrent() || tokenList.size() > 0;
     }
 
     public boolean isFutureAnalysis() {

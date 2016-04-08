@@ -20,19 +20,19 @@ package com.github.jonathanxd.textlexer.lexer.token.builder;
 
 import com.github.jonathanxd.textlexer.lexer.token.IToken;
 import com.github.jonathanxd.textlexer.lexer.token.processor.ProcessorData;
-import com.github.jonathanxd.textlexer.lexer.token.type.ITokenType;
+import com.github.jonathanxd.textlexer.lexer.token.factory.ITokenFactory;
 
 /**
  * Created by jonathan on 30/01/16.
  */
 public class TokenBuilder implements Cloneable {
 
-    private final ITokenType<?> tokenType;
+    private final ITokenFactory<?> tokenType;
 
     private final StringBuilder dataBuilder = new StringBuilder();
     private boolean build = false;
 
-    public TokenBuilder(ITokenType<?> tokenType) {
+    public TokenBuilder(ITokenFactory<?> tokenType) {
         this.tokenType = tokenType;
     }
 
@@ -56,7 +56,7 @@ public class TokenBuilder implements Cloneable {
                 .build());
     }
 
-    public ITokenType<?> getTokenType() {
+    public ITokenFactory<?> getTokenFactory() {
         return tokenType;
     }
 

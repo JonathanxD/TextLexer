@@ -19,17 +19,14 @@
 package com.github.jonathanxd.textlexer.test.test2.test1.tokens;
 
 import com.github.jonathanxd.textlexer.lexer.token.IToken;
-import com.github.jonathanxd.textlexer.lexer.token.UnifiedTokenType;
-import com.github.jonathanxd.textlexer.lexer.token.history.ITokenList;
-import com.github.jonathanxd.textlexer.lexer.token.history.LoopDirection;
-import com.github.jonathanxd.textlexer.lexer.token.history.analise.ElementSpecification;
+import com.github.jonathanxd.textlexer.lexer.token.UnifiedTokenFactory;
 
 import java.util.List;
 
 /**
  * Created by jonathan on 20/02/16.
  */
-public class Garbage extends UnifiedTokenType<String> {
+public class Garbage extends UnifiedTokenFactory<String> {
 
     public static void garbage(IToken<?> token, List<IToken<?>> tokenList, int index) {
         String startSpaces = startsSpaces(token.getData());

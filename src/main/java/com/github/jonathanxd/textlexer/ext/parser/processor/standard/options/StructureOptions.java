@@ -104,10 +104,10 @@ public class StructureOptions {
     }
 
     /**
-     * Return true if option type is present
+     * Return true if option factory is present
      *
      * @param type Option Type
-     * @return true if option type is present
+     * @return true if option factory is present
      */
     public boolean is(Option.Type type) {
         return getOption(type.getType()) != null;

@@ -28,7 +28,7 @@ import java.util.List;
 /**
  * Created by jonathan on 08/02/16.
  */
-public abstract class SequenceTokenType<T> extends UnifiedTokenType<T> {
+public abstract class SequenceTokenFactory<T> extends UnifiedTokenFactory<T> {
 
     private int processNext = -1;
 
@@ -53,7 +53,7 @@ public abstract class SequenceTokenType<T> extends UnifiedTokenType<T> {
             TokenBuilder tokenBuilder = processorData.getBuilderList().current();
 
             if (processNext > -1
-                    && tokenBuilder.getTokenType() == this) {
+                    && tokenBuilder.getTokenFactory() == this) {
                 --processNext;
                 if (processNext == 0) {
                     processNext = -1;

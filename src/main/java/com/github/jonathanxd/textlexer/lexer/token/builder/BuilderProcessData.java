@@ -18,16 +18,16 @@
  */
 package com.github.jonathanxd.textlexer.lexer.token.builder;
 
-import com.github.jonathanxd.textlexer.lexer.token.type.ITokenType;
+import com.github.jonathanxd.textlexer.lexer.token.factory.ITokenFactory;
 
 /**
  * Created by jonathan on 06/02/16.
  */
 public class BuilderProcessData implements Cloneable {
     private final TokenBuilder builder;
-    private final ITokenType<?> type;
+    private final ITokenFactory<?> type;
 
-    public BuilderProcessData(TokenBuilder builder, ITokenType<?> type) {
+    public BuilderProcessData(TokenBuilder builder, ITokenFactory<?> type) {
         this.builder = builder;
         this.type = type;
     }
@@ -36,7 +36,7 @@ public class BuilderProcessData implements Cloneable {
         return builder;
     }
 
-    public ITokenType<?> getType() {
+    public ITokenFactory<?> getType() {
         return type;
     }
 

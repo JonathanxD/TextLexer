@@ -24,14 +24,14 @@ import com.github.jonathanxd.textlexer.Debug;
 import com.github.jonathanxd.textlexer.lexer.token.IToken;
 import com.github.jonathanxd.textlexer.lexer.token.builder.BuilderList;
 import com.github.jonathanxd.textlexer.lexer.token.builder.TokenBuilder;
+import com.github.jonathanxd.textlexer.lexer.token.factory.FixedTokenFactory;
+import com.github.jonathanxd.textlexer.lexer.token.factory.ITokenFactory;
 import com.github.jonathanxd.textlexer.lexer.token.history.ITokenList;
 import com.github.jonathanxd.textlexer.lexer.token.history.LoopDirection;
 import com.github.jonathanxd.textlexer.lexer.token.history.TokenListImpl;
 import com.github.jonathanxd.textlexer.lexer.token.history.analise.AnaliseTokenList;
 import com.github.jonathanxd.textlexer.lexer.token.processor.future.CurrentTokenData;
 import com.github.jonathanxd.textlexer.lexer.token.processor.future.FutureSpec;
-import com.github.jonathanxd.textlexer.lexer.token.type.FixedTokenType;
-import com.github.jonathanxd.textlexer.lexer.token.type.ITokenType;
 import com.github.jonathanxd.textlexer.scanner.IScanner;
 import com.github.jonathanxd.textlexer.util.StackArrayList;
 
@@ -42,6 +42,7 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.TreeSet;
+import java.util.function.BiConsumer;
 import java.util.function.Predicate;
 
 import javax.annotation.Nonnull;
@@ -52,14 +53,14 @@ import javax.annotation.Nonnull;
 public class TokensProcessor implements ITokensProcessor {
 
 
-    final Set<ITokenType<?>> tokenTypes = new TreeSet<>(new OrderComparator());
+    final Set<ITokenFactory<?>> tokenTypes = new TreeSet<>(new OrderComparator());
     final BuilderList builderList = new BuilderList();
     final ITokenList tokenList = new TokenListImpl();
-    ITokenType<?> lastTokenType = null;
+    ITokenFactory<?> lastTokenType = null;
     private boolean isFuture = false;
 
     @Override
-    public void addTokenType(ITokenType<?> token) {
+    public void addTokenType(ITokenFactory<?> token) {
         if (contains(token))
             return;
         tokenTypes.add(token);
@@ -67,10 +68,10 @@ public class TokensProcessor implements ITokensProcessor {
 
     private <T> boolean containsToken(Class<IToken<T>> tokenClass) {
 
-        for (ITokenType<?> tokenType : tokenTypes) {
+        for (ITokenFactory<?> tokenType : tokenTypes) {
 
-            if (tokenType instanceof FixedTokenType) {
-                FixedTokenType fixedTokenType = (FixedTokenType) tokenType;
+            if (tokenType instanceof FixedTokenFactory) {
+                FixedTokenFactory fixedTokenType = (FixedTokenFactory) tokenType;
                 if (fixedTokenType.getTokenClass() == tokenClass) {
                     return true;
                 }
@@ -80,10 +81,10 @@ public class TokensProcessor implements ITokensProcessor {
 
     }
 
-    private boolean contains(ITokenType<?> token) {
-        for (ITokenType<?> tokenType : tokenTypes) {
+    private boolean contains(ITokenFactory<?> token) {
+        for (ITokenFactory<?> tokenType : tokenTypes) {
 
-            if (tokenType instanceof FixedTokenType) {
+            if (tokenType instanceof FixedTokenFactory) {
                 continue;
             }
 
@@ -99,17 +100,17 @@ public class TokensProcessor implements ITokensProcessor {
         if (containsToken(token))
             return;
 
-        ITokenType<T> fixedTokenType = new FixedTokenType<>(token, matcher);
+        ITokenFactory<T> fixedTokenType = new FixedTokenFactory<>(token, matcher);
         addTokenType(fixedTokenType);
 
     }
 
     public void process(char input, List<Character> allChars, int index, IScanner scanner) {
         boolean anyMatch = false;
-        Iterator<ITokenType<?>> tokenTypeIterator = tokenTypes.iterator();
+        Iterator<ITokenFactory<?>> tokenTypeIterator = tokenTypes.iterator();
 
         while (tokenTypeIterator.hasNext()) {
-            ITokenType<?> type = tokenTypeIterator.next();
+            ITokenFactory<?> type = tokenTypeIterator.next();
             lastTokenType = type;
 
             SafeBackableIterator<Character> backableIterator = ListUtils.toSafeBackableIterator(allChars);
@@ -183,6 +184,7 @@ public class TokensProcessor implements ITokensProcessor {
 
             throw new RuntimeException("Cannot determine token of character '"
                     + input + "' at index '" + index + "'."
+                    + " Current builder data: " + (builderList.hasCurrent() ? "'" + builderList.current().getData() + "'." : "NO CURRENT BUILDER.")
                     + " Future analysis: '" + isFuture + "'."
                     + " TokenList: '" + tokenList + "'."
                     + " Token Types: '" + tokenTypes + "'."
@@ -213,11 +215,11 @@ public class TokensProcessor implements ITokensProcessor {
         return builder;
     }
 
-    private void endCurrent(ITokenType<?> type) {
+    private void endCurrent(ITokenFactory<?> type) {
         endCurrent(type, false);
     }
 
-    private void endCurrent(ITokenType<?> type, boolean force) {
+    private void endCurrent(ITokenFactory<?> type, boolean force) {
         if (builderList.hasCurrent()) {
             if (!builderList.isCurrent(type) || force) {
                 ProcessorData processorData = createProcessorBuilder().build();
@@ -226,9 +228,9 @@ public class TokensProcessor implements ITokensProcessor {
 
                 IToken<?> token = Objects.requireNonNull(
                         currentBuilder.build(processorData),
-                        "IToken<?> createToken(ProcessorData) cannot be null! Use hide() method to hide the Token! ITokenType: " + currentBuilder.getTokenType()
+                        "IToken<?> createToken(ProcessorData) cannot be null! Use hide() method to hide the Token! ITokenFactory: " + currentBuilder.getTokenFactory()
                                 + " at "
-                                + Debug.getClassString(currentBuilder.getTokenType().getClass(), getTokenTypeCreateMethod()));
+                                + Debug.getClassString(currentBuilder.getTokenFactory().getClass(), getTokenTypeCreateMethod()));
 
 
                 if (token != null) {
@@ -246,7 +248,7 @@ public class TokensProcessor implements ITokensProcessor {
     }
 
     private Method getTokenTypeCreateMethod() {
-        return Debug.getMethod(ITokenType.class, "createToken", new Class<?>[]{ProcessorData.class});
+        return Debug.getMethod(ITokenFactory.class, "createToken", new Class<?>[]{ProcessorData.class});
     }
 
     @Override
@@ -262,7 +264,7 @@ public class TokensProcessor implements ITokensProcessor {
     }
 
     @Override
-    public StackArrayList<IToken<?>> futureToken(FutureSpec futureSpec, List<IToken<?>> emulatedTokens, CurrentTokenData data, IScanner scanner, boolean ignoreHidden) {
+    public void futureToken(FutureSpec futureSpec, List<IToken<?>> emulatedTokens, CurrentTokenData data, IScanner scanner, boolean ignoreHidden, BiConsumer<StackArrayList<IToken<?>>, ITokensProcessor> futureTokenConsumer) {
         Objects.requireNonNull(scanner);
 
         StackArrayList<IToken<?>> tokens = new StackArrayList<>(futureSpec.getAmount(), IToken.class);
@@ -271,15 +273,15 @@ public class TokensProcessor implements ITokensProcessor {
 
         tokensProcessor.isFuture = true;
 
-        if(scanner.getCurrentIndex() > -1)
-            scanner.walkTo(scanner.getCurrentIndex()-1);
+        if (scanner.getCurrentIndex() > -1)
+            scanner.walkTo(scanner.getCurrentIndex() - 1);
 
-        if(data != null)
+        if (data != null)
             data.apply(tokensProcessor.builderList);
 
         if (!emulatedTokens.isEmpty())
-            for (int x = 0; x < emulatedTokens.size(); ++x) {
-                tokensProcessor.tokenList.add(emulatedTokens.get(x));
+            for (IToken<?> emulatedToken : emulatedTokens) {
+                tokensProcessor.tokenList.add(emulatedToken);
             }
 
         int keepUnchanged = this.tokenList.size();
@@ -291,23 +293,36 @@ public class TokensProcessor implements ITokensProcessor {
         while (tokensProcessor.tokenList.size() == start && scanner.hasNextChar()) {
             char next = scanner.nextChar();
 
-            if(!futureSpec.accept(next, tokensProcessor.clonedTokenList())) {
+            if (!futureSpec.accept(next, tokensProcessor.clonedTokenList())) {
                 start = tokensProcessor.tokenList.size();
                 continue;
             }
 
             int scanIndex = scanner.getCurrentIndex();
 
-            if(remaining == 0) {
+            if (remaining == 0) {
                 break;
             }
 
             List<Character> chars = ListUtils.from(scanner.getChars());
             try {
-                tokensProcessor.process(next, chars, scanIndex, scanner);
+                try{
+                    tokensProcessor.process(next, chars, scanIndex, scanner);
+                }catch (Throwable t) {
+
+                    Optional<TokenBuilder> tokenBuilderOpt = Optional.empty();
+
+                    if(builderList.hasCurrent())
+                        tokenBuilderOpt = Optional.of(builderList.current());
+
+                    if(!futureSpec.acceptError(tokenBuilderOpt, t)) {
+                        throw new FutureParseException(t);
+                    }
+                }
+
 
                 if (tokensProcessor.tokenList.size() != start) {
-                    if(keepUnchanged != this.tokenList.size())
+                    if (keepUnchanged != this.tokenList.size())
                         throw new RuntimeException("Future system is broken!");
 
                     IToken<?> last;
@@ -316,7 +331,7 @@ public class TokensProcessor implements ITokensProcessor {
                         start = tokensProcessor.tokenList.size();
                     }
 
-                    if(!futureSpec.accept(last, tokensProcessor.clonedTokenList())) {
+                    if (!futureSpec.accept(last, tokensProcessor.clonedTokenList())) {
                         start = tokensProcessor.tokenList.size();
                         continue;
                     }
@@ -333,7 +348,7 @@ public class TokensProcessor implements ITokensProcessor {
                         }
                     }
 
-                    if(remainingFrom > 0) {
+                    if (remainingFrom > 0) {
                         --remainingFrom;
                         start = tokensProcessor.tokenList.size();
                     }
@@ -345,7 +360,8 @@ public class TokensProcessor implements ITokensProcessor {
             }
         }
 
-        return tokens;
+
+        futureTokenConsumer.accept(tokens, tokensProcessor);
     }
 
     @Nonnull
@@ -362,5 +378,27 @@ public class TokensProcessor implements ITokensProcessor {
         tokensProcessor.lastTokenType = this.lastTokenType;
 
         return tokensProcessor;
+    }
+
+    private class FutureParseException extends RuntimeException {
+        public FutureParseException() {
+            super();
+        }
+
+        public FutureParseException(String message) {
+            super(message);
+        }
+
+        public FutureParseException(String message, Throwable cause) {
+            super(message, cause);
+        }
+
+        public FutureParseException(Throwable cause) {
+            super(cause);
+        }
+
+        protected FutureParseException(String message, Throwable cause, boolean enableSuppression, boolean writableStackTrace) {
+            super(message, cause, enableSuppression, writableStackTrace);
+        }
     }
 }

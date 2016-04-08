@@ -16,51 +16,25 @@
  *     You should have received a copy of the GNU Affero General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.github.jonathanxd.textlexer.lexer.token;
+package com.github.jonathanxd.textlexer.lexer.token.factory;
 
 import com.github.jonathanxd.textlexer.lexer.token.builder.TokenBuilder;
 import com.github.jonathanxd.textlexer.lexer.token.processor.ProcessorData;
-import com.github.jonathanxd.textlexer.lexer.token.type.ITokenType;
 
 /**
- * A Unification of TokenType and IToken.
- *
- * The class that implements it needs to have a empty constructor, or override the {@link
- * #createToken(String)} method.
+ * Created by jonathan on 06/02/16.
  */
-public abstract class UnifiedTokenType<T> extends AbstractToken<T> implements ITokenType<T> {
-
-    public UnifiedTokenType() {
-        super("");
-    }
-
-    @Override
-    public String getSimpleName() {
-        return this.getClass().getSimpleName();
-    }
+public abstract class AbstractTokenFactory<T> implements ITokenFactory<T> {
 
     @Override
     public TokenBuilder process(ProcessorData data) {
-
         TokenBuilder current = data.getBuilderList().hasCurrent() ? data.getBuilderList().current() : null;
 
-        if (current != null) {
+        if(current != null) {
             current.addToData(data.getCharacter());
         }
 
         return current;
     }
 
-    @SuppressWarnings("unchecked")
-    @Override
-    public IToken<T> createToken(String data) {
-        IToken<T> token;
-        try {
-            token = this.getClass().newInstance();
-        } catch (InstantiationException | IllegalAccessException e) {
-            throw new RuntimeException("Error, read the " + UnifiedTokenType.class.getName() + " documentation!", e);
-        }
-        token.setData(data);
-        return token;
-    }
 }

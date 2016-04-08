@@ -27,6 +27,6 @@ package com.github.jonathanxd.textlexer.ext.constructor.structure;
  */
 public enum Position {
     START,
-    END;
+    END
 
 }

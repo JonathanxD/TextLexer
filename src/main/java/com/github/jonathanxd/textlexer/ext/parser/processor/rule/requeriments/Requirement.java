@@ -31,7 +31,7 @@ import static com.github.jonathanxd.textlexer.ext.parser.processor.rule.requerim
 public class Requirement {
 
     /**
-     * Required token type
+     * Required token factory
      */
     private final Class<? extends IToken> tokenClass;
     /**

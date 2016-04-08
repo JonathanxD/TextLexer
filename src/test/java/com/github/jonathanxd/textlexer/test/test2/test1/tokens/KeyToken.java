@@ -19,7 +19,7 @@
 package com.github.jonathanxd.textlexer.test.test2.test1.tokens;
 
 import com.github.jonathanxd.textlexer.lexer.token.IToken;
-import com.github.jonathanxd.textlexer.lexer.token.UnifiedTokenType;
+import com.github.jonathanxd.textlexer.lexer.token.UnifiedTokenFactory;
 import com.github.jonathanxd.textlexer.lexer.token.builder.BuilderList;
 import com.github.jonathanxd.textlexer.lexer.token.builder.TokenBuilder;
 import com.github.jonathanxd.textlexer.lexer.token.history.ITokenList;
@@ -37,7 +37,7 @@ import java.util.Collections;
 /**
  * Created by jonathan on 20/02/16.
  */
-public class KeyToken extends UnifiedTokenType<String> {
+public class KeyToken extends UnifiedTokenFactory<String> {
 
     private final StructureRule structureRule = new StructureRule() {
         @Override
@@ -73,7 +73,7 @@ public class KeyToken extends UnifiedTokenType<String> {
             try{
 
                 StackArrayList<IToken<?>> next = processorData.getTokensProcessor().futureToken(
-                        new FutureSpec(1, 2, ((character, tokenList) ->character != 'v'), null),
+                        new FutureSpec(1, 2, ((character, tokenList) ->character != 'v'), null, null),
                         Collections.emptyList(),
                         null,
                         processorData.getScanner(),
@@ -101,7 +101,7 @@ public class KeyToken extends UnifiedTokenType<String> {
         if((data.trim().isEmpty() && character == ' '))
             return false;
 
-        if(tokenBuilder.getTokenType() instanceof Comma && character != ' ') {
+        if(tokenBuilder.getTokenFactory() instanceof Comma && character != ' ') {
             return true;
         }
 

@@ -18,10 +18,10 @@
  */
 package com.github.jonathanxd.textlexer.test.test1.basetokens.type;
 
-import com.github.jonathanxd.textlexer.lexer.token.type.ITokenType;
+import com.github.jonathanxd.textlexer.lexer.token.factory.ITokenFactory;
 
 /**
  * Created by jonathan on 08/02/16.
  */
-public interface Expression<T> extends ITokenType<T> {
+public interface Expression<T> extends ITokenFactory<T> {
 }

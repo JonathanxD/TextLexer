@@ -20,8 +20,10 @@ package com.github.jonathanxd.textlexer.lexer.token.processor.future;
 
 import com.github.jonathanxd.iutils.annotations.Named;
 import com.github.jonathanxd.textlexer.lexer.token.IToken;
+import com.github.jonathanxd.textlexer.lexer.token.builder.TokenBuilder;
 import com.github.jonathanxd.textlexer.lexer.token.history.ITokenList;
 
+import java.util.Optional;
 import java.util.function.BiPredicate;
 
 import javax.annotation.Nullable;
@@ -34,6 +36,7 @@ public class FutureSpec {
     private final int amount;
     private final BiPredicate<Character, ITokenList> charAcceptor;
     private final BiPredicate<IToken<?>, ITokenList> tokenAcceptor;
+    private final BiPredicate<Optional<TokenBuilder>, Throwable> ignoreError;
 
     /**
      * Specification to Collect future tokens
@@ -42,12 +45,14 @@ public class FutureSpec {
      * @param amount        Amount of tokens you want to collect.
      * @param charAcceptor  Char Acceptor, receives a char and TokenList
      * @param tokenAcceptor Token Acceptor, receives a Token and TokenList
+     * @param ignoreError   Predicate to ignore exceptions
      */
-    public FutureSpec(int startIn, int amount, @Nullable BiPredicate<Character, @Named("Immutable token list") ITokenList> charAcceptor, @Nullable BiPredicate<IToken<?>, @Named("Immutable token list") ITokenList> tokenAcceptor) {
+    public FutureSpec(int startIn, int amount, @Nullable BiPredicate<Character, @Named("Immutable token list") ITokenList> charAcceptor, @Nullable BiPredicate<IToken<?>, @Named("Immutable token list") ITokenList> tokenAcceptor, @Nullable BiPredicate<Optional<TokenBuilder>, @Named("Immutable token list") Throwable> ignoreError) {
         this.startIn = startIn;
         this.amount = amount;
         this.charAcceptor = charAcceptor;
         this.tokenAcceptor = tokenAcceptor;
+        this.ignoreError = ignoreError;
     }
 
     public int getStartIn() {
@@ -64,5 +69,9 @@ public class FutureSpec {
 
     public boolean accept(IToken<?> token, ITokenList tokenList) {
         return tokenAcceptor == null || tokenAcceptor.test(token, tokenList);
+    }
+
+    public boolean acceptError(Optional<TokenBuilder> data, Throwable ex) {
+        return ignoreError == null || ignoreError.test(data, ex);
     }
 }

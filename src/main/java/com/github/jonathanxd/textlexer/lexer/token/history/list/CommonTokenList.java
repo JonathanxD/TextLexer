@@ -19,6 +19,8 @@
 package com.github.jonathanxd.textlexer.lexer.token.history.list;
 
 import com.github.jonathanxd.textlexer.lexer.token.IToken;
+import com.github.jonathanxd.textlexer.lexer.token.history.ITokenList;
+import com.github.jonathanxd.textlexer.lexer.token.history.TokenListImpl;
 import com.github.jonathanxd.textlexer.lexer.token.history.TokenListUtil;
 
 import java.util.Collection;
@@ -61,5 +63,9 @@ public interface CommonTokenList extends List<IToken<?>> {
         return TokenListUtil.nextVisibleToken(index, this);
     }
 
-
+    default ITokenList toTokenList() {
+        ITokenList tokenList = new TokenListImpl();
+        this.forEach(tokenList::add);
+        return tokenList;
+    }
 }

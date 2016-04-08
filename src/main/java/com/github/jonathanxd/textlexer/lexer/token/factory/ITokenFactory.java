@@ -16,12 +16,11 @@
  *     You should have received a copy of the GNU Affero General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.github.jonathanxd.textlexer.lexer.token.type;
+package com.github.jonathanxd.textlexer.lexer.token.factory;
 
 import com.github.jonathanxd.iutils.annotations.ProcessedBy;
 import com.github.jonathanxd.textlexer.lexer.token.IToken;
 import com.github.jonathanxd.textlexer.lexer.token.builder.TokenBuilder;
-import com.github.jonathanxd.textlexer.lexer.token.history.ITokenList;
 import com.github.jonathanxd.textlexer.lexer.token.processor.OrderComparator;
 import com.github.jonathanxd.textlexer.lexer.token.processor.ProcessorData;
 import com.github.jonathanxd.textlexer.lexer.token.structure.analise.StructureRule;
@@ -31,7 +30,7 @@ import java.util.Collection;
 /**
  * Created by jonathan on 30/01/16.
  */
-public interface ITokenType<T> {
+public interface ITokenFactory<T> {
 
     TokenBuilder process(ProcessorData processorData);
 
@@ -49,13 +48,13 @@ public interface ITokenType<T> {
 
     @ProcessedBy({OrderComparator.class})
     default int order() {
-        Collection<? extends ITokenType> tokenTypes;
+        Collection<? extends ITokenFactory> tokenTypes;
         if ((tokenTypes = orderAfter()) == null || tokenTypes.isEmpty())
             return 5;
 
         int priority = 0;
 
-        for (ITokenType<?> tokenType : tokenTypes) {
+        for (ITokenFactory<?> tokenType : tokenTypes) {
             if (tokenType.order() > priority) {
                 priority = tokenType.order() + 1;
             }
@@ -64,13 +63,13 @@ public interface ITokenType<T> {
         return priority;
     }
 
-    @ProcessedBy({ITokenType.class})
-    default Collection<? extends ITokenType> orderAfter() {
+    @ProcessedBy({ITokenFactory.class})
+    default Collection<? extends ITokenFactory> orderAfter() {
         return null;
     }
 
     @ProcessedBy({OrderComparator.class})
-    default Collection<Class<? extends ITokenType>> orderAfterClasses() {
+    default Collection<Class<? extends ITokenFactory>> orderAfterClasses() {
         return null;
     }
 

@@ -19,13 +19,13 @@
 package com.github.jonathanxd.textlexer.test.test2.test1.tokens.host;
 
 import com.github.jonathanxd.textlexer.lexer.token.IToken;
-import com.github.jonathanxd.textlexer.lexer.token.UnifiedTokenType;
+import com.github.jonathanxd.textlexer.lexer.token.UnifiedTokenFactory;
 import com.github.jonathanxd.textlexer.lexer.token.structure.analise.StructureRule;
 
 /**
  * Created by jonathan on 20/02/16.
  */
-public class MapClose extends UnifiedTokenType<String> {
+public class MapClose extends UnifiedTokenFactory<String> {
 
     private StructureRule structureRule = new StructureRule() {
         @Override

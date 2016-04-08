@@ -18,7 +18,7 @@
  */
 package com.github.jonathanxd.textlexer.lexer.token.builder;
 
-import com.github.jonathanxd.textlexer.lexer.token.type.ITokenType;
+import com.github.jonathanxd.textlexer.lexer.token.factory.ITokenFactory;
 
 import java.util.Deque;
 import java.util.LinkedList;
@@ -30,12 +30,12 @@ import java.util.stream.Collectors;
 public class BuilderList {
     private final Deque<BuilderProcessData> tokenBuilders = new LinkedList<>();
 
-    public BuilderList add(TokenBuilder builder, ITokenType<?> tokenType) {
+    public BuilderList add(TokenBuilder builder, ITokenFactory<?> tokenType) {
         tokenBuilders.addLast(new BuilderProcessData(builder, tokenType));
         return this;
     }
 
-    public BuilderProcessData addNewCommon(ITokenType<?> tokenType) {
+    public BuilderProcessData addNewCommon(ITokenFactory<?> tokenType) {
         BuilderProcessData builderProcessData = new BuilderProcessData(new TokenBuilder(tokenType), tokenType);
         tokenBuilders.addLast(builderProcessData);
 
@@ -59,11 +59,11 @@ public class BuilderList {
         return tokenBuilders.size() > 0;
     }
 
-    public boolean isCurrent(ITokenType<?> type) {
+    public boolean isCurrent(ITokenFactory<?> type) {
         return type != null && currentData().getType().equals(type);
     }
 
-    public boolean isCurrent(Class<? extends ITokenType<?>> typeClass) {
+    public boolean isCurrent(Class<? extends ITokenFactory<?>> typeClass) {
         return typeClass != null && currentData().getType().getClass().equals(typeClass);
     }
 

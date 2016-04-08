@@ -18,15 +18,19 @@
  */
 package com.github.jonathanxd.textlexer.lexer.token.processor;
 
+import com.github.jonathanxd.iutils.annotations.Named;
+import com.github.jonathanxd.iutils.extra.Container;
+import com.github.jonathanxd.iutils.extra.MutableContainer;
 import com.github.jonathanxd.textlexer.lexer.token.IToken;
 import com.github.jonathanxd.textlexer.lexer.token.history.ITokenList;
 import com.github.jonathanxd.textlexer.lexer.token.processor.future.CurrentTokenData;
 import com.github.jonathanxd.textlexer.lexer.token.processor.future.FutureSpec;
-import com.github.jonathanxd.textlexer.lexer.token.type.ITokenType;
+import com.github.jonathanxd.textlexer.lexer.token.factory.ITokenFactory;
 import com.github.jonathanxd.textlexer.scanner.IScanner;
 import com.github.jonathanxd.textlexer.util.StackArrayList;
 
 import java.util.List;
+import java.util.function.BiConsumer;
 import java.util.function.Predicate;
 
 /**
@@ -39,10 +43,10 @@ public interface ITokensProcessor extends Cloneable {
      *
      * @param token TokenFactory
      */
-    void addTokenType(ITokenType<?> token);
+    void addTokenType(ITokenFactory<?> token);
 
     /**
-     * Add a Token and token matcher (Is Recommended to use {@link ITokenType} instead)
+     * Add a Token and token matcher (Is Recommended to use {@link ITokenFactory} instead)
      *
      * @param token   Token to add
      * @param matcher Character Matcher
@@ -87,7 +91,7 @@ public interface ITokensProcessor extends Cloneable {
      * @return Token in Offset
      */
     default StackArrayList<IToken<?>> futureToken(int from, int index, List<IToken<?>> emulatedTokens, CurrentTokenData currentType, IScanner scanner, boolean ignoreHide) {
-        return futureToken(new FutureSpec(from, index, null, null), emulatedTokens, currentType, scanner, ignoreHide);
+        return futureToken(new FutureSpec(from, index, null, null, null), emulatedTokens, currentType, scanner, ignoreHide);
     }
 
     /**
@@ -100,7 +104,15 @@ public interface ITokensProcessor extends Cloneable {
      * @param ignoreHide     Ignore the hidden tokens
      * @return Token in Offset
      */
-    StackArrayList<IToken<?>> futureToken(FutureSpec futureSpec, List<IToken<?>> emulatedTokens, CurrentTokenData currentType, IScanner scanner, boolean ignoreHide);
+    default StackArrayList<IToken<?>> futureToken(FutureSpec futureSpec, List<IToken<?>> emulatedTokens, CurrentTokenData currentType, IScanner scanner, boolean ignoreHide) {
+        MutableContainer<StackArrayList<IToken<?>>> container = new MutableContainer<>(null);
+
+        futureToken(futureSpec, emulatedTokens, currentType, scanner, ignoreHide, (future, processor) -> container.set(future));
+
+        return container.get();
+    }
+
+    void futureToken(FutureSpec futureSpec, List<IToken<?>> emulatedTokens, CurrentTokenData currentType, IScanner scanner, boolean ignoreHide, BiConsumer<@Named("Future Tokens") StackArrayList<IToken<?>>, @Named("Future token processor!") ITokensProcessor> futureTokenConsumer);
 
     ITokensProcessor clone();
 }

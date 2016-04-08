@@ -16,33 +16,26 @@
  *     You should have received a copy of the GNU Affero General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.github.jonathanxd.textlexer.test.test1.tokens;
-
-import com.github.jonathanxd.textlexer.lexer.token.UnifiedTokenFactory;
+package com.github.jonathanxd.textlexer.lexer;
 
 /**
- * Created by jonathan on 07/02/16.
+ * Created by jonathan on 10/03/16.
  */
-public class Space extends UnifiedTokenFactory<String> {
+public final class AnnonData {
 
+    private final Object source;
+    private final String data;
 
-    @Override
-    public String dataToValue() {
-        return getData();
+    public AnnonData(Object source, String data) {
+        this.source = source;
+        this.data = data;
     }
 
-    @Override
-    public boolean matches(char c) {
-        return c == ' ';
+    public Object getSource() {
+        return source;
     }
 
-    @Override
-    public int order() {
-        return Integer.MAX_VALUE;
-    }
-
-    @Override
-    public boolean hide() {
-        return true;
+    public String getData() {
+        return data;
     }
 }

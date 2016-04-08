@@ -18,13 +18,12 @@
  */
 package com.github.jonathanxd.textlexer.test.calc.tokens;
 
-import com.github.jonathanxd.textlexer.lexer.token.IToken;
-import com.github.jonathanxd.textlexer.lexer.token.UnifiedTokenType;
+import com.github.jonathanxd.textlexer.lexer.token.UnifiedTokenFactory;
 
 /**
  * Created by jonathan on 07/02/16.
  */
-public class Garbage extends UnifiedTokenType<String> {
+public class Garbage extends UnifiedTokenFactory<String> {
 
 
     @Override

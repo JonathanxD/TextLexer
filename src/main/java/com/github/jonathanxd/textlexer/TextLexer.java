@@ -24,7 +24,7 @@ import com.github.jonathanxd.textlexer.lexer.token.IToken;
 import com.github.jonathanxd.textlexer.lexer.token.history.ITokenList;
 import com.github.jonathanxd.textlexer.lexer.token.processor.TokensProcessor;
 import com.github.jonathanxd.textlexer.lexer.token.structure.analise.StructureAnalyzer;
-import com.github.jonathanxd.textlexer.lexer.token.type.ITokenType;
+import com.github.jonathanxd.textlexer.lexer.token.factory.ITokenFactory;
 import com.github.jonathanxd.textlexer.scanner.CharScanner;
 import com.github.jonathanxd.textlexer.scanner.IScanner;
 
@@ -46,21 +46,21 @@ public final class TextLexer {
     private final TokensProcessor tokensProcessor = new TokensProcessor();
     private final List<StructureAnalyzer> analyzers = new ArrayList<>();
 
-    public TextLexer addTokenType(ITokenType<?> tokenType) {
+    public TextLexer addTokenType(ITokenFactory<?> tokenType) {
         tokensProcessor.addTokenType(tokenType);
         return this;
     }
 
     @SafeVarargs
-    public final TextLexer addTokenTypes(ITokenType<?>... tokenTypes) {
-        for (ITokenType<?> aTokenType : tokenTypes)
+    public final TextLexer addTokenTypes(ITokenFactory<?>... tokenTypes) {
+        for (ITokenFactory<?> aTokenType : tokenTypes)
             addTokenType(aTokenType);
         return this;
     }
 
     @SafeVarargs
-    public final TextLexer addTokenTypes(Class<? extends ITokenType>... tokenTypesClass) throws InstantiationException, IllegalAccessException {
-        for (Class<? extends ITokenType> aTokenTypeClass : tokenTypesClass) {
+    public final TextLexer addTokenTypes(Class<? extends ITokenFactory>... tokenTypesClass) throws InstantiationException, IllegalAccessException {
+        for (Class<? extends ITokenFactory> aTokenTypeClass : tokenTypesClass) {
             addTokenType(aTokenTypeClass.newInstance());
         }
         return this;
@@ -104,10 +104,10 @@ public final class TextLexer {
         }
 
         @SuppressWarnings("unchecked")
-        public Set<ITokenType<?>> getOrderedTokenSet() throws Exception {
+        public Set<ITokenFactory<?>> getOrderedTokenSet() throws Exception {
             Field field = TokensProcessor.class.getDeclaredField("tokenTypes");
             field.setAccessible(true);
-            Set<ITokenType<?>> list = (Set<ITokenType<?>>) field.get(lexer.tokensProcessor);
+            Set<ITokenFactory<?>> list = (Set<ITokenFactory<?>>) field.get(lexer.tokensProcessor);
             return Collections.unmodifiableSet(list);
         }
     }

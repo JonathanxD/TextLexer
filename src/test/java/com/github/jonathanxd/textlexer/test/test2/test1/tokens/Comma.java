@@ -18,12 +18,18 @@
  */
 package com.github.jonathanxd.textlexer.test.test2.test1.tokens;
 
-import com.github.jonathanxd.textlexer.lexer.token.UnifiedTokenType;
+import com.github.jonathanxd.textlexer.lexer.token.UnifiedTokenFactory;
 
 /**
  * Created by jonathan on 20/02/16.
  */
-public class Comma extends UnifiedTokenType<String> {
+public class Comma extends UnifiedTokenFactory<String> {
+
+    @Override
+    public boolean valueToData(String value) {
+        mutableData().set(value);
+        return true;
+    }
 
     @Override
     public String dataToValue() {

@@ -18,19 +18,19 @@
  */
 package com.github.jonathanxd.textlexer.test.test1.tokens;
 
+import com.github.jonathanxd.textlexer.lexer.token.UnifiedTokenFactory;
 import com.github.jonathanxd.textlexer.lexer.token.structure.analise.StructureRule;
 
 import java.util.regex.Pattern;
 
 import com.github.jonathanxd.textlexer.lexer.token.IToken;
-import com.github.jonathanxd.textlexer.lexer.token.UnifiedTokenType;
 import com.github.jonathanxd.textlexer.test.test1.basetokens.DataContainerClose;
 import com.github.jonathanxd.textlexer.test.test1.basetokens.DataContainerOpen;
 
 /**
  * Created by jonathan on 08/02/16.
  */
-public class Variable extends UnifiedTokenType<String> {
+public class Variable extends UnifiedTokenFactory<String> {
 
     private static final Pattern pattern = Pattern.compile("[A-Za-z0-9_]");
 

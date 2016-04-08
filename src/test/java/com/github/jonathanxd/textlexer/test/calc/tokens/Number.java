@@ -18,12 +18,12 @@
  */
 package com.github.jonathanxd.textlexer.test.calc.tokens;
 
-import com.github.jonathanxd.textlexer.lexer.token.UnifiedTokenType;
+import com.github.jonathanxd.textlexer.lexer.token.UnifiedTokenFactory;
 
 /**
  * Created by jonathan on 06/02/16.
  */
-public class Number extends UnifiedTokenType<Integer> {
+public class Number extends UnifiedTokenFactory<Integer> {
 
     @Override
     public boolean matches(char character) {

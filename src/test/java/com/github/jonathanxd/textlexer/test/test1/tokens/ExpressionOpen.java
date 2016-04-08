@@ -22,15 +22,15 @@ import java.util.Collection;
 import java.util.Collections;
 
 import com.github.jonathanxd.textlexer.lexer.token.IToken;
-import com.github.jonathanxd.textlexer.lexer.token.UnifiedTokenType;
+import com.github.jonathanxd.textlexer.lexer.token.UnifiedTokenFactory;
 import com.github.jonathanxd.textlexer.lexer.token.structure.analise.StructureRule;
-import com.github.jonathanxd.textlexer.lexer.token.type.ITokenType;
+import com.github.jonathanxd.textlexer.lexer.token.factory.ITokenFactory;
 import com.github.jonathanxd.textlexer.test.test1.basetokens.DataContainerOpen;
 
 /**
  * Created by jonathan on 06/02/16.
  */
-public class ExpressionOpen extends UnifiedTokenType<String> implements DataContainerOpen<String> {
+public class ExpressionOpen extends UnifiedTokenFactory<String> implements DataContainerOpen<String> {
     private final StructureRule structureRule = new StructureRule() {
         @Override
         public IToken<?> getToken() {
@@ -69,7 +69,7 @@ public class ExpressionOpen extends UnifiedTokenType<String> implements DataCont
     }
 
     @Override
-    public Collection<Class<? extends ITokenType>> orderAfterClasses() {
+    public Collection<Class<? extends ITokenFactory>> orderAfterClasses() {
         return Collections.singleton(IfToken.class);
     }
 }

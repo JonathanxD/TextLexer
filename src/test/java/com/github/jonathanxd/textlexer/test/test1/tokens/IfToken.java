@@ -20,13 +20,13 @@ package com.github.jonathanxd.textlexer.test.test1.tokens;
 
 import com.github.jonathanxd.textlexer.lexer.token.structure.analise.StructureRule;
 import com.github.jonathanxd.textlexer.lexer.token.IToken;
-import com.github.jonathanxd.textlexer.lexer.token.SequenceTokenType;
+import com.github.jonathanxd.textlexer.lexer.token.SequenceTokenFactory;
 import com.github.jonathanxd.textlexer.test.test1.basetokens.type.Expression;
 
 /**
  * Created by jonathan on 08/02/16.
  */
-public class IfToken extends SequenceTokenType<String> implements Expression<String> {
+public class IfToken extends SequenceTokenFactory<String> implements Expression<String> {
 
     private final String token = "if";
     private final StructureRule structureRule = new StructureRule() {

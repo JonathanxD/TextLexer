@@ -18,26 +18,21 @@
  */
 package com.github.jonathanxd.textlexer.test.test2.test1.tokens;
 
-import com.github.jonathanxd.iutils.iterator.IteratorUtil;
 import com.github.jonathanxd.textlexer.lexer.token.IToken;
-import com.github.jonathanxd.textlexer.lexer.token.UnifiedTokenType;
+import com.github.jonathanxd.textlexer.lexer.token.UnifiedTokenFactory;
 import com.github.jonathanxd.textlexer.lexer.token.builder.BuilderList;
 import com.github.jonathanxd.textlexer.lexer.token.builder.TokenBuilder;
 import com.github.jonathanxd.textlexer.lexer.token.history.ITokenList;
 import com.github.jonathanxd.textlexer.lexer.token.history.LoopDirection;
 import com.github.jonathanxd.textlexer.lexer.token.history.analise.ElementSpecification;
 import com.github.jonathanxd.textlexer.lexer.token.processor.ProcessorData;
-import com.github.jonathanxd.textlexer.test.test2.test1.QuoteUtil;
 import com.github.jonathanxd.textlexer.test.test2.test1.tokens.host.MapClose;
 import com.github.jonathanxd.textlexer.test.test2.test1.tokens.host.MapOpen;
-
-import java.util.Iterator;
-import java.util.regex.Pattern;
 
 /**
  * Created by jonathan on 20/02/16.
  */
-public class ValueToken extends UnifiedTokenType<String> {
+public class ValueToken extends UnifiedTokenFactory<String> {
 
     @Override
     public String dataToValue() {
@@ -68,7 +63,7 @@ public class ValueToken extends UnifiedTokenType<String> {
         if(data.trim().isEmpty() && character == ' ')
             return false;
 
-        if(tokenBuilder.getTokenType() instanceof KeyValueDivider && character != ' ') {
+        if(tokenBuilder.getTokenFactory() instanceof KeyValueDivider && character != ' ') {
             return true;
         }
 

@@ -16,46 +16,27 @@
  *     You should have received a copy of the GNU Affero General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.github.jonathanxd.textlexer.test.test2.test1.tokens;
+package com.github.jonathanxd.textlexer.test.test2.test1.refactory.listener;
 
+import com.github.jonathanxd.iutils.annotations.Immutable;
+import com.github.jonathanxd.textlexer.ext.refactory.listener.ReFactoryListener;
 import com.github.jonathanxd.textlexer.lexer.token.IToken;
-import com.github.jonathanxd.textlexer.lexer.token.UnifiedTokenFactory;
-import com.github.jonathanxd.textlexer.lexer.token.structure.analise.StructureRule;
+import com.github.jonathanxd.textlexer.lexer.token.history.ITokenList;
+import com.github.jonathanxd.textlexer.lexer.token.history.list.CommonTokenList;
+import com.github.jonathanxd.textlexer.test.test2.test1.tokens.KeyToken;
 
 /**
- * Created by jonathan on 20/02/16.
+ * Created by jonathan on 09/03/16.
  */
-public class KeyValueDivider extends UnifiedTokenFactory<String> {
-
-    private final StructureRule rule = new StructureRule() {
-        @Override
-        public IToken<?> getToken() {
-            return KeyValueDivider.this;
-        }
-
-        @Override
-        public Class<? extends IToken> after() {
-            return KeyToken.class;
-        }
-
-        @Override
-        public Class<? extends IToken> before() {
-            return ValueToken.class;
-        }
-    };
+public class RefactoryListener implements ReFactoryListener {
 
     @Override
-    public String dataToValue() {
-        return getData();
+    public IToken<?> factory(IToken<?> token, int index, @Immutable CommonTokenList fromTokenList, ITokenList toRefactored) {
+        return null;
     }
 
     @Override
-    public boolean matches(char character) {
-        return character == '=';
-    }
-
-    @Override
-    public StructureRule getStructureRule() {
-        return rule;
+    public Class<? extends IToken<?>> target() {
+        return KeyToken.class;
     }
 }

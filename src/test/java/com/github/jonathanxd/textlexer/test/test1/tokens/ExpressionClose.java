@@ -18,6 +18,7 @@
  */
 package com.github.jonathanxd.textlexer.test.test1.tokens;
 
+import com.github.jonathanxd.textlexer.lexer.token.UnifiedTokenFactory;
 import com.github.jonathanxd.textlexer.lexer.token.structure.analise.StructureRule;
 import com.github.jonathanxd.textlexer.test.test1.basetokens.DataContainerClose;
 
@@ -25,13 +26,12 @@ import java.util.Collection;
 import java.util.Collections;
 
 import com.github.jonathanxd.textlexer.lexer.token.IToken;
-import com.github.jonathanxd.textlexer.lexer.token.UnifiedTokenType;
-import com.github.jonathanxd.textlexer.lexer.token.type.ITokenType;
+import com.github.jonathanxd.textlexer.lexer.token.factory.ITokenFactory;
 
 /**
  * Created by jonathan on 06/02/16.
  */
-public class ExpressionClose extends UnifiedTokenType<String> implements DataContainerClose<String> {
+public class ExpressionClose extends UnifiedTokenFactory<String> implements DataContainerClose<String> {
 
     private final StructureRule structureRule = new StructureRule() {
         @Override
@@ -72,7 +72,7 @@ public class ExpressionClose extends UnifiedTokenType<String> implements DataCon
     }
 
     @Override
-    public Collection<Class<? extends ITokenType>> orderAfterClasses() {
+    public Collection<Class<? extends ITokenFactory>> orderAfterClasses() {
         return Collections.singleton(IfToken.class);
     }
 }

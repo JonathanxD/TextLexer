@@ -19,13 +19,13 @@
 package com.github.jonathanxd.textlexer.test.calc.tokens;
 
 import com.github.jonathanxd.textlexer.lexer.token.IToken;
-import com.github.jonathanxd.textlexer.lexer.token.UnifiedTokenType;
+import com.github.jonathanxd.textlexer.lexer.token.UnifiedTokenFactory;
 import com.github.jonathanxd.textlexer.lexer.token.structure.analise.StructureRule;
 
 /**
  * Created by jonathan on 06/02/16.
  */
-public class GroupOpen extends UnifiedTokenType<String> {
+public class GroupOpen extends UnifiedTokenFactory<String> {
     private final StructureRule structureRule = new StructureRule() {
         @Override
         public IToken<?> getToken() {

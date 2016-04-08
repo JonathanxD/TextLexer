@@ -19,7 +19,6 @@
 package com.github.jonathanxd.textlexer.util;
 
 import java.lang.reflect.Array;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
@@ -37,6 +36,10 @@ import javax.annotation.Nullable;
 
 /**
  * Created by jonathan on 06/03/16.
+ *
+ * // Array[5]    {?, ?, ?, ?, ?} // // add("A") // // Array[5]    {"A", ?, ?, ?, ?} // // add("B")
+ * // // Array[5]    {"B", "A", ?, ?, ?} // // remove("A") // // Array[5]    {"B", ?, ?, ?, ?} // //
+ * or // // Array[5]    {"B", "A", ?, ?, ?} // // remove("B") // // Array[5]    {"A", ?, ?, ?, ?}
  *
  * // Array[5]    {?, ?, ?, ?, ?} // // add("A") // // Array[5]    {"A", ?, ?, ?, ?} // // add("B")
  * // // Array[5]    {"B", "A", ?, ?, ?} // // remove("A") // // Array[5]    {"B", ?, ?, ?, ?} // //
@@ -107,7 +110,7 @@ public class StackArrayList<T> implements List<T> {
     /**
      * Construct a new StackArrayList
      * @param max Max elements
-     * @param component Component Type (List type, required to create a "Type-Safe" array)
+     * @param component Component Type (List factory, required to create a "Type-Safe" array)
      */
     @SuppressWarnings("unchecked")
     public StackArrayList(int max, @Nonnull Class<?> component) {
@@ -189,9 +192,9 @@ public class StackArrayList<T> implements List<T> {
      */
     @Nonnull
     public Optional<T> push(@Nonnull T element) {
-        if(add(element)) {
+        if (add(element)) {
             return Optional.of(element);
-        }else{
+        } else {
             return Optional.empty();
         }
     }
@@ -202,7 +205,7 @@ public class StackArrayList<T> implements List<T> {
      */
     @Nonnull
     public Optional<T> pop() {
-        if(isEmpty())
+        if (isEmpty())
             return Optional.empty();
 
         T valueInArray = array[0];
@@ -490,7 +493,7 @@ public class StackArrayList<T> implements List<T> {
     @SuppressWarnings("unchecked")
     @Override
     public int lastIndexOf(Object o) {
-       return lastIndexOfSafe((T) o);
+        return lastIndexOfSafe((T) o);
     }
 
     public int lastIndexOfSafe(T o) {
@@ -573,7 +576,7 @@ public class StackArrayList<T> implements List<T> {
 
         @Override
         public T next() {
-            if(!hasNext())
+            if (!hasNext())
                 throw new NoSuchElementException("No more elements!");
 
             return array[++index];

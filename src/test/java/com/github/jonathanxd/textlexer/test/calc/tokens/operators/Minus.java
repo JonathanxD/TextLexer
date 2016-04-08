@@ -18,12 +18,12 @@
  */
 package com.github.jonathanxd.textlexer.test.calc.tokens.operators;
 
-import com.github.jonathanxd.textlexer.lexer.token.UnifiedTokenType;
+import com.github.jonathanxd.textlexer.lexer.token.UnifiedTokenFactory;
 
 /**
  * Created by jonathan on 06/02/16.
  */
-public class Minus extends UnifiedTokenType<String> implements Operator {
+public class Minus extends UnifiedTokenFactory<String> implements Operator {
 
     @Override
     public boolean matches(char character) {

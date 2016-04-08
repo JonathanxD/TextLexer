@@ -18,12 +18,12 @@
  */
 package com.github.jonathanxd.textlexer.test.calc.tokens;
 
-import com.github.jonathanxd.textlexer.lexer.token.SequenceTokenType;
+import com.github.jonathanxd.textlexer.lexer.token.SequenceTokenFactory;
 
 /**
  * Created by jonathan on 08/02/16.
  */
-public class Round extends SequenceTokenType<String> {
+public class Round extends SequenceTokenFactory<String> {
 
     @Override
     public boolean matches(String s) {

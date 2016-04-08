@@ -99,7 +99,7 @@ public abstract class Option<T> {
         private final Class<?> type;
 
         /**
-         * Create option type
+         * Create option factory
          *
          * @param name name
          * @param type Option Class
@@ -110,7 +110,7 @@ public abstract class Option<T> {
         }
 
         /**
-         * Get type
+         * Get factory
          *
          * @return Type
          */
@@ -120,7 +120,7 @@ public abstract class Option<T> {
 
         @Override
         public String toString() {
-            return "Option[name=" + name + ", type=" + type + "]";
+            return "Option[name=" + name + ", factory=" + type + "]";
         }
     }
 }
