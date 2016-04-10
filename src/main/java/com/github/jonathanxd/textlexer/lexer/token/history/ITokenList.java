@@ -44,6 +44,8 @@ public interface ITokenList {
 
     IToken fetchLast();
 
+    IToken fetchLast(boolean includeHidden);
+
     int size();
 
     void updateVisible();

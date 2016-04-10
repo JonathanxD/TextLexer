@@ -19,6 +19,8 @@
 package com.github.jonathanxd.textlexer.ext.parser.processor.rule;
 
 import com.github.jonathanxd.iutils.collection.ListUtils;
+import com.github.jonathanxd.textlexer.annotation.AnnotationUtil;
+import com.github.jonathanxd.textlexer.annotation.Hide;
 import com.github.jonathanxd.textlexer.ext.parser.exceptions.TokenParseException;
 import com.github.jonathanxd.textlexer.ext.parser.processor.StructureProcessor;
 import com.github.jonathanxd.textlexer.ext.parser.processor.action.Actions;
@@ -53,7 +55,7 @@ public abstract class RuleProcessor implements StructureProcessor {
             int index = tokenIterator.nextIndex();
             IToken<?> token = tokenIterator.next();
 
-            if (!token.hide()) {
+            if (!AnnotationUtil.isPresent(token.getClass(), Hide.class)) {
                 int vIndex = TokenListUtil.lastVisibleTokenIndex(index - 1, tokenList);
                 IToken<?> lastToken = TokenListUtil.lastVisibleToken(index - 1, tokenList);
                 allRules.entrySet().forEach(rule -> {

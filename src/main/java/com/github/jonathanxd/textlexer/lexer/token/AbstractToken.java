@@ -34,6 +34,11 @@ public abstract class AbstractToken<T> implements IToken<T> {
     }
 
     @Override
+    public boolean isDataChangeSupported() {
+        return true;
+    }
+
+    @Override
     public boolean valueToData(T value) {
         mutableData().set(value.toString());
         return true;

@@ -18,11 +18,13 @@
  */
 package com.github.jonathanxd.textlexer.test.test1.tokens;
 
+import com.github.jonathanxd.textlexer.annotation.Hide;
 import com.github.jonathanxd.textlexer.lexer.token.UnifiedTokenFactory;
 
 /**
  * Created by jonathan on 07/02/16.
  */
+@Hide
 public class Space extends UnifiedTokenFactory<String> {
 
 
@@ -41,8 +43,4 @@ public class Space extends UnifiedTokenFactory<String> {
         return Integer.MAX_VALUE;
     }
 
-    @Override
-    public boolean hide() {
-        return true;
-    }
 }

@@ -12,7 +12,7 @@ allprojects {
     apply plugin: 'java'
     apply plugin: 'license'
     apply plugin: 'maven'
-    //apply plugin: 'signing'
+    apply plugin: 'signing'
     apply plugin: 'com.github.johnrengelman.shadow'
 
     license {
@@ -86,12 +86,10 @@ allprojects {
         archives javadocJar
     }
 }
-/* DISABLED FOR GIT
 signing {
     sign configurations.archives
     sign shadowJar
 }
-*/
 subprojects {
 
     dependencies {

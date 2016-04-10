@@ -40,6 +40,14 @@ public interface IToken<T> {
     boolean valueToData(T value);
 
     /**
+     * True if data changing is supported
+     * @return True if data changing is supported
+     */
+    default boolean isDataChangeSupported() {
+        return true;
+    }
+
+    /**
      * Converts from Text data to Object representation
      *
      * @return Object representation
@@ -81,16 +89,6 @@ public interface IToken<T> {
      * @return Token simple name
      */
     String getSimpleName();
-
-    /**
-     * Hides the token from {@link ITokenList} list
-     *
-     * @return True to hide or false otherwise
-     */
-    @ProcessedBy({ITokenList.class, TokenListImpl.class})
-    default boolean hide() {
-        return false;
-    }
 
     /**
      * Structure Rule for Token

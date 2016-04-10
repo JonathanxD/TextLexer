@@ -18,6 +18,8 @@
  */
 package com.github.jonathanxd.textlexer.lexer.token.history;
 
+import com.github.jonathanxd.textlexer.annotation.AnnotationUtil;
+import com.github.jonathanxd.textlexer.annotation.Hide;
 import com.github.jonathanxd.textlexer.lexer.token.IToken;
 import com.github.jonathanxd.textlexer.lexer.token.history.analise.ElementSpecification;
 import com.github.jonathanxd.textlexer.lexer.token.history.list.CommonTokenList;
@@ -40,7 +42,7 @@ public class TokenListImpl implements ITokenList {
     @Override
     public void add(IToken token) {
         tokenList.add(token);
-        if (!token.hide()) {
+        if (!AnnotationUtil.isPresent(token.getClass(), Hide.class)) {
             visibleTokens.add(token);
         }
     }
@@ -64,7 +66,7 @@ public class TokenListImpl implements ITokenList {
     public void updateVisible() {
         visibleTokens.clear();
         tokenList.forEach(token -> {
-            if (!token.hide())
+            if (!AnnotationUtil.isPresent(token.getClass(), Hide.class))
                 visibleTokens.add(token);
         });
     }
@@ -77,6 +79,14 @@ public class TokenListImpl implements ITokenList {
     @Override
     public IToken fetchLast() {
         return visibleTokens.get(visibleTokens.size() - 1);
+    }
+
+    @Override
+    public IToken fetchLast(boolean includeHidden) {
+        if (!includeHidden)
+            return fetchLast();
+
+        return tokenList.get(tokenList.size() - 1);
     }
 
     @Override

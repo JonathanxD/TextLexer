@@ -18,6 +18,7 @@
  */
 package com.github.jonathanxd.textlexer.test.test2.test1.tokens;
 
+import com.github.jonathanxd.textlexer.annotation.Hide;
 import com.github.jonathanxd.textlexer.lexer.token.IToken;
 import com.github.jonathanxd.textlexer.lexer.token.UnifiedTokenFactory;
 
@@ -26,6 +27,7 @@ import java.util.List;
 /**
  * Created by jonathan on 20/02/16.
  */
+@Hide
 public class Garbage extends UnifiedTokenFactory<String> {
 
     public static void garbage(IToken<?> token, List<IToken<?>> tokenList, int index) {
@@ -148,8 +150,4 @@ public class Garbage extends UnifiedTokenFactory<String> {
         return Integer.MAX_VALUE;
     }
 
-    @Override
-    public boolean hide() {
-        return true;
-    }
 }

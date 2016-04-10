@@ -18,6 +18,8 @@
  */
 package com.github.jonathanxd.textlexer.lexer.token.history;
 
+import com.github.jonathanxd.textlexer.annotation.AnnotationUtil;
+import com.github.jonathanxd.textlexer.annotation.Hide;
 import com.github.jonathanxd.textlexer.lexer.token.IToken;
 
 import java.util.ArrayList;
@@ -85,7 +87,7 @@ public class TokenListUtil {
     public static int lastVisibleTokenIndex(int index, List<IToken<?>> tokenList) {
         for(int x = index; x > -1; --x) {
             IToken<?> token = tokenList.get(x);
-            if(!token.hide())
+            if(!AnnotationUtil.isPresent(token.getClass(), Hide.class))
                 return x;
         }
 
@@ -100,7 +102,7 @@ public class TokenListUtil {
     public static int nextVisibleTokenIndex(int index, List<IToken<?>> tokenList) {
         for(int x = index; x < tokenList.size(); ++x) {
             IToken<?> token = tokenList.get(x);
-            if(!token.hide())
+            if(!AnnotationUtil.isPresent(token.getClass(), Hide.class))
                 return x;
         }
 

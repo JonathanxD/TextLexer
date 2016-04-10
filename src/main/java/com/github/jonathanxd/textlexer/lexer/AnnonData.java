@@ -23,8 +23,8 @@ package com.github.jonathanxd.textlexer.lexer;
  */
 public final class AnnonData {
 
-    private final Object source;
-    private final String data;
+    private Object source;
+    private String data;
 
     public AnnonData(Object source, String data) {
         this.source = source;
@@ -37,5 +37,23 @@ public final class AnnonData {
 
     public String getData() {
         return data;
+    }
+
+    public void redefine(Object source, String data) {
+        this.source = source;
+        this.data = data;
+    }
+
+    public void invalidate() {
+        this.source = null;
+        this.data = null;
+    }
+
+    public boolean isValid() {
+        return this.source != null && this.data != null;
+    }
+
+    public static AnnonData invalid() {
+        return new AnnonData(null, null);
     }
 }

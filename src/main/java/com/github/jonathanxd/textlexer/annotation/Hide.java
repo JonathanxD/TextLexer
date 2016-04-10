@@ -16,31 +16,30 @@
  *     You should have received a copy of the GNU Affero General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.github.jonathanxd.textlexer.test.calc.tokens;
-
-import com.github.jonathanxd.textlexer.annotation.Hide;
-import com.github.jonathanxd.textlexer.lexer.token.UnifiedTokenFactory;
+package com.github.jonathanxd.textlexer.annotation;
 
 /**
- * Created by jonathan on 07/02/16.
+ * Created by jonathan on 10/04/16.
  */
-@Hide
-public class Garbage extends UnifiedTokenFactory<String> {
 
+import com.github.jonathanxd.textlexer.lexer.token.IToken;
 
-    @Override
-    public String dataToValue() {
-        return getData();
-    }
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
-    @Override
-    public boolean matches(char c) {
-        return c == ' ';
-    }
+import javax.annotation.meta.TypeQualifier;
 
-    @Override
-    public int order() {
-        return Integer.MAX_VALUE;
-    }
+/**
+ * Why annotation for hidden tokens? For static analysis
+ */
 
+/**
+ * If this annotation is present in a token, that will be considered a hidden token
+ */
+@Retention(RetentionPolicy.RUNTIME)
+@Target(ElementType.TYPE)
+@TypeQualifier(applicableTo = IToken.class)
+public @interface Hide {
 }

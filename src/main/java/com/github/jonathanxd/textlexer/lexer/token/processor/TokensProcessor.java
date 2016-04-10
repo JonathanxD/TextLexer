@@ -21,6 +21,8 @@ package com.github.jonathanxd.textlexer.lexer.token.processor;
 import com.github.jonathanxd.iutils.collection.ListUtils;
 import com.github.jonathanxd.iutils.iterator.SafeBackableIterator;
 import com.github.jonathanxd.textlexer.Debug;
+import com.github.jonathanxd.textlexer.annotation.AnnotationUtil;
+import com.github.jonathanxd.textlexer.annotation.Hide;
 import com.github.jonathanxd.textlexer.lexer.token.IToken;
 import com.github.jonathanxd.textlexer.lexer.token.builder.BuilderList;
 import com.github.jonathanxd.textlexer.lexer.token.builder.TokenBuilder;
@@ -228,7 +230,7 @@ public class TokensProcessor implements ITokensProcessor {
 
                 IToken<?> token = Objects.requireNonNull(
                         currentBuilder.build(processorData),
-                        "IToken<?> createToken(ProcessorData) cannot be null! Use hide() method to hide the Token! ITokenFactory: " + currentBuilder.getTokenFactory()
+                        "IToken<?> createToken(ProcessorData) cannot be null! Use @Hide annotation to hide the Token! ITokenFactory: " + currentBuilder.getTokenFactory()
                                 + " at "
                                 + Debug.getClassString(currentBuilder.getTokenFactory().getClass(), getTokenTypeCreateMethod()));
 
@@ -327,7 +329,9 @@ public class TokensProcessor implements ITokensProcessor {
 
                     IToken<?> last;
 
-                    if ((last = tokensProcessor.tokenList.fetchLast()).hide() && ignoreHidden) {
+                    if (AnnotationUtil.isPresent(
+                            (last = tokensProcessor.tokenList.fetchLast()).getClass(),
+                            Hide.class) && ignoreHidden) {
                         start = tokensProcessor.tokenList.size();
                     }
 
@@ -340,7 +344,7 @@ public class TokensProcessor implements ITokensProcessor {
                         --remaining;
                         start = tokensProcessor.tokenList.size();
 
-                        if (!ignoreHidden || !last.hide()) {
+                        if (!ignoreHidden || !AnnotationUtil.isPresent(last.getClass(), Hide.class)) {
                             boolean add = tokens.add(last);
                             if (!add) {
                                 throw new RuntimeException("Cannot add new element ('" + last + "') to list. List max size: " + tokens.size() + ". Current size: " + tokens.sizeWithoutNull() + ". List elements: " + tokens);

@@ -20,12 +20,15 @@ package com.github.jonathanxd.textlexer.lexer.token.processor;
 
 import com.github.jonathanxd.iutils.iterator.SafeBackableIterator;
 import com.github.jonathanxd.textlexer.lexer.AnnonData;
-import com.github.jonathanxd.textlexer.lexer.token.IToken;
 import com.github.jonathanxd.textlexer.lexer.token.builder.BuilderList;
 import com.github.jonathanxd.textlexer.lexer.token.builder.TokenBuilder;
 import com.github.jonathanxd.textlexer.lexer.token.factory.ITokenFactory;
 import com.github.jonathanxd.textlexer.lexer.token.history.ITokenList;
+import com.github.jonathanxd.textlexer.lexer.token.history.LoopDirection;
 import com.github.jonathanxd.textlexer.scanner.IScanner;
+
+import java.util.Optional;
+import java.util.function.Predicate;
 
 /**
  * Created by jonathan on 07/02/16.
@@ -97,16 +100,47 @@ public class ProcessorData {
         return tokensProcessor;
     }
 
-    public AnnonData getLastToken() {
 
-        if (builderList.hasCurrent()) {
+    public AnnonData getLastToken() {
+        return getLastToken(true, (data) -> true).orElse(null);
+    }
+
+    /**
+     * Get last token
+     *
+     * @param includeFactory True to Include ITokenFactory in {@link #builderList}
+     * @param dataPredicate  Predicate for AnnonData (will try all tokens from last to first)
+     * @return {@link Optional} with AnnonData or {@link Optional#empty()}
+     */
+    public Optional<AnnonData> getLastToken(boolean includeFactory, Predicate<AnnonData> dataPredicate) {
+        if (includeFactory && builderList.hasCurrent()) {
             TokenBuilder tokenBuilder = builderList.current();
             ITokenFactory<?> source = tokenBuilder.getTokenFactory();
-            return new AnnonData(source, tokenBuilder.getData());
-        } else {
-            IToken<?> source = tokenList.fetchLast();
-            return new AnnonData(source, source.mutableData().get());
+            AnnonData annonData = new AnnonData(source, tokenBuilder.getData());
+
+            if (dataPredicate.test(annonData)) {
+                return annonData.isValid() ? Optional.of(annonData) : Optional.empty();
+            }
         }
+
+        final AnnonData annonData = AnnonData.invalid();
+
+        tokenList.forEach(source -> {
+
+            // "Stop loop"
+            if(annonData.isValid()) return;
+
+            // Performance improved
+            annonData.redefine(source, source.mutableData().get());
+
+            if (!dataPredicate.test(annonData)) {
+                annonData.invalidate();
+            }
+        }, LoopDirection.LAST_TO_FIRST);
+
+
+        return annonData.isValid() ? Optional.of(annonData) : Optional.empty();
+
     }
 
     public boolean hasLastToken() {

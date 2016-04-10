@@ -16,31 +16,21 @@
  *     You should have received a copy of the GNU Affero General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.github.jonathanxd.textlexer.test.calc.tokens;
+package com.github.jonathanxd.textlexer.annotation;
 
-import com.github.jonathanxd.textlexer.annotation.Hide;
-import com.github.jonathanxd.textlexer.lexer.token.UnifiedTokenFactory;
+import java.lang.annotation.Annotation;
+import java.lang.reflect.AnnotatedElement;
 
 /**
- * Created by jonathan on 07/02/16.
+ * Created by jonathan on 10/04/16.
  */
-@Hide
-public class Garbage extends UnifiedTokenFactory<String> {
+public final class AnnotationUtil {
 
-
-    @Override
-    public String dataToValue() {
-        return getData();
+    private AnnotationUtil() {
+        throw new RuntimeException();
     }
 
-    @Override
-    public boolean matches(char c) {
-        return c == ' ';
+    public static boolean isPresent(AnnotatedElement obj, Class<? extends Annotation> annotation) {
+        return obj.getDeclaredAnnotation(annotation) != null;
     }
-
-    @Override
-    public int order() {
-        return Integer.MAX_VALUE;
-    }
-
 }
