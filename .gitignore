@@ -1,2 +1,11 @@
-./gradle.properties
-./upload.gradle
+gradle.properties
+upload.gradle
+
+*.zip
+*.png
+.gradle
+.idea
+out
+*.plan
+*.ipr
+*.iws
