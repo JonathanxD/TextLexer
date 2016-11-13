@@ -6,6 +6,6 @@ upload.gradle
 .gradle
 .idea
 out
-*.plan
 *.ipr
 *.iws
+*.txt
